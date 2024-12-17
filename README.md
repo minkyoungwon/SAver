@@ -23,7 +23,7 @@
 > 2. 터미널에서 명령어 사용 $ npm create vite@latest
 > 3.  ![1번](image/1번.png)
 > 4.  ![2번](image/2번.png)
-> 4.  ![2번](image/3번.png)
+> 4.  ![3번](image/3번.png)
 > 5.  사진대로 따라하면 끝
 
 
