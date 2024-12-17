@@ -5,7 +5,7 @@ function Example() {
     <div>
         
     <header>
-        <h1>끊임없이 성장하는 개발자</h1>
+
     </header>
 
     <figure class="my-card">
