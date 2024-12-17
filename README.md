@@ -3,8 +3,19 @@
 
 > 기획 노션 페이지 : https://lovehyun.notion.site/1-1516ebae57e180faa9cec3f138f17efc
 > ## 초기 프로젝트 세팅 하는 법. 
-> - 터미널 -> 파일 받아올 폴더로 이동 -> git clone https://github.com/LimJ2023/GDT.git
-> - cd saver -> npm install
+> - 터미널 키고 파일 받아올 폴더로 이동 후
+>  ```shell
+>  git clone https://github.com/LimJ2023/GDT.git
+>  cd saver
+>  npm install
+>   ```
+>  
+>  
+> ## 실행법
+> ```shell
+> npm run dev
+> ```
+> 
 >   
 > ## 만약 프로젝트에 문제 생길 시 이렇게 초기화 하세요
 > 1. vite 사이트에 접속하기 https://ko.vite.dev/guide/
