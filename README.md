@@ -25,3 +25,39 @@
 > 4.  ![2번](image/2번.png)
 > 4.  ![2번](image/3번.png)
 > 5.  사진대로 따라하면 끝
+
+
+# API 명세서
+
+  <table>
+    <thead>
+    <tr>
+      <th>
+        URL
+      </th>
+      <th>
+        메소드
+      </th>
+      <th>
+        설명
+      </th>
+      <th>
+        응답
+      </th>
+      <th>
+        에러
+      </th>
+    </tr>
+      </thead>
+    <tbody>
+      <tr>
+        <td>/api/uses</td>
+        <td>GET</td>
+        <td>모든 유저 정보 가져오기</td>
+        <td>javascript
+          { success: true, data: [{id: 1, email: “hi@gmail.com”}, {id: 2, email: “bye@gmail.com”}] }
+          </td>
+        <td>404</td>
+      </tr>
+    </tbody>
+  </table>
