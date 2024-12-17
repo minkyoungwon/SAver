@@ -6,7 +6,8 @@
 > - 터미널 키고 파일 받아올 폴더로 이동 후
 >  ```shell
 >  git clone https://github.com/LimJ2023/GDT.git
->  cd saver
+>  cd GDT
+>  cd SAVER
 >  npm install
 >   ```
 >  
