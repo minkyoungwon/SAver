@@ -51,7 +51,7 @@
       </thead>
     <tbody>
       <tr>
-        <td>/api/uses</td>
+        <td>/api/users</td>
         <td>GET</td>
         <td>모든 유저 정보 가져오기</td>
         <td>javascript
