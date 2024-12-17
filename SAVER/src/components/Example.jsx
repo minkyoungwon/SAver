@@ -11,7 +11,7 @@ function Example() {
     <figure class="my-card">
 
         <div class="intro-box">
-            <h3>안녕하세요. <span>저희는는</span></h3>
+            <h3>안녕하세요. <span>저희는</span></h3>
             <h1>감 다 팀</h1>
             <h3>입니다.</h3>
         </div>
