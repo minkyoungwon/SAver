@@ -1,12 +1,17 @@
-import React from 'react'
-import Ex2 from '../components/ExNav'
-import Example from '../components/Example'
+import Header from "../components/Header"
 
 function Home() {
   return (
     <div>
-        <Ex2/>
-        <Example/>
+      <Header/>
+        <main>
+          <div>
+            쿠폰
+          </div>
+          <div>
+            게시판
+          </div>
+        </main>
     </div>
   )
 }
