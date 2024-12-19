@@ -5,8 +5,7 @@ import WritePost from "./components/WritePost";
 import PostDetail from "./components/PostDetail";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-import Footer from "./components/Footer";
-import Coupon from "./components/Coupon";
+// import Footer from "./components/Footer";
 import Profile from "./components/Profile";
 import VerifyEmail from "./components/VerifyEmail";
 import EmailVerification from "./components/EmailVerification";
@@ -80,7 +79,7 @@ const App = () => {
         />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/coupon" element={<Coupon />} />
+        {/* <Route path="/coupon" element={<Coupon />} /> */}
         <Route path="/profile" element={<Profile />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/email-verification" element={<EmailVerification />} />
@@ -103,7 +102,7 @@ const App = () => {
         </div>
       )}
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
