@@ -15,20 +15,18 @@ const categories = [
 
 function Category() {
     return (
-        <div className="p-4 bg-white grid grid-cols-4 gap-4">
-            {categories.map((category) => (
-                <div
-                    key={category.name}
-                    className="flex flex-col items-center text-center"
-                >
-                    <div className="text-2xl">{category.icon}</div>
-                    <span className="text-sm text-gray-600">
-                        {category.name}
-                    </span>
-                </div>
-            ))}
-        </div>
+      <div className="p-4 bg-white grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+        {categories.map((category) => (
+          <div
+            key={category.name}
+            className="flex flex-col items-center text-center"
+          >
+            <div className="text-2xl">{category.icon}</div>
+            <span className="text-sm text-gray-600">{category.name}</span>
+          </div>
+        ))}
+      </div>
     );
-}
+  }
 
 export default Category;
