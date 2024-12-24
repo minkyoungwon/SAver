@@ -11,7 +11,7 @@ const Login = ({ setUser }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/login', { email, password });
+      const response = await axios.post(`${process.env.REACT_APP_LOCAL_URL}/api/login`, { email, password });
       localStorage.setItem('token', response.data.token);
       setUser(email);
       alert('로그인 성공!');
