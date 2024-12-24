@@ -2,8 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const EmailVerification = () => {
-  const [email, setEmail] = useState('');
+const EmailVerification = ({ email }) => {
   const [code, setCode] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(false);
   const navigate = useNavigate();
@@ -33,15 +32,7 @@ const EmailVerification = () => {
 
   return (
     <div className="max-w-md mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">이메일 인증</h2>
-      <input
-        type="email"
-        placeholder="이메일"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        className="w-full border p-2 rounded mb-2"
-      />
+      <h3 className="text-2xl font-bold mb-4">이메일 인증</h3>
       {isCodeSent && (
         <input
           type="text"

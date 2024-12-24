@@ -1,45 +1,23 @@
 import { Link } from "react-router-dom"
-import { useState } from "react";
 import CouponCard from "../components/CouponCard";
-
+import { useState, useEffect } from "react";
 function Home() {
-  const coupons = [
-    {
-      id: 1,
-      imageSrc: null, // 이미지 URL이 없을 경우 기본 "이미지" 텍스트가 표시됩니다.
-      title: "쿠폰명(상호명)",
-      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
-      expiryDate: "2024.12.31",
-    },
-    {
-      id: 2,
-      imageSrc: null,
-      title: "쿠폰명(상호명)",
-      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
-      expiryDate: "2024.12.31",
-    },
-    {
-      id: 3,
-      imageSrc: null,
-      title: "쿠폰명(상호명)",
-      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
-      expiryDate: "2024.12.31",
-    },
-    {
-      id: 4,
-      imageSrc: null,
-      title: "쿠폰명(상호명)",
-      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
-      expiryDate: "2024.12.31",
-    },
-    {
-      id: 5,
-      imageSrc: null,
-      title: "쿠폰명(상호명)",
-      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
-      expiryDate: "2024.12.31",
-    },
-  ];
+  const [coupons, setCoupons] = useState([]); 
+    // {
+    //   id: 1,
+    //   imageSrc: null, // 이미지 URL이 없을 경우 기본 "이미지" 텍스트가 표시됩니다.
+    //   title: "쿠폰명(상호명)",
+    //   description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
+    //   expiryDate: "2024.12.31",
+    // },
+    useEffect(() => {
+      fetchCoupons();
+    }, []);
+
+    const fetchCoupons = async () => {
+      const response = await axios.get('http://localhost:5000/api/coupons');
+      setCoupons(response.data);
+    };
   return (
     <div>
         <nav className="flex justify-center">
@@ -75,6 +53,7 @@ function Home() {
         </div>
 
         <div className="p-4 space-y-4 bg-gray-50 h-screen overflow-y-auto">
+          {coupons.length === 0 && <div>쿠폰이 없습니다.</div>}
           {coupons.map((coupon) => (
             <CouponCard
               key={coupon.id}
@@ -85,7 +64,6 @@ function Home() {
             />
           ))}
         </div>
-
     </div>
   )
 }

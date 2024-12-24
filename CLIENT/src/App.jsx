@@ -29,6 +29,7 @@ const App = () => {
 
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(getUserFromToken());
+  console.log(user);
 
   const navigate = useNavigate();
 
@@ -53,7 +54,22 @@ const App = () => {
     alert("로그아웃 되었습니다");
     navigate("/");
   };
-
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5000/api/login', { email, password });
+      localStorage.setItem('token', response.data.token);
+      setUser(email);
+      alert('로그인 성공!');
+      navigate('/');
+      setTimeout(() => {
+        window.location.reload()
+      }, 10);
+    } catch (error) {
+      console.error('로그인 중 오류:', error);
+      alert('로그인에 실패하였습니다. 아이디 혹은 비밀번호를 확인해주세요.');
+    }
+  };
   // 개인정보 페이지로 이동하는 함수
   const handleProfileClick = () => {
     navigate("/profile");
@@ -61,7 +77,7 @@ const App = () => {
 
   return (
     <>
-    <Header/>
+    <Header user={user} handleLogout={handleLogout} handleLogin={handleLogin} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/board" element={<Board posts={posts} user={user} />} />
