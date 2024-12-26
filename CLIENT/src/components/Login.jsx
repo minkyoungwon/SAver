@@ -50,7 +50,7 @@ const Login = ({ setUser }) => {
         </button>
 
         <h2 className="text-lg mt-4">아이디가 없으신가요?</h2>
-        <Link to="/email-verification">
+        <Link to="/signup">
   <button type="button" className="bg-green-500 text-white px-4 py-2 rounded">
     회원가입
   </button>

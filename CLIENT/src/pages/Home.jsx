@@ -1,15 +1,18 @@
 import { Link } from "react-router-dom"
 import CouponCard from "../components/CouponCard";
 import { useState, useEffect } from "react";
+import AddCoupon from "../components/coupon/AddCoupon";
 function Home() {
-  const [coupons, setCoupons] = useState([]); 
-    // {
-    //   id: 1,
-    //   imageSrc: null, // 이미지 URL이 없을 경우 기본 "이미지" 텍스트가 표시됩니다.
-    //   title: "쿠폰명(상호명)",
-    //   description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
-    //   expiryDate: "2024.12.31",
-    // },
+  const [coupons, setCoupons] = useState([
+        {
+      id: 1,
+      imageSrc: null, // 이미지 URL이 없을 경우 기본 "이미지" 텍스트가 표시됩니다.
+      title: "쿠폰명(상호명)",
+      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
+      expiryDate: "2024.12.31",
+    },
+  ]); 
+
     useEffect(() => {
       fetchCoupons();
     }, []);
@@ -64,6 +67,7 @@ function Home() {
             />
           ))}
         </div>
+        <AddCoupon />
     </div>
   )
 }

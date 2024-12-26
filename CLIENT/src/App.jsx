@@ -12,6 +12,7 @@ import EmailVerification from "./components/EmailVerification";
 import Board from "./pages/Board";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import MyProfile from "./pages/MyProfile";
 
 const App = () => {
   const getUserFromToken = () => {
@@ -29,7 +30,8 @@ const App = () => {
 
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(getUserFromToken());
-  console.log(user);
+  const [email, setEmail] = useState('');
+  console.log("유저변경",user);
 
   const navigate = useNavigate();
 
@@ -47,37 +49,19 @@ const App = () => {
     fetchPosts();
   }, []);
 
-  // 로그아웃 함수
+  // 개인정보 페이지로 이동하는 함수
+  const handleProfileClick = () => {
+    navigate("/my-profile");
+  };
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
     alert("로그아웃 되었습니다");
     navigate("/");
   };
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:5000/api/login', { email, password });
-      localStorage.setItem('token', response.data.token);
-      setUser(email);
-      alert('로그인 성공!');
-      navigate('/');
-      setTimeout(() => {
-        window.location.reload()
-      }, 10);
-    } catch (error) {
-      console.error('로그인 중 오류:', error);
-      alert('로그인에 실패하였습니다. 아이디 혹은 비밀번호를 확인해주세요.');
-    }
-  };
-  // 개인정보 페이지로 이동하는 함수
-  const handleProfileClick = () => {
-    navigate("/profile");
-  };
-
   return (
     <>
-    <Header user={user} handleLogout={handleLogout} handleLogin={handleLogin} />
+    <Header user={user} handleLogout={handleLogout}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/board" element={<Board posts={posts} user={user} />} />
@@ -99,9 +83,10 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/email-verification" element={<EmailVerification />} />
+        <Route path="/my-profile" element={<MyProfile user={user}/>} />
       </Routes>
 
-      {user && (
+      {/* {user && (
         <div className="fixed top-4 right-4 space-x-2">
           <button
             onClick={handleProfileClick}
@@ -116,7 +101,7 @@ const App = () => {
             로그아웃
           </button>
         </div>
-      )}
+      )} */}
 
       {/* <Footer /> */}
     </>
