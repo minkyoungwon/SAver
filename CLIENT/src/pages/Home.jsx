@@ -2,6 +2,8 @@ import { Link } from "react-router-dom"
 import CouponCard from "../components/CouponCard";
 import { useState, useEffect } from "react";
 import AddCoupon from "../components/coupon/AddCoupon";
+import CouponCategory from "../components/CouponCategory";
+import axios from "axios";
 function Home() {
   const [coupons, setCoupons] = useState([
         {
@@ -13,13 +15,34 @@ function Home() {
     },
   ]); 
 
+  const [category, setCategory] = useState([]);
+  const handleCategoryClick = (item) => {
+    setCategory(item);
+    const filteredCoupons = coupons.filter((coupon) => coupon.category === item);
+    setCoupons(filteredCoupons);
+  }
+  const showFilteredCoupons = (filter) => {
+    const filteredCoupons = coupons.filter((coupon) => {
+      return coupon.status === filter;
+    });
+    setCoupons(filteredCoupons);
+  };
     useEffect(() => {
       fetchCoupons();
+      fetchCategory();
     }, []);
-
+    
     const fetchCoupons = async () => {
-      const response = await axios.get('http://localhost:5000/api/coupons');
+      const response = await axios.get(`${import.meta.env.VITE_EC2_URL}/api/coupons`);
       setCoupons(response.data);
+    };
+    const fetchCategory = async () => {
+      const response = await axios.get(`${import.meta.env.VITE_EC2_URL}/api/category`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      setCategory(response.data);
     };
   return (
     <div>
@@ -32,18 +55,14 @@ function Home() {
           </div>
         </nav>
         <div className="flex justify-evenly items-center">
-          <button className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md active:text-gray-600">사용가능</button>
-          <button className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">기간만료</button>
-          <button className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">공유쿠폰</button>
-          <button className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">전체쿠폰</button>
+          <button onClick={() => showFilteredCoupons("available")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md active:text-gray-600">사용가능</button>
+          <button onClick={() => showFilteredCoupons("expired")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">기간만료</button>
+          <button onClick={() => showFilteredCoupons("shared")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">공유쿠폰</button>
+          <button onClick={() => showFilteredCoupons("all")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">전체쿠폰</button>
         </div>  
 
         <div className="grid grid-cols-4 gap-4">
-          <button className="rounded-full bg-gray-100 hover:bg-gray-200 h-7 w-21 text-gray-600">+</button>
-          <button className="rounded-full bg-gray-100 hover:bg-gray-200 h-7 w-21 text-gray-600">금액권</button>
-          <button className="rounded-full bg-gray-100 hover:bg-gray-200 h-7 w-21 text-gray-600">카페</button>
-          <button className="rounded-full bg-gray-100 hover:bg-gray-200 h-7 w-21 text-gray-600">편의점</button>
-          <button className="rounded-full bg-gray-100 hover:bg-gray-200 h-7 w-21 text-gray-600">치킨</button>
+          <CouponCategory category={category} handleCategoryClick={handleCategoryClick}/>
         </div>
 
         <div className="flex justify-between items-center p-4">

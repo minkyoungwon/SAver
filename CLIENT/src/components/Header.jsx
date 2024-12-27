@@ -8,7 +8,7 @@ const Header = ({ user, handleLogout }) => {
           
             <nav className='flex justify-end space-x-4 '>
               {/* {!user ? ( */}
-                 {user ? (
+                 {!user ? (
                 <div>
                     <Link to="/login" className='text-sm mr-4'>로그인</Link>
                     

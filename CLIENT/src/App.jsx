@@ -14,6 +14,7 @@ import Header from "./components/Header";
 import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
 
+
 const App = () => {
   const getUserFromToken = () => {
     const token = localStorage.getItem("token");

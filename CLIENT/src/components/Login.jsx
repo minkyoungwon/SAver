@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';  // Link 추가
 
+
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,7 +12,7 @@ const Login = ({ setUser }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${process.env.REACT_APP_LOCAL_URL}/api/login`, { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_EC2_URL}/api/login`, { email, password });
       localStorage.setItem('token', response.data.token);
       setUser(email);
       alert('로그인 성공!');
