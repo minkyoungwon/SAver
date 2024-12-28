@@ -47,12 +47,16 @@ function Home() {
   return (
     <div>
         <nav className="flex justify-center">
-          <div className="flex justify-center items-center w-1/2 h-10 bg-gray-100 hover:bg-gray-300 rounded-md">
-            <Link to="/board">게시판</Link>
+        <Link to="/board" className="w-1/2">
+          <div className="flex justify-center items-center  h-10 bg-gray-100 hover:bg-gray-300 rounded-md">
+            게시판
           </div>
-          <div className="flex justify-center items-center w-1/2 h-10 bg-gray-100 hover:bg-gray-300 rounded-md">
-            <Link to="/coupon">쿠폰</Link>
+          </Link>
+          <Link to="/coupon" className="w-1/2">
+          <div className="flex justify-center items-center  h-10 bg-gray-100 hover:bg-gray-300 rounded-md">
+            쿠폰
           </div>
+          </Link>
         </nav>
         <div className="flex justify-evenly items-center">
           <button onClick={() => showFilteredCoupons("available")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md active:text-gray-600">사용가능</button>
