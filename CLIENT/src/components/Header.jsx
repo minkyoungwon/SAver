@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
+import logo from "../../public/logo.png"
 const Header = ({ user, handleLogout }) => {
   return (
     <header>
       <div className='flex justify-between p-3 items-center'>
         
-          <h1 className='text-2xl justify-center'><Link to="/">세이버</Link></h1>
+          <Link to="/"><img src={logo} alt="logo" className='w-30 h-20 border-2 border-black rounded-md'  /></Link>
           
             <nav className='flex justify-end space-x-4 '>
               {/* {!user ? ( */}
