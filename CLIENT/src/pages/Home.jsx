@@ -15,6 +15,43 @@ function Home() {
       category: "카테고리1",
       status: "available",
     },
+    {
+      id: 2,
+      imageSrc: null,
+      title: "스타벅스 아메리카노",
+      description: "스타벅스 아메리카노 무료 쿠폰",
+      expiryDate: "2024.06.30", 
+      category: "카테고리2",
+      status: "available",
+    },
+    {
+      id: 3,
+      imageSrc: null,
+      title: "배스킨라빈스 싱글레귤러",
+      description: "배스킨라빈스 아이스크림 싱글레귤러 교환권",
+      expiryDate: "2024.08.31",
+      category: "카테고리1",
+      status: "used",
+    },
+    {
+      id: 4,
+      imageSrc: null,
+      title: "CGV 영화 관람권",
+      description: "CGV 2D 일반 영화 관람권",
+      expiryDate: "2024.12.31",
+      category: "카테고리3",
+      status: "expired",
+    },
+    {
+      id: 5,
+      imageSrc: null,
+      title: "버거킹 와퍼",
+      description: "버거킹 와퍼 단품 교환권",
+      expiryDate: "2024.09.30",
+      category: "카테고리2",
+      status: "available",
+    }
+    
   ]);
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
   const [category, setCategory] = useState([
