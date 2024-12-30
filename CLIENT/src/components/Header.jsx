@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from "../../public/logo.png"
+import logo from "/src/assets/logo.png"
 const Header = ({ user, handleLogout }) => {
   return (
     <header>
