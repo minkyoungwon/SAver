@@ -1,9 +1,9 @@
 import CouponDetail from "./CouponDetail";
 import { useState } from "react";
 const AddCoupon2 = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const floatModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const floatDetailModal = () => {
+    setIsDetailModalOpen(!isDetailModalOpen);
   };
   return (
     <>
@@ -12,7 +12,7 @@ const AddCoupon2 = () => {
           +
         </button>
       </div>
-      {isModalOpen && <CouponDetail setIsModalOpen={setIsModalOpen} />}
+      {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} />}
     </>
   );
 };

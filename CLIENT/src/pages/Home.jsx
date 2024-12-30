@@ -55,6 +55,7 @@ function Home() {
   ]);
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
   const [category, setCategory] = useState(["카테고리1", "카테고리2", "카테고리3"]);
+  const [selectedFilter, setSelectedFilter] = useState("all");
   const handleCategoryClick = (item) => {
     console.log("선택된 카테고리", item);
     // setCategory(item);
@@ -62,6 +63,7 @@ function Home() {
     setFilteredCoupons(filteredCoupons);
   };
   const showFilteredCoupons = (filter) => {
+    setSelectedFilter(filter);
     if (filter === "all") {
       setFilteredCoupons(coupons);
       return;
@@ -114,16 +116,44 @@ function Home() {
           </Link>
         </nav>
         <div className="flex justify-evenly items-center">
-          <button onClick={() => showFilteredCoupons("available")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md active:text-gray-600">
+          <button 
+            onClick={() => showFilteredCoupons("available")} 
+            className={`w-1/4 h-10 border border-[#74C79E] rounded-md
+              ${selectedFilter === "available" 
+                ? "bg-[#74C79E] text-white" 
+                : "bg-white text-[#74C79E] hover:bg-[#e8f4ee]"
+              }`}
+          >
             사용가능
           </button>
-          <button onClick={() => showFilteredCoupons("expired")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">
+          <button 
+            onClick={() => showFilteredCoupons("expired")} 
+            className={`w-1/4 h-10 border border-[#74C79E] rounded-md
+              ${selectedFilter === "expired" 
+                ? "bg-[#74C79E] text-white" 
+                : "bg-white text-[#74C79E] hover:bg-[#e8f4ee]"
+              }`}
+          >
             기간만료
           </button>
-          <button onClick={() => showFilteredCoupons("shared")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">
+          <button 
+            onClick={() => showFilteredCoupons("shared")} 
+            className={`w-1/4 h-10 border border-[#74C79E] rounded-md
+              ${selectedFilter === "shared" 
+                ? "bg-[#74C79E] text-white" 
+                : "bg-white text-[#74C79E] hover:bg-[#e8f4ee]"
+              }`}
+          >
             공유쿠폰
           </button>
-          <button onClick={() => showFilteredCoupons("all")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">
+          <button 
+            onClick={() => showFilteredCoupons("all")} 
+            className={`w-1/4 h-10 border border-[#74C79E] rounded-md
+              ${selectedFilter === "all" 
+                ? "bg-[#74C79E] text-white" 
+                : "bg-white text-[#74C79E] hover:bg-[#e8f4ee]"
+              }`}
+          >
             전체쿠폰
           </button>
         </div>
@@ -137,11 +167,11 @@ function Home() {
         <div className="p-4 space-y-4 bg-gray-50 h-screen overflow-y-auto">
           {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
           {filteredCoupons.map((coupon) => (
-            <CouponCard key={coupon.id} imageSrc={coupon.imageSrc} title={coupon.title} description={coupon.description} expiryDate={coupon.expiryDate} />
+            <CouponCard key={coupon.id} coupon={coupon} />
           ))}
         </div>
         <AddCoupon />
-        <AddCoupon2 />
+        {/* <AddCoupon2 /> */}
       </div>
     </div>
   );
