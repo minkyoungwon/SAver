@@ -21,7 +21,7 @@ function Home() {
       imageSrc: null,
       title: "스타벅스 아메리카노",
       description: "스타벅스 아메리카노 무료 쿠폰",
-      expiryDate: "2024.06.30", 
+      expiryDate: "2024.06.30",
       category: "카테고리2",
       status: "available",
     },
@@ -51,23 +51,18 @@ function Home() {
       expiryDate: "2024.09.30",
       category: "카테고리2",
       status: "available",
-    }
-    
+    },
   ]);
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
-  const [category, setCategory] = useState([
-    "카테고리1",
-    "카테고리2",
-    "카테고리3",
-  ]);
+  const [category, setCategory] = useState(["카테고리1", "카테고리2", "카테고리3"]);
   const handleCategoryClick = (item) => {
-    console.log("선택된 카테고리",item);
+    console.log("선택된 카테고리", item);
     // setCategory(item);
     const filteredCoupons = coupons.filter((coupon) => coupon.category === item);
     setFilteredCoupons(filteredCoupons);
-  }
+  };
   const showFilteredCoupons = (filter) => {
-    if(filter === "all") {
+    if (filter === "all") {
       setFilteredCoupons(coupons);
       return;
     }
@@ -78,85 +73,76 @@ function Home() {
   };
 
   const addCategory = (input) => {
-
-    if(input === "") {
+    if (input === "") {
       alert("카테고리를 입력해주세요.");
       return;
     }
     const isCategoryExist = category.includes(input);
-    if(isCategoryExist) {
+    if (isCategoryExist) {
       alert("이미 존재하는 카테고리입니다.");
       return;
     }
     setCategory([...category, input]);
-  }
+  };
 
-    useEffect(() => {
-      fetchCoupons();
-      fetchCategory();
-    }, []);
-    
-    const fetchCoupons = async () => {
-      const response = await axios.get(`${import.meta.env.VITE_EC2_URL}/api/coupons`);
-      setCoupons(response.data);
-    };
-    const fetchCategory = async () => {
-      const response = await axios.get(`${import.meta.env.VITE_EC2_URL}/api/category`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      setCategory(response.data);
-    };
+  useEffect(() => {
+    fetchCoupons();
+    fetchCategory();
+  }, []);
+
+  const fetchCoupons = async () => {
+    const response = await axios.get(`${import.meta.env.VITE_EC2_URL}/api/coupons`);
+    setCoupons(response.data);
+  };
+  const fetchCategory = async () => {
+    const response = await axios.get(`${import.meta.env.VITE_EC2_URL}/api/category`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    setCategory(response.data);
+  };
   return (
     <div>
+      <div>
         <nav className="flex justify-center">
-        <Link to="/board" className="w-1/2">
-          <div className="flex justify-center items-center  h-10 bg-gray-100 hover:bg-gray-300 rounded-md">
-            게시판
-          </div>
+          <Link to="/board" className="w-1/2">
+            <div className="flex justify-center items-center  h-10 bg-gray-100 hover:bg-gray-300 rounded-md">게시판</div>
           </Link>
           <Link to="/coupon" className="w-1/2">
-          <div className="flex justify-center items-center  h-10 bg-gray-100 hover:bg-gray-300 rounded-md">
-            쿠폰
-          </div>
+            <div className="flex justify-center items-center  h-10 bg-gray-100 hover:bg-gray-300 rounded-md">쿠폰</div>
           </Link>
         </nav>
         <div className="flex justify-evenly items-center">
-          <button onClick={() => showFilteredCoupons("available")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md active:text-gray-600">사용가능</button>
-          <button onClick={() => showFilteredCoupons("expired")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">기간만료</button>
-          <button onClick={() => showFilteredCoupons("shared")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">공유쿠폰</button>
-          <button onClick={() => showFilteredCoupons("all")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">전체쿠폰</button>
-        </div>  
+          <button onClick={() => showFilteredCoupons("available")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md active:text-gray-600">
+            사용가능
+          </button>
+          <button onClick={() => showFilteredCoupons("expired")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">
+            기간만료
+          </button>
+          <button onClick={() => showFilteredCoupons("shared")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">
+            공유쿠폰
+          </button>
+          <button onClick={() => showFilteredCoupons("all")} className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">
+            전체쿠폰
+          </button>
+        </div>
 
         <div className="grid grid-cols-4 gap-4">
-          <CouponCategory category={category} handleCategoryClick={handleCategoryClick} addCategory={addCategory}/>
+          <CouponCategory category={category} handleCategoryClick={handleCategoryClick} addCategory={addCategory} />
         </div>
         <div className="flex justify-center items-center w-1/2 h-10 bg-gray-100 hover:bg-gray-300 rounded-md">
           <Link to="/coupon">쿠폰</Link>
         </div>
-      </nav>
-      <div className="flex justify-evenly items-center">
-        <button className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md active:text-gray-600">사용가능</button>
-        <button className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">기간만료</button>
-        <button className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">공유쿠폰</button>
-        <button className="w-1/4 h-10 text-gray-600 hover:bg-gray-200 rounded-md">전체쿠폰</button>
-      </div>
-
         <div className="p-4 space-y-4 bg-gray-50 h-screen overflow-y-auto">
           {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
           {filteredCoupons.map((coupon) => (
-            <CouponCard
-              key={coupon.id}
-              imageSrc={coupon.imageSrc}
-              title={coupon.title}
-              description={coupon.description}
-              expiryDate={coupon.expiryDate}
-            />
+            <CouponCard key={coupon.id} imageSrc={coupon.imageSrc} title={coupon.title} description={coupon.description} expiryDate={coupon.expiryDate} />
           ))}
         </div>
         <AddCoupon />
-         <AddCoupon2 />
+        <AddCoupon2 />
+      </div>
     </div>
   );
 }
