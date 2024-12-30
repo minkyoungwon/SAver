@@ -12,21 +12,46 @@ function Home() {
       title: "쿠폰명(상호명)",
       description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
       expiryDate: "2024.12.31",
+      category: "카테고리1",
+      status: "available",
     },
-  ]); 
-
-  const [category, setCategory] = useState([]);
+  ]);
+  const [filteredCoupons, setFilteredCoupons] = useState(coupons);
+  const [category, setCategory] = useState([
+    "카테고리1",
+    "카테고리2",
+    "카테고리3",
+  ]);
   const handleCategoryClick = (item) => {
-    setCategory(item);
+    // setCategory(item);
     const filteredCoupons = coupons.filter((coupon) => coupon.category === item);
     setCoupons(filteredCoupons);
   }
   const showFilteredCoupons = (filter) => {
+    if(filter === "all") {
+      setFilteredCoupons(coupons);
+      return;
+    }
     const filteredCoupons = coupons.filter((coupon) => {
       return coupon.status === filter;
     });
-    setCoupons(filteredCoupons);
+    setFilteredCoupons(filteredCoupons);
   };
+
+  const addCategory = (input) => {
+
+    if(input === "") {
+      alert("카테고리를 입력해주세요.");
+      return;
+    }
+    const isCategoryExist = category.includes(input);
+    if(isCategoryExist) {
+      alert("이미 존재하는 카테고리입니다.");
+      return;
+    }
+    setCategory([...category, input]);
+  }
+
     useEffect(() => {
       fetchCoupons();
       fetchCategory();
@@ -66,7 +91,7 @@ function Home() {
         </div>  
 
         <div className="grid grid-cols-4 gap-4">
-          <CouponCategory category={category} handleCategoryClick={handleCategoryClick}/>
+          <CouponCategory category={category} handleCategoryClick={handleCategoryClick} addCategory={addCategory}/>
         </div>
 
         <div className="flex justify-between items-center p-4">
@@ -79,8 +104,8 @@ function Home() {
         </div>
 
         <div className="p-4 space-y-4 bg-gray-50 h-screen overflow-y-auto">
-          {coupons.length === 0 && <div>쿠폰이 없습니다.</div>}
-          {coupons.map((coupon) => (
+          {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
+          {filteredCoupons.map((coupon) => (
             <CouponCard
               key={coupon.id}
               imageSrc={coupon.imageSrc}
