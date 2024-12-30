@@ -1,36 +1,41 @@
-import { useState } from 'react';
-const CouponCategory = ({category, addCategory, handleCategoryClick}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [input, setInput] = useState("");
-  const openModal = () => {
-    setIsModalOpen(true);
-  }
-  const closeModal = () => {
-    setIsModalOpen(false);
-  }
+  import { useState } from 'react';
+  const CouponCategory = ({category, addCategory, handleCategoryClick}) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [input, setInput] = useState("");
+    const openModal = () => {
+      setIsModalOpen(true);
+    }
+    const closeModal = () => {
+      setIsModalOpen(false);
+      setInput("");
+    }
 
-
-  return (
-    <>
-    <div className='flex justify-center items-center gap-4' >
-        <button onClick={() => openModal()} className="rounded-full bg-gray-100 hover:bg-gray-200 w-20 h-7text-gray-600">+</button>
-        {category.map((item) => (
-            <button onClick={() => handleCategoryClick(item)} className="rounded-full bg-gray-100 hover:bg-gray-200  w-20 text-gray-600">{item}</button>
-        ))}
-    </div>
-    {isModalOpen && (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white p-6 rounded-lg">
-          <input type="text" placeholder="카테고리 추가" value={input} onChange={(e) => setInput(e.target.value)} />
-          <div className='flex justify-end gap-4'>
-          <button onClick={() => addCategory(input)} className='bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600'>추가</button>
-          <button onClick={closeModal} className='bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600'>닫기</button>
+    const addCategoryFunction = () => {
+      addCategory(input);
+      closeModal();
+      setInput("");
+    }
+    return (
+      <>
+      <div className='flex justify-center items-center gap-4' >
+          <button onClick={() => openModal()} className="rounded-full bg-gray-100 hover:bg-gray-200 w-20 h-7text-gray-600">+</button>
+          {category.map((item) => (
+              <button onClick={() => handleCategoryClick(item)} className="rounded-full bg-gray-100 hover:bg-gray-200  w-20 text-gray-600">{item}</button>
+          ))}
+      </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg">
+            <input type="text" placeholder="카테고리 추가" value={input} onChange={(e) => setInput(e.target.value)} />
+            <div className='flex justify-end gap-4'>
+            <button onClick={() => addCategoryFunction(input)} className='bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600'>추가</button>
+            <button onClick={closeModal} className='bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600'>닫기</button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
-    </>
-  )
-}
+      )}
+      </>
+    )
+  }
 
-export default CouponCategory
+  export default CouponCategory

@@ -23,9 +23,10 @@ function Home() {
     "카테고리3",
   ]);
   const handleCategoryClick = (item) => {
+    console.log("선택된 카테고리",item);
     // setCategory(item);
     const filteredCoupons = coupons.filter((coupon) => coupon.category === item);
-    setCoupons(filteredCoupons);
+    setFilteredCoupons(filteredCoupons);
   }
   const showFilteredCoupons = (filter) => {
     if(filter === "all") {
