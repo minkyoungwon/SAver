@@ -27,11 +27,15 @@ const AddCouponModal = ({setIsModalOpen}) => {
 
         try {
             // API 호출 코드...
-            await axios.post('/api/coupons', formData, {
+            const response = await axios.post(`${import.meta.env.VITE_LOCAL_URL}/api/coupons`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
+            if(response.status === 200) {
+                alert('쿠폰 추가 성공!');
+                setIsModalOpen(false);
+            }
         } catch (error) {
             console.error('쿠폰 추가 실패:', error);
         }

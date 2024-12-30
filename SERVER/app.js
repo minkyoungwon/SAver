@@ -257,6 +257,26 @@ app.post("/api/verify-code", (req, res) => {
   }
 });
 
+app.get("/api/coupons", (req, res) => {
+  const query = "SELECT * FROM coupons WHERE user_id = ?";
+  db.query(query, [req.user.id], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.send(results);
+  });
+});
+app.get("/api/category", (req, res) => {
+  // 쿠폰 카테고리 조회 (category 테이블을 만들 것인지 coupons 테이블에 카테고리 컬럼을 만들 것인지 결정 필요)
+  const query = "SELECT DISTINCT name FROM coupon_categories WHERE user_id = ?";
+  db.query(query, [req.user.id], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.send(results);
+  });
+});
+
 // 서버 실행
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
