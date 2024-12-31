@@ -17,7 +17,7 @@ db.query(query, [title, content, author], (err, result) => {
 // 글 목록 조회
 router.get("/", (req, res) => {
   const query =
-  'SELECT id, title, content, author, DATE_FORMAT(created_at, "%Y-%m-%d %H:%i:%s") as created_at FROM posts ORDER BY created_at DESC';
+  'SELECT id, title, user_id, DATE_FORMAT(created_at, "%Y-%m-%d %H:%i:%s") as created_at FROM posts ORDER BY created_at DESC';
 
 db.query(query, (err, results) => {
   if (err) {

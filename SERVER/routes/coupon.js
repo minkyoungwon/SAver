@@ -13,4 +13,6 @@ module.exports = (db) => {
             res.send(result);
         })
     })
+
+    return router;
 }
