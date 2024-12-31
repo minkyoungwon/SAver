@@ -12,7 +12,7 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_EC2_URL}/api/signup`, { email, password });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/signup`, { email, password });
       alert('회원가입이 완료되었습니다!');
       navigate('/');
     } catch (error) {

@@ -10,7 +10,7 @@ const VerifyEmail = () => {
     const verifyEmail = async () => {
       const token = searchParams.get('token');
       try {
-        await axios.get(`http://localhost:5000/api/verify-email?token=${token}`);
+        await axios.get(`${import.meta.env.VITE_API_URL}/api/verify-email?token=${token}`);
         alert('이메일 인증이 완료되었습니다!');
         navigate('/login');
       } catch (error) {

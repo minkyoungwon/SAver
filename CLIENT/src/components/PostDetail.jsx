@@ -14,7 +14,7 @@ const PostDetail = ({ posts, setPosts }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/comments/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/comments/${id}`);
         setComments(response.data);
       } catch (error) {
         console.error('댓글 불러오는 중 오류 발생:', error);
@@ -30,7 +30,7 @@ const PostDetail = ({ posts, setPosts }) => {
   // 삭제 함수
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/posts/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/posts/${id}`);
       setPosts((prevPosts) => prevPosts.filter((p) => p.id !== Number(id)));
       alert('글이 삭제되었습니다!');
       navigate('/'); // 삭제 후 게시판으로 이동
@@ -44,7 +44,7 @@ const PostDetail = ({ posts, setPosts }) => {
   const handleAddComment = async () => {
     if (newComment.trim() !== '') {
       try {
-        const response = await axios.post(`http://localhost:5000/api/comments`, {
+          const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/comments`, {
           postId: id,
           text: newComment,
         });

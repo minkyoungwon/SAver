@@ -12,7 +12,7 @@ const WritePost = ({ user, setPosts }) => {
     const fetchPost = async () => {
       if (id) {
         try {
-          const response = await axios.get(`http://localhost:5000/api/posts/${id}`);
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts/${id}`);
           setTitle(response.data.title);
           setContent(response.data.content);
         } catch (error) {
@@ -28,11 +28,11 @@ const WritePost = ({ user, setPosts }) => {
     e.preventDefault();
     try {
       if (id) {
-        await axios.put(`http://localhost:5000/api/posts/${id}`, { title, content });
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/posts/${id}`, { title, content });
         alert('글이 수정되었습니다!');
         window.location.reload();
       } else {
-        const response = await axios.post('http://localhost:5000/api/posts', { title, content, author: user || '익명' });
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/posts`, { title, content, author: user || '익명' });
         setPosts((prevPosts) => [response.data, ...prevPosts]);
         alert('글이 작성되었습니다!');
         // 작성시간이 안나오는 부분을 0.1초 리로드하는것으로 고침

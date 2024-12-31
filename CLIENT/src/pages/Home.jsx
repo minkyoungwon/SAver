@@ -93,11 +93,11 @@ function Home() {
   }, []);
 
   const fetchCoupons = async () => {
-    const response = await axios.get(`${import.meta.env.VITE_EC2_URL}/api/coupons`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/coupons`);
     setCoupons(response.data);
   };
   const fetchCategory = async () => {
-    const response = await axios.get(`${import.meta.env.VITE_EC2_URL}/api/category`, {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

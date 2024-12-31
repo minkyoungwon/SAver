@@ -40,7 +40,7 @@ const App = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/posts");
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts`);
         setPosts(response.data);
       } catch (error) {
         console.error("글 목록을 가져오는 중 오류 발생:", error);
