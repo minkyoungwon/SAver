@@ -13,7 +13,7 @@ import Board from "./pages/Board";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
-
+import MyCoupons from "./pages/MyCoupons";
 
 const App = () => {
   const getUserFromToken = () => {
@@ -60,11 +60,60 @@ const App = () => {
     alert("로그아웃 되었습니다");
     navigate("/");
   };
+
+  const [coupons, setCoupons] = useState([
+    {
+      id: 1,
+      imageSrc: null, // 이미지 URL이 없을 경우 기본 "이미지" 텍스트가 표시됩니다.
+      title: "쿠폰명(상호명)",
+      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
+      expiryDate: "2024.12.31",
+      category: "카테고리1",
+      status: "available",
+    },
+    {
+      id: 2,
+      imageSrc: null,
+      title: "스타벅스 아메리카노",
+      description: "스타벅스 아메리카노 무료 쿠폰",
+      expiryDate: "2024.06.30",
+      category: "카테고리2",
+      status: "available",
+    },
+    {
+      id: 3,
+      imageSrc: null,
+      title: "배스킨라빈스 싱글레귤러",
+      description: "배스킨라빈스 아이스크림 싱글레귤러 교환권",
+      expiryDate: "2024.08.31",
+      category: "카테고리1",
+      status: "used",
+    },
+    {
+      id: 4,
+      imageSrc: null,
+      title: "CGV 영화 관람권",
+      description: "CGV 2D 일반 영화 관람권",
+      expiryDate: "2024.12.31",
+      category: "카테고리3",
+      status: "expired",
+    },
+    {
+      id: 5,
+      imageSrc: null,
+      title: "버거킹 와퍼",
+      description: "버거킹 와퍼 단품 교환권",
+      expiryDate: "2024.09.30",
+      category: "카테고리2",
+      status: "available",
+    },
+  ]);
+
   return (
     <>
     <Header user={user} handleLogout={handleLogout}/>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home coupons={coupons}/>} />
         <Route path="/board" element={<Board posts={posts} user={user} />} />
         <Route
           path="/write"
@@ -85,6 +134,7 @@ const App = () => {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/email-verification" element={<EmailVerification />} />
         <Route path="/my-profile" element={<MyProfile user={user}/>} />
+        <Route path="/my-coupons" element={<MyCoupons coupons={coupons}/>} />
       </Routes>
 
       {/* {user && (
