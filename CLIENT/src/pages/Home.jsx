@@ -5,54 +5,8 @@ import AddCoupon from "../components/coupon/AddCoupon";
 import AddCoupon2 from "../components/coupon/AddCoupon2";
 import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
-function Home() {
-  const [coupons, setCoupons] = useState([
-    {
-      id: 1,
-      imageSrc: null, // 이미지 URL이 없을 경우 기본 "이미지" 텍스트가 표시됩니다.
-      title: "쿠폰명(상호명)",
-      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
-      expiryDate: "2024.12.31",
-      category: "카테고리1",
-      status: "available",
-    },
-    {
-      id: 2,
-      imageSrc: null,
-      title: "스타벅스 아메리카노",
-      description: "스타벅스 아메리카노 무료 쿠폰",
-      expiryDate: "2024.06.30",
-      category: "카테고리2",
-      status: "available",
-    },
-    {
-      id: 3,
-      imageSrc: null,
-      title: "배스킨라빈스 싱글레귤러",
-      description: "배스킨라빈스 아이스크림 싱글레귤러 교환권",
-      expiryDate: "2024.08.31",
-      category: "카테고리1",
-      status: "used",
-    },
-    {
-      id: 4,
-      imageSrc: null,
-      title: "CGV 영화 관람권",
-      description: "CGV 2D 일반 영화 관람권",
-      expiryDate: "2024.12.31",
-      category: "카테고리3",
-      status: "expired",
-    },
-    {
-      id: 5,
-      imageSrc: null,
-      title: "버거킹 와퍼",
-      description: "버거킹 와퍼 단품 교환권",
-      expiryDate: "2024.09.30",
-      category: "카테고리2",
-      status: "available",
-    },
-  ]);
+function Home({coupons}) {
+  
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
   const [category, setCategory] = useState(["카테고리1", "카테고리2", "카테고리3"]);
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -107,15 +61,15 @@ function Home() {
   return (
     <div>
       <div>
-        <nav className="flex justify-center">
+        <nav className="flex justify-center mb-2">
           <Link to="/board" className="w-1/2">
             <div className="flex justify-center items-center  h-10 bg-gray-100 hover:bg-gray-300 rounded-md">게시판</div>
           </Link>
-          <Link to="/coupon" className="w-1/2">
+          <Link to="/my-coupons" className="w-1/2">
             <div className="flex justify-center items-center  h-10 bg-gray-100 hover:bg-gray-300 rounded-md">쿠폰</div>
           </Link>
         </nav>
-        <div className="flex justify-evenly items-center">
+        <div className="flex justify-evenly items-center m-2">
           <button 
             onClick={() => showFilteredCoupons("available")} 
             className={`w-1/4 h-10 border border-[#74C79E] rounded-md
@@ -158,7 +112,7 @@ function Home() {
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-4 m-2">
           <CouponCategory category={category} handleCategoryClick={handleCategoryClick} addCategory={addCategory} />
         </div>
         <div className="flex justify-center items-center w-1/2 h-10 bg-gray-100 hover:bg-gray-300 rounded-md">
