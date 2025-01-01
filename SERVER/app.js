@@ -1,3 +1,4 @@
+require('dotenv').config(); //.env 파일에서 호출하는 부분 추가 01.01 민경원 추가
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
@@ -11,9 +12,11 @@ const port = process.env.PORT;
 const db = require("./db");
 const flash = require('connect-flash');
 
+
 const couponRoutes = require('./routes/coupon');
 const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/posts');
+
 
 // 미들웨어 설정
 app.use(cors());
@@ -27,6 +30,14 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+// // CORS 설정 
+// 01.01 혹시 몰라서 민경원 추가
+// app.use(cors({
+//   origin: "http://localhost:5173",
+//   methods: ["GET","POST","PUT","DELETE"],
+//   credentials: true
+// }))
 
 // 라우트 설정
 // 인증 관련 라우트
