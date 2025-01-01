@@ -14,7 +14,7 @@ const flash = require('connect-flash');
 
 
 const couponRoutes = require('./routes/coupon');
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./routes/auth').createRouter; // 0101 민경원 수정정
 const postRoutes = require('./routes/posts');
 
 

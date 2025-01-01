@@ -9,22 +9,27 @@ const Login = ({ setUser }) => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
-      localStorage.setItem('token', response.data.token);
-      setUser(email);
-      alert('로그인 성공!');
-      navigate('/');
-      setTimeout(() => {
-        window.location.reload()
-      }, 10);
-    } catch (error) {
-      console.error('로그인 중 오류:', error);
-      alert('로그인에 실패하였습니다. 아이디 혹은 비밀번호를 확인해주세요.');
-    }
-  };
+const handleLogin = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
+    const { token } = response.data;
+    localStorage.setItem('token', token);
+
+    // 토큰 디코딩 후 사용자 정보 저장
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    setUser({ email: decodedToken.email, id: decodedToken.id });
+
+    alert('로그인 성공!');
+    navigate('/');
+    setTimeout(() => {
+      window.location.reload();
+    }, 10);
+  } catch (error) {
+    console.error('로그인 중 오류:', error);
+    alert('로그인에 실패하였습니다. 아이디 혹은 비밀번호를 확인해주세요.');
+  }
+};
 
   return (
     <div className="max-w-md mx-auto p-4">
