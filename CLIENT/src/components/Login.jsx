@@ -12,7 +12,10 @@ const Login = ({ setUser }) => {
 const handleLogin = async (e) => {
   e.preventDefault();
   try {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
+    // 0101 민경원 - auth.js 수정으로 인하여 경로 바꿈
+    //const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+
     const { token } = response.data;
     localStorage.setItem('token', token);
 

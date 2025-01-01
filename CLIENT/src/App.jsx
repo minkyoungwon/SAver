@@ -36,6 +36,7 @@ const App = () => {
 
   const navigate = useNavigate();
 
+  
   // 글 목록 가져오기
   useEffect(() => {
     const fetchPosts = async () => {
@@ -50,6 +51,7 @@ const App = () => {
     fetchPosts();
   }, []);
 
+  
   // 개인정보 페이지로 이동하는 함수
   const handleProfileClick = () => {
     navigate("/my-profile");

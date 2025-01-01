@@ -35,18 +35,22 @@ const authenticateToken = (req, res, next) => {
 // module.exports = { authenticateToken };
 
 
-
   // 로그인 라우트
   router.post("/login", (req, res) => {
       const { email, password } = req.body;
       const query = "SELECT * FROM users WHERE email = ?";
-    
+
+      // 0101 민경원 수정 
       db.query(query, [email], async (err, results) => {
-        if (err || results.length === 0) {
-          return res
-            .status(401)
-            .send({ message: "잘못된 이메일 또는 비밀번호입니다." });
+        if (err) {
+          console.error("DB 쿼리 오류:", err);
+          return res.status(500).send({ message: "서버 오류가 발생했습니다." });
         }
+        if (results.length === 0) {
+          console.error("이메일이 존재하지 않음:", email);
+          return res.status(401).send({ message: "잘못된 이메일 또는 비밀번호입니다." });
+        }
+        
     
         const user = results[0];
         const isMatch = await bcrypt.compare(password, user.password);
@@ -57,15 +61,18 @@ const authenticateToken = (req, res, next) => {
             .send({ message: "잘못된 이메일 또는 비밀번호입니다." });
         }
     
-        // JWT 토큰 생성 (1시간 유효) // 테스트로 일단 30ms 초 넣음음
+        // JWT 토큰 생성 (1시간 유효) // 테스트를 위해 30초로 줄임임
+        // 0101 민경원 수정
         const token = jwt.sign(
           { id: user.id, email: user.email },
-          "보안 jwt",
-          { expiresIn: "1hr" }
+          process.env.JWT_SECRET || "보안 jwt", // 환경 변수 사용 권장
+          { expiresIn: "30s" }
         );
+        
         res.send({ message: "로그인 성공!", token });
       });
   });
+
   
   // 회원가입 라우트
   router.post("/signup", async (req, res) => {
