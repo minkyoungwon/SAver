@@ -19,7 +19,15 @@ const postRoutes = require('./routes/posts');
 
 
 // 미들웨어 설정
-app.use(cors());
+
+// // CORS 설정 
+// 01.01 혹시 몰라서 민경원 추가
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET","POST","PUT","DELETE"],
+  credentials: true
+}))
+
 app.use(cookieParser());
 app.use(session({
   secret: 'session-secret',
@@ -31,13 +39,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-// // CORS 설정 
-// 01.01 혹시 몰라서 민경원 추가
-// app.use(cors({
-//   origin: "http://localhost:5173",
-//   methods: ["GET","POST","PUT","DELETE"],
-//   credentials: true
-// }))
 
 // 라우트 설정
 // 인증 관련 라우트

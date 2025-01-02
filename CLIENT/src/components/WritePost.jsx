@@ -34,6 +34,14 @@ const WritePost = ({ user, setPosts }) => {
     fetchPost();
   }, [id]);
 
+  // // 글 작성시 헤더에 올바른 토큰 설정 0101 민경원 추가
+  // const config = {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`,
+  //   },
+  // };
+  
+
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {

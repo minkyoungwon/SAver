@@ -1,29 +1,57 @@
+// 0101 민경원 수정 
 import { Link } from 'react-router-dom';
-import logo from "/src/assets/logo.png"
+import logo from "/src/assets/logo.png";
+
 const Header = ({ user, handleLogout }) => {
   return (
     <header>
       <div className='flex justify-between p-3 items-center'>
-        
-          <Link to="/"><img src={logo} alt="logo" className='w-30 h-20 border-2 border-black rounded-md'  /></Link>
-          
-            <nav className='flex justify-end space-x-4 '>
-              
-                 {user ? (
-                <div>
-                    <Link to="/login" className='text-sm mr-4'>로그인</Link>
-                    
-                </div>
-              ) : (
-                <div >
-                    <Link to="/my-profile" className='text-sm mr-4'>마이페이지</Link>
-                    <Link to="/" className='text-sm mr-4' onClick={handleLogout}>로그아웃</Link>
-                </div>
-              )}
-            </nav> 
+        <Link to="/"><img src={logo} alt="logo" className='w-30 h-20 border-2 border-black rounded-md' /></Link>
+        <nav className='flex justify-end space-x-4'>
+          {user ? (
+            <>
+              <Link to="/my-profile" className='text-sm mr-4'>마이페이지</Link>
+              <button onClick={handleLogout} className='text-sm mr-4'>로그아웃</button>
+            </>
+          ) : (
+            <Link to="/login" className='text-sm mr-4'>로그인</Link>
+          )}
+        </nav>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
+
+
+// 기존 헤더
+// import { Link } from 'react-router-dom';
+// import logo from "/src/assets/logo.png"
+// const Header = ({ user, handleLogout }) => {
+//   return (
+//     <header>
+//       <div className='flex justify-between p-3 items-center'>
+        
+//           <Link to="/"><img src={logo} alt="logo" className='w-30 h-20 border-2 border-black rounded-md'  /></Link>
+          
+//             <nav className='flex justify-end space-x-4 '>
+              
+//                  {user ? (
+//                 <div>
+//                     <Link to="/login" className='text-sm mr-4'>로그인</Link>
+                    
+//                 </div>
+//               ) : (
+//                 <div >
+//                     <Link to="/my-profile" className='text-sm mr-4'>마이페이지</Link>
+//                     <Link to="/" className='text-sm mr-4' onClick={handleLogout}>로그아웃</Link>
+//                 </div>
+//               )}
+//             </nav> 
+//       </div>
+//     </header>
+//   )
+// }
+
+// export default Header
