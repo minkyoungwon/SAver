@@ -32,8 +32,10 @@ app.use(session({
   secret: 'session-secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 30 * 1000 } // 세션 만료 시간 설정 (30분) // 0102 mkw put 
-  // //30분으로 하고 싶으면 30 * 60 * 1000으로 하면됨
+  cookie: { maxAge: 60 * 60 * 1000 } // 세션 만료 시간 설정 (30분) // 0102 mkw put 
+  // 30초(30 * 1000)
+  // 30분(30분 * 60초 * 1000밀리초)
+  // 60분(60분 * 60초 * 1000밀리초)
 }));
 
 app.use(express.json());

@@ -66,7 +66,7 @@ const authenticateToken = (req, res, next) => {
         const token = jwt.sign(
           { id: user.id, email: user.email },
           process.env.JWT_SECRET || "보안 jwt", // 환경 변수 사용 권장
-          { expiresIn: "30s" }
+          { expiresIn: "1hr" }
         );
         
         res.send({ message: "로그인 성공!", token });
