@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const db = require('../db');
 
+const crypto = require('crypto'); // 0102 add mkw 
 
   
 // module.exports = (db) => {
@@ -98,7 +99,7 @@ const authenticateToken = (req, res, next) => {
     
           // 사용자 등록
           const insertQuery =
-            "INSERT INTO users (email, password, profile_image, join_data, is_verified) VALUES (?, ?, NULL, NOW(), false)";
+            "INSERT INTO users (email, password, profile_image, join_date, is_verified) VALUES (?, ?, NULL, NOW(), false)";
           db.query(insertQuery, [email, hashedPassword], (err) => {
             if (err) {
               console.error("회원가입 중 DB 오류:", err);
@@ -119,8 +120,10 @@ const authenticateToken = (req, res, next) => {
   
   // 이메일 인증
   router.get("/verify-email", (req, res) => {
-      const { token } = req.query;
-  
+      //const { token } = req.query;
+      // 이메일 인증 토큰 생성 시 만료 시간 추가
+      const token = jwt.sign({ email }, "your-secret-key", { expiresIn: '1h' });
+
       try {
         const decoded = jwt.verify(token, "your-secret-key");
         const email = decoded.email;
@@ -142,8 +145,10 @@ const authenticateToken = (req, res, next) => {
   
   // 인증 코드 전송
   router.post("/send-verification-code", (req, res) => {
+      console.log("인증코드 요청 도착", req.body.email)
       const { email } = req.body;
       const verificationCode = crypto.randomInt(100000, 999999).toString();
+      console.log(`생성된 인증 코드: ${verificationCode}`); // 로그 추가
     
       // 세션 또는 임시 저장소에 인증 코드 저장 (여기서는 간단하게 메모리 객체에 저장)
       if (!global.verificationCodes) {
@@ -170,6 +175,7 @@ const authenticateToken = (req, res, next) => {
   
   // 인증 코드 확인
   router.post("/verify-code", (req, res) => {
+      console.log("인증 코드 확인 요청", req.body);
       const { email, code } = req.body;
   
       if (global.verificationCodes && global.verificationCodes[email] === code) {
