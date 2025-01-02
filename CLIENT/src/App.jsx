@@ -51,6 +51,31 @@ const App = () => {
     fetchPosts();
   }, []);
 
+  // CLIENT 세션 만료 처리 여부 확인인
+  // 0102 mkw add 
+  useEffect(() => {
+    const checkSession = setInterval(() => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+  
+        // 만료 시간 확인
+        if (decodedToken.exp < currentTime) {
+          localStorage.removeItem("token");
+          setUser(null);
+          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+          navigate("/login");
+          clearInterval(checkSession);
+        }
+      } else {
+        clearInterval(checkSession);
+      }
+    }, 10000); // 10초마다 세션 확인
+    return () => clearInterval(checkSession); // 컴포넌트 언마운트 시 인터벌 제거
+  }, [navigate]);
+  
+
   
   // 개인정보 페이지로 이동하는 함수
   const handleProfileClick = () => {
