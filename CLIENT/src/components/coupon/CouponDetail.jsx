@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Share, CustomCheckbox } from "../../icon";
 
-const CouponDetail = ({ setIsModalOpen, coupon }) => {
+const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
   useEffect(() => {
     console.log("Coupon Selected: ", coupon);
-  });
+  },[coupon]);
 
   //사용자 쿠폰 사용체크
   const [isUsed, setIsUsed] = useState(false);
@@ -110,7 +110,7 @@ const CouponDetail = ({ setIsModalOpen, coupon }) => {
           <button type="submit" className="flex-1 py-2 bg-emerald-400 text-white font-medium rounded-lg shadow-md hover:bg-emerald-500">
             저장
           </button>
-          <button className="flex-1 py-2 bg-gray-500 text-white font-medium rounded-lg shadow-md hover:bg-gray-600" onClick={() => setIsModalOpen(false)}>
+          <button className="flex-1 py-2 bg-gray-500 text-white font-medium rounded-lg shadow-md hover:bg-gray-600" onClick={() => setIsDetailModalOpen(false)}>
             닫기
           </button>
         </div>

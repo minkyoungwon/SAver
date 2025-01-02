@@ -7,6 +7,7 @@ const CouponCard = ({  coupon }) => {
     setIsDetailModalOpen(!isDetailModalOpen);
   };
   return (
+    <>
     <div className="flex items-center p-4 border rounded-lg shadow-md bg-white cursor-pointer" onClick={floatDetailModal}>
       {/* 이미지 */}
       <div className="w-20 h-20 bg-gray-200 flex items-center justify-center rounded-md overflow-hidden">
@@ -16,7 +17,7 @@ const CouponCard = ({  coupon }) => {
           <span className="text-gray-500 text-sm">이미지</span>
         )}
       </div>
-
+    
       {/* 텍스트 정보 */}
       <div className="ml-4 flex flex-col justify-between flex-1">
         <div>
@@ -26,8 +27,10 @@ const CouponCard = ({  coupon }) => {
         </div>
         <p className="text-sm text-gray-500 mt-2">사용기한: {coupon.expiryDate}</p>
       </div>
-    {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} coupon={coupon}/>}
     </div>
+    {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} coupon={coupon}/>}
+    
+    </>
   );
 };
 
