@@ -16,8 +16,10 @@ const handleLogin = async (e) => {
     //const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
     const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
 
-    const { token } = response.data;
+    // [추가] 0103 mkw
+    const { token, email: userEmail } = response.data;
     localStorage.setItem('token', token);
+    localStorage.setItem('userEmail', userEmail);  // 추가
 
     // 토큰 디코딩 후 사용자 정보 저장
     const decodedToken = JSON.parse(atob(token.split('.')[1]));

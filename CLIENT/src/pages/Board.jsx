@@ -64,7 +64,8 @@ const Board = ({ posts, user }) => {
               <td className="border border-gray-200 p-2">
                 <Link to={`/post/${post.id}`} className="text-blue-500">{post.author}</Link>
               </td>
-              <td className="border border-gray-200 p-2 text-center">{post.created_at}</td>
+              {/* 시간에 딜레이가 나오는것은 고칠수는 없는데 일단 보류 해둠 0103 mkw */}
+              <td className="border border-gray-200 p-2 text-center text-blue-500">{post.posted_at}</td>
             </tr>
           ))}
         </tbody>
