@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import WritePost from "./components/WritePost";
 import PostDetail from "./components/PostDetail";
@@ -14,7 +14,7 @@ import Header from "./components/Header";
 import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
 import MyCoupons from "./pages/MyCoupons";
-
+import Intro from "./pages/Intro";
 const App = () => {
   const getUserFromToken = () => {
     const token = localStorage.getItem("token");
@@ -35,6 +35,7 @@ const App = () => {
   console.log("유저변경",user);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   
   // 글 목록 가져오기
@@ -138,7 +139,9 @@ const App = () => {
 
   return (
     <>
-    <Header user={user} handleLogout={handleLogout}/>
+      {location.pathname !== '/intro' && location.pathname !== '/login' && location.pathname !== '/signup' && (
+        <Header user={user} handleLogout={handleLogout}/>
+      )}
       <Routes>
         <Route path="/" element={<Home coupons={coupons}/>} />
         <Route path="/board" element={<Board posts={posts} user={user} />} />
@@ -162,6 +165,7 @@ const App = () => {
         <Route path="/email-verification" element={<EmailVerification />} />
         <Route path="/my-profile" element={<MyProfile user={user}/>} />
         <Route path="/my-coupons" element={<MyCoupons coupons={coupons}/>} />
+        <Route path="/intro" element={<Intro />} />
       </Routes>
 
       {/* {user && (
