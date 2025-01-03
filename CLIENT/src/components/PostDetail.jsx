@@ -1,3 +1,5 @@
+// 게시글 상세조회, 댓글 및 대댓글 (crud) 
+
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,7 +9,11 @@ const PostDetail = ({ posts, setPosts }) => {
   const navigate = useNavigate();
 
   // 게시글 찾기
-  const post = posts.find((p) => p.id === Number(id));
+  //const post = posts.find((p) => p.id === Number(id));
+
+  // add 0104 mkw 
+  // 게시글 상태 (기존 posts.find 대신 새 상태로 관리)
+    const [post, setPost] = useState(null);
 
   // 댓글 상태
   const [comments, setComments] = useState([]);
@@ -28,9 +34,26 @@ const PostDetail = ({ posts, setPosts }) => {
   // console.log('userEmail')
 
   // 잘 오는지 디버깅
-  useEffect(() => {
-    console.log('Logged in user email:', loggedInUserEmail);
-  }, [loggedInUserEmail]);
+  // useEffect(() => {
+  //   console.log('Logged in user email:', loggedInUserEmail);
+  // }, [loggedInUserEmail]);
+
+    // add 0104 mkw
+    // 게시글 불러오기 (새로고침 시에도 서버에서 데이터를 가져오도록 수정)
+    useEffect(() => {
+      const fetchPost = async () => {
+        try {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts/${id}`);
+          setPost(response.data); // 서버에서 받은 데이터를 post 상태에 저장
+        } catch (error) {
+          console.error('게시글 불러오기 실패:', error);
+          alert('게시글을 불러오는 데 실패했습니다.');
+        }
+      };
+  
+      fetchPost(); // 컴포넌트 마운트 시 실행
+    }, [id]); // id가 변경될 때마다 실행
+
 
   // 댓글 불러오기
   useEffect(() => {
@@ -225,7 +248,8 @@ const PostDetail = ({ posts, setPosts }) => {
                 작성자: {comment.user_email || '익명'}
               </small>
               <small className="text-gray-500 block">
-                {new Date(comment.created_at).toLocaleString()}
+                {/* 이 부분 뭔가 쎼한 */}
+                {new Date(comment.created_at).toLocaleString()} 
               </small>
             </>
           )}
@@ -264,6 +288,8 @@ const PostDetail = ({ posts, setPosts }) => {
       );
     });
   };
+
+
 
   return (
     <div className="max-w-4xl mx-auto p-4 bg-white shadow-md rounded-md">
