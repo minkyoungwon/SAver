@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization; 
   if (!authHeader) {
-    return res.status(401).json({ message: "인증 토큰이 필요합니다." });
+    return res.status(401).json({ message: "로그인이 필요합니다 (인증 토큰이 필요합니다)" });
   }
 
   const token = authHeader.split(' ')[1];

@@ -12,21 +12,34 @@ const Login = ({ setUser }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // 0101 민경원 - auth.js 수정으로 인하여 경로 바꿈
-      //const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
+
+
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+    const { token } = response.data;
 
-      // [추가] 0103 mkw
-      const { token, email: userEmail } = response.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('userEmail', userEmail);  // 추가
+    localStorage.setItem('token', token);
 
-      // 토큰 디코딩 후 사용자 정보 저장
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      setUser({ email: decodedToken.email, id: decodedToken.id });
+    // 토큰 디코딩 후 이메일과 ID 설정
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    const userEmail = decodedToken.email;
 
-      // // App.jsx의 user 상태를 이메일 아이디로 설정 (ex: ~~~@~~.com에서 @ 앞부분)
-      // setUser(user.email.split('@')[0]);
+    localStorage.setItem('userEmail', userEmail);
+    setUser({ email: userEmail, id: decodedToken.id });
+
+      // // 0101 민경원 - auth.js 수정으로 인하여 경로 바꿈
+      // //const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
+      // const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+      // // [추가] 0103 mkw
+      // const { token, email: userEmail } = response.data;
+      // localStorage.setItem('token', token);
+      // localStorage.setItem('userEmail', userEmail);  // 추가
+      // // 토큰 디코딩 후 사용자 정보 저장
+      // const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      // // setUser({ email: decodedToken.email, id: decodedToken.id })
+      // // // App.jsx의 user 상태를 이메일 아이디로 설정 (ex: ~~~@~~.com에서 @ 앞부분)
+      // // setUser(user.email.split('@')[0]);
+
+
 
       alert('로그인 성공!');
       navigate('/');

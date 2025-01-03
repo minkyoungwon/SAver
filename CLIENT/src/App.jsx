@@ -61,6 +61,14 @@ const App = () => {
         const decodedToken = JSON.parse(atob(token.split('.')[1]));
         const currentTime = Math.floor(Date.now() / 1000);
   
+        if (decodedToken.exp < currentTime) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userEmail");
+          setUser(null);
+          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+          navigate("/login");
+        }
+
         // 만료 시간 확인
         if (decodedToken.exp < currentTime) {
           localStorage.removeItem("token");

@@ -24,6 +24,13 @@ const PostDetail = ({ posts, setPosts }) => {
 
   // 로그인된 사용자 이메일 (로그인 시 localStorage.setItem('userEmail', "xxx@xxx.com") 했다고 가정)
   const loggedInUserEmail = localStorage.getItem('userEmail') || '';
+  // console.log("이거확인",loggedInUserEmail)
+  // console.log('userEmail')
+
+  // 잘 오는지 디버깅
+  useEffect(() => {
+    console.log('Logged in user email:', loggedInUserEmail);
+  }, [loggedInUserEmail]);
 
   // 댓글 불러오기
   useEffect(() => {
