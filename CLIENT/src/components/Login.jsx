@@ -9,32 +9,35 @@ const Login = ({ setUser }) => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
-    // 0101 민경원 - auth.js 수정으로 인하여 경로 바꿈
-    //const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      // 0101 민경원 - auth.js 수정으로 인하여 경로 바꿈
+      //const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
 
-    // [추가] 0103 mkw
-    const { token, email: userEmail } = response.data;
-    localStorage.setItem('token', token);
-    localStorage.setItem('userEmail', userEmail);  // 추가
+      // [추가] 0103 mkw
+      const { token, email: userEmail } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('userEmail', userEmail);  // 추가
 
-    // 토큰 디코딩 후 사용자 정보 저장
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));
-    setUser({ email: decodedToken.email, id: decodedToken.id });
+      // 토큰 디코딩 후 사용자 정보 저장
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      setUser({ email: decodedToken.email, id: decodedToken.id });
 
-    alert('로그인 성공!');
-    navigate('/');
-    setTimeout(() => {
-      window.location.reload();
-    }, 10);
-  } catch (error) {
-    console.error('로그인 중 오류:', error);
-    alert('로그인에 실패하였습니다. 아이디 혹은 비밀번호를 확인해주세요.');
-  }
-};
+      // // App.jsx의 user 상태를 이메일 아이디로 설정 (ex: ~~~@~~.com에서 @ 앞부분)
+      // setUser(user.email.split('@')[0]);
+
+      alert('로그인 성공!');
+      navigate('/');
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
+    } catch (error) {
+      console.error('로그인 중 오류:', error);
+      alert('로그인에 실패하였습니다. 아이디 혹은 비밀번호를 확인해주세요.');
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-400 to-cyan-400 p-4">
@@ -61,19 +64,19 @@ const handleLogin = async (e) => {
               className="w-full px-4 py-3 rounded-lg bg-white/50 border border-white/30 focus:border-white/60 focus:outline-none placeholder-gray-500 text-gray-800"
             />
           </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="w-full py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors"
           >
             로그인
           </button>
         </form>
-        
+
         <div className="mt-8 text-center">
           <p className="text-white mb-4">아이디가 없으신가요?</p>
           <Link to="/signup">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="w-full py-3 rounded-lg bg-white/20 hover:bg-white/30 text-white font-semibold border border-white/30 transition-colors"
             >
               회원가입
