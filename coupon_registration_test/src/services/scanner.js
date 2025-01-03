@@ -40,11 +40,11 @@ async function extractBarcodeAndText(imageBuffer) {
         console.log('바코드 번호:', barcodeText);
 
         // OCR을 사용하여 이미지에서 텍스트를 추출
-        // const ocrResult = await tesseract.recognize(imageBuffer, 'eng+kor', {
-        //     // Tesseract로 이미지에서 텍스트 추출 (영어와 한국어)
-        //     tessedit_pageseg_mode: '6', // 페이지 분할 모드 설정: 텍스트 블록을 하나로 처리 (모든 텍스트를 한 번에 인식)
-        // });
-        // console.log('추출된 텍스트:', ocrResult.data.text.trim()); // OCR로 추출된 텍스트 출력 (앞뒤 공백 제거 후 출력)
+        const ocrResult = await tesseract.recognize(imageBuffer, 'eng+kor', {
+            // Tesseract로 이미지에서 텍스트 추출 (영어와 한국어)
+            tessedit_pageseg_mode: '6', // 페이지 분할 모드 설정: 텍스트 블록을 하나로 처리 (모든 텍스트를 한 번에 인식)
+        });
+        console.log('추출된 텍스트:', ocrResult.data.text.trim()); // OCR로 추출된 텍스트 출력 (앞뒤 공백 제거 후 출력)
 
         //결과 객체 배열
         const scanResult = [{ barcode: barcodeText }];
