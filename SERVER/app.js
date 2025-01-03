@@ -17,7 +17,6 @@ const couponRoutes = require('./routes/coupon');
 const authRoutes = require('./routes/auth').createRouter; // 0101 민경원 수정정
 const postRoutes = require('./routes/posts');
 
-
 // 미들웨어 설정
 
 // // CORS 설정 
@@ -32,8 +31,13 @@ app.use(cookieParser());
 app.use(session({
   secret: 'session-secret',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: { maxAge: 60 * 60 * 1000 } // 세션 만료 시간 설정 (30분) // 0102 mkw put 
+  // 30초(30 * 1000)
+  // 30분(30분 * 60초 * 1000밀리초)
+  // 60분(60분 * 60초 * 1000밀리초)
 }));
+
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
