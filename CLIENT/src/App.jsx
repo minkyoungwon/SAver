@@ -139,7 +139,7 @@ const App = () => {
 
   return (
     <>
-      {location.pathname !== '/intro' && location.pathname !== '/login' && (
+      {location.pathname !== '/intro' && location.pathname !== '/login' && location.pathname !== '/signup' && (
         <Header user={user} handleLogout={handleLogout}/>
       )}
       <Routes>
