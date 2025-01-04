@@ -4,7 +4,13 @@ import axios from 'axios';
 
 const AddCouponModal = ({setIsModalOpen}) => {
     const [selectedFile, setSelectedFile] = useState(null);
-    const [couponInfo, setCouponInfo] = useState(null);
+    const [couponInfo, setCouponInfo] = useState({
+        type: '',
+        productName: '',
+        expiryDate: '',
+        storeName: '',
+        orderNumber: ''
+    });
 
     const onDrop = useCallback( async (acceptedFiles) => {
         setSelectedFile(acceptedFiles[0]);
@@ -51,17 +57,27 @@ const AddCouponModal = ({setIsModalOpen}) => {
         multiple: false
     });
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setCouponInfo(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
         
-
         if (selectedFile) {
             formData.append('image', selectedFile);
         }
+        // 쿠폰 정보도 함께 전송
+        Object.keys(couponInfo).forEach(key => {
+            formData.append(key, couponInfo[key]);
+        });
 
         try {
-            // API 호출 코드...
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -99,18 +115,7 @@ const AddCouponModal = ({setIsModalOpen}) => {
                             {selectedFile ? (
                                 <div>
                                     <p className="text-green-600">선택된 파일: {selectedFile.name}</p>
-                                    <div>
-                                        <h3>쿠폰 정보</h3>
-                                        {couponInfo && (
-                                            <>
-                                                <p>쿠폰 종류: {couponInfo.type}</p>
-                                                <p>상품명: {couponInfo.productName}</p>
-                                                <p>유효기간: {couponInfo.expiryDate}</p>
-                                                <p>매장명: {couponInfo.storeName}</p>
-                                                <p>주문번호: {couponInfo.orderNumber}</p>
-                                            </>
-                                        )}
-                                    </div>
+                                    
                                 </div>
                             ) : (
                                 <>
@@ -119,8 +124,69 @@ const AddCouponModal = ({setIsModalOpen}) => {
                                 </>
                             )}
                         </div>
+                        
                     </div>
-
+                            {couponInfo && (
+                                <div>
+                                {couponInfo && (
+                                    <div className="space-y-2">
+                                        <h3 className="font-bold text-lg">쿠폰 정보</h3>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">쿠폰 종류</label>
+                                                <input
+                                                    type="text"
+                                                    name="type"
+                                                    value={couponInfo.type}
+                                                    onChange={handleInputChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">상품명</label>
+                                                <input
+                                                    type="text"
+                                                    name="productName"
+                                                    value={couponInfo.productName}
+                                                    onChange={handleInputChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">유효기간</label>
+                                                <input
+                                                    type="text"
+                                                    name="expiryDate"
+                                                    value={couponInfo.expiryDate}
+                                                    onChange={handleInputChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">매장명</label>
+                                                <input
+                                                    type="text"
+                                                    name="storeName"
+                                                    value={couponInfo.storeName}
+                                                    onChange={handleInputChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                />
+                                            </div>
+                                            <div className="col-span-2">
+                                                <label className="block text-sm font-medium text-gray-700">주문번호</label>
+                                                <input
+                                                    type="text"
+                                                    name="orderNumber"
+                                                    value={couponInfo.orderNumber}
+                                                    onChange={handleInputChange}
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            )}
                     <button type="submit" className="bg-[#3d405b] hover:bg-[#e07a5f]/80 text-white border-none font-bold text-2xl cursor-pointer shadow-md flex items-center justify-center rounded-md">
                         추가하기
                     </button>
