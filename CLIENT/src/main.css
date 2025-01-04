@@ -5,6 +5,7 @@
 @tailwind utilities;
 
 /* Glitch Button 스타일 */
+/* Glitch Button 스타일 */
 .glitch-btn {
   position: relative;
   display: inline-block;
@@ -13,7 +14,7 @@
   color: white;
   text-decoration: none;
   text-transform: uppercase;
-  background-color: #6a0dad; /* 보라색 계열 */
+  background-color: #38a169; /* 초록색 */
   border: none;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -22,7 +23,7 @@
 }
 
 .glitch-btn:hover {
-  background-color: #a355e3; /* 연한 보라색 */
+  background-color: #2f855a; /* 더 어두운 초록색 */
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
@@ -44,9 +45,19 @@
 }
 
 .signup-btn:hover {
+  background-color: #68d391; /* 밝은 초록색 */
+  color: black;
+}
+
+.signup-btn:hover {
   background-color: #e2e2a3;
   color: black;
 }
+
+
+
+
+
 
 body {
   margin: 0;
