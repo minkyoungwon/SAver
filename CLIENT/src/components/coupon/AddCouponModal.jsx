@@ -104,8 +104,8 @@ const AddCouponModal = ({setIsModalOpen}) => {
             </div>
             <div className="mt-5">
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                <div className="w-full h-96 bg-gray-200 flex items-center justify-center rounded-md overflow-hidden">
-                    {selectedFile && <img src={URL.createObjectURL(selectedFile)} alt="쿠폰 이미지" className="w-full h-full object-cover" />}
+                <div className="w-full h-60 bg-gray-200 flex items-center justify-center rounded-md overflow-hidden">
+                    {selectedFile && <img src={URL.createObjectURL(selectedFile)} alt="쿠폰 이미지" className="w-full h-full object-contain" />}
                 </div>
                     <div {...getRootProps()} className={`p-6 border-2 border-dashed rounded-lg 
                         ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'} 
@@ -130,7 +130,6 @@ const AddCouponModal = ({setIsModalOpen}) => {
                                 <div>
                                 {couponInfo && (
                                     <div className="space-y-2">
-                                        <h3 className="font-bold text-lg">쿠폰 정보</h3>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700">쿠폰 종류</label>
