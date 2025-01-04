@@ -22,9 +22,9 @@ const Login = ({ setUser }) => {
       // 토큰 디코딩 후 이메일과 ID 설정
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
       const userEmail = decodedToken.email;
-      localStorage.setItem('userId', decodedToken.id); // 사용자 ID 저장
+      localStorage.setItem('userId', decodedToken.id); // 사용자 ID 저장 //게시글 작성자 확인용
 
-      localStorage.setItem('userEmail', userEmail);
+      localStorage.setItem('userEmail', userEmail); // 대댓글 작성자 확인용
       setUser({ email: userEmail, id: decodedToken.id });
 
       // // 0101 민경원 - auth.js 수정으로 인하여 경로 바꿈
