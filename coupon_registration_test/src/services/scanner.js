@@ -1,4 +1,3 @@
-const db = require('../db');
 const tesseract = require('tesseract.js');
 const sharp = require('sharp');
 const {
