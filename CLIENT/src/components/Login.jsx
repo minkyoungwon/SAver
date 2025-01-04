@@ -15,16 +15,17 @@ const Login = ({ setUser }) => {
 
 
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
-    const { token } = response.data;
+      const { token } = response.data;
 
-    localStorage.setItem('token', token);
+      localStorage.setItem('token', token);
 
-    // 토큰 디코딩 후 이메일과 ID 설정
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));
-    const userEmail = decodedToken.email;
+      // 토큰 디코딩 후 이메일과 ID 설정
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const userEmail = decodedToken.email;
+      localStorage.setItem('userId', decodedToken.id); // 사용자 ID 저장
 
-    localStorage.setItem('userEmail', userEmail);
-    setUser({ email: userEmail, id: decodedToken.id });
+      localStorage.setItem('userEmail', userEmail);
+      setUser({ email: userEmail, id: decodedToken.id });
 
       // // 0101 민경원 - auth.js 수정으로 인하여 경로 바꿈
       // //const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });

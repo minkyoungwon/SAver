@@ -10,8 +10,8 @@ const Header = ({ user, handleLogout }) => {
         <nav className='flex justify-end space-x-4'>
           {user ? (
             <>
-              <Link to="/my-profile" className='text-sm mr-4'>마이페이지</Link>
-              <button onClick={handleLogout} className='text-sm mr-4'>로그아웃</button>
+              <Link to="/my-profile" className='glitch-btn'>마이페이지</Link>
+              <button onClick={handleLogout} className='glitch-btn'>로그아웃</button>
             </>
           ) : (
             <Link to="/login" className='text-sm mr-4'>로그인</Link>

@@ -13,7 +13,7 @@ const PostDetail = ({ posts, setPosts }) => {
 
   // add 0104 mkw 
   // 게시글 상태 (기존 posts.find 대신 새 상태로 관리)
-    const [post, setPost] = useState(null);
+  const [post, setPost] = useState(null);
 
   // 댓글 상태
   const [comments, setComments] = useState([]);
@@ -38,21 +38,21 @@ const PostDetail = ({ posts, setPosts }) => {
   //   console.log('Logged in user email:', loggedInUserEmail);
   // }, [loggedInUserEmail]);
 
-    // add 0104 mkw
-    // 게시글 불러오기 (새로고침 시에도 서버에서 데이터를 가져오도록 수정)
-    useEffect(() => {
-      const fetchPost = async () => {
-        try {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts/${id}`);
-          setPost(response.data); // 서버에서 받은 데이터를 post 상태에 저장
-        } catch (error) {
-          console.error('게시글 불러오기 실패:', error);
-          alert('게시글을 불러오는 데 실패했습니다.');
-        }
-      };
-  
-      fetchPost(); // 컴포넌트 마운트 시 실행
-    }, [id]); // id가 변경될 때마다 실행
+  // add 0104 mkw
+  // 게시글 불러오기 (새로고침 시에도 서버에서 데이터를 가져오도록 수정)
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts/${id}`);
+        setPost(response.data); // 서버에서 받은 데이터를 post 상태에 저장
+      } catch (error) {
+        console.error('게시글 불러오기 실패:', error);
+        alert('게시글을 불러오는 데 실패했습니다.');
+      }
+    };
+
+    fetchPost(); // 컴포넌트 마운트 시 실행
+  }, [id]); // id가 변경될 때마다 실행
 
 
   // 댓글 불러오기
@@ -249,7 +249,7 @@ const PostDetail = ({ posts, setPosts }) => {
               </small>
               <small className="text-gray-500 block">
                 {/* 이 부분 뭔가 쎼한 */}
-                {new Date(comment.created_at).toLocaleString()} 
+                {new Date(comment.created_at).toLocaleString()}
               </small>
             </>
           )}
@@ -259,13 +259,13 @@ const PostDetail = ({ posts, setPosts }) => {
             <div className="mt-2">
               <button
                 onClick={() => handleEditClick(comment.id, comment.content)}
-                className="bg-green-500 text-white px-3 py-1 rounded mr-2"
+                className="bg-gradient-to-l from-blue-500 to-gray-300 text-white px-1.5 py-0.5 rounded ml-2"
               >
                 수정
               </button>
               <button
                 onClick={() => handleDeleteComment(comment.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded"
+                className="bg-gradient-to-r from-blue-300 via-green-600 to-green-300 text-white px-1.5 py-1 rounded ml-2"
               >
                 삭제
               </button>
@@ -276,7 +276,7 @@ const PostDetail = ({ posts, setPosts }) => {
           {!isEditing && (
             <button
               onClick={() => handleReplyClick(comment.id, comment.depth)}
-              className="bg-blue-500 text-white px-3 py-1 rounded ml-2"
+              className="bg-gradient-to-r from-blue-300 to-green-600 text-white px-1.5 py-1 rounded ml-2"
             >
               대댓글 달기
             </button>
@@ -294,25 +294,41 @@ const PostDetail = ({ posts, setPosts }) => {
   return (
     <div className="max-w-4xl mx-auto p-4 bg-white shadow-md rounded-md">
       {/* --- 게시글 정보 --- */}
-      <h2 className="text-3xl font-bold mb-4">{post.title}</h2>
-      <p className="text-gray-700 mb-4 whitespace-pre-line">{post.content}</p>
-      <p className="text-sm text-gray-500 mb-4">작성자: {post.author || '익명'}</p>
-      <p className="text-sm text-gray-500 mb-6">작성시간: {post.createdAt}</p>
+      <div className='text-center'>
+        <h2 className="text-3xl font-bold mb-4">{post.title}</h2>
+        <p className="text-gray-700 mb-4 whitespace-pre-line font-bold">{post.content}</p>
+        <p className="flex justify-end text-sm text-gray-500 mb-4">작성자: {post.author || '익명'}</p>
+        <p className="flex justify-end text-sm text-gray-500 mb-4">작성시간: {new Date(post.posted_at).toLocaleString('ko-KR', {
+          year: "numeric",
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        })}</p>
+        {/* incrementViewCount */}
+        <p className="flex justify-end text-sm text-gray-500 mb-4">조회수: {post.view_count}</p>
 
+      </div>
       {/* --- 게시글 수정/삭제 버튼 --- */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex justify-end">
+        {post.user_id === parseInt(localStorage.getItem('userId')) && (
+          <>
+      <button
+          onClick={() => navigate(`/write/${id}`)}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        >
+          수정
+        </button>
+
         <button
           onClick={handleDelete}
           className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
         >
           삭제
         </button>
-        <button
-          onClick={() => navigate(`/write/${id}`)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-        >
-          수정
-        </button>
+        </>
+  )}
       </div>
 
       <hr className="mb-6" />
