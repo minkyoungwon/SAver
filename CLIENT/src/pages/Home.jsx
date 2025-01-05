@@ -145,6 +145,7 @@ function Home({ coupons }) {
           </div>
           <div className="4section hidden md:block bg-slate-100 pt-6 mr-4">{selectedCoupon && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} coupon={selectedCoupon} isMdView={true} />}</div>
         </div>
+        <AddCoupon />
       </div>
 
       {/* 모바일 모달 */}
