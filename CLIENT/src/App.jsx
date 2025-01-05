@@ -89,17 +89,19 @@ const App = () => {
     {
       id: 1,
       imageSrc: null, // 이미지 URL이 없을 경우 기본 "이미지" 텍스트가 표시됩니다.
-      title: "쿠폰명(상호명)",
-      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
+      title: "올리브영 50,000원",
+      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 ",
       expiryDate: "2024.12.31",
       category: "카테고리1",
       status: "available",
+      remain: "15,000",
+      used: "35,000",
     },
     {
       id: 2,
       imageSrc: null,
       title: "스타벅스 아메리카노",
-      description: "스타벅스 아메리카노 무료 쿠폰",
+      description: "스타벅스 아메리카노 무료 쿠폰 스타벅스 아메리카노 무료 쿠폰스타벅스 아메리카노 ",
       expiryDate: "2024.06.30",
       category: "카테고리2",
       status: "available",

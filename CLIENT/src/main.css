@@ -9,19 +9,43 @@
   body {
     @apply mx-4;
     min-height: 100vh;
+    background-color: #fdfdfd;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
-  @screen lg {
+  @screen sm {
     body {
-      margin-left: 200px; /*640부터 양옆 마진 */
-      margin-right: 200px;
+      margin-left: 10%;
+      margin-right: 10%;
     }
   }
+}
 
-  @layer components {
-    .badge {
-      @apply;
-    }
+.dynamic-container {
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  /* 너비를 특정 값 이하로 제한 */
+  .dynamic-container {
+    /* 화면이 좁아지면 마진 제거 */
+    margin: 0;
+  }
+}
+
+@layer components {
+  .badge {
+    @apply text-xs w-[60px] py-0.5 text-center bg-emerald-200 rounded-full;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
   }
 }
 
