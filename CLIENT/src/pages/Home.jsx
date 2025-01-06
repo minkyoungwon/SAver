@@ -19,12 +19,14 @@ function Home({ coupons }) {
     const filteredCoupons = coupons.filter((coupon) => coupon.category === item);
     setFilteredCoupons(filteredCoupons);
   };
+
   const showFilteredCoupons = (filter) => {
     setSelectedFilter(filter);
     if (filter === "all") {
       setFilteredCoupons(coupons);
       return;
     }
+    
     const filteredCoupons = coupons.filter((coupon) => {
       return coupon.status === filter;
     });

@@ -167,25 +167,6 @@ const App = () => {
         <Route path="/my-coupons" element={<MyCoupons coupons={coupons}/>} />
         <Route path="/intro" element={<Intro />} />
       </Routes>
-
-      {/* {user && (
-        <div className="fixed top-4 right-4 space-x-2">
-          <button
-            onClick={handleProfileClick}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            개인정보
-          </button>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            로그아웃
-          </button>
-        </div>
-      )} */}
-
-      {/* <Footer /> */}
     </>
   );
 };

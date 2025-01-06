@@ -27,11 +27,6 @@ const AddCouponModal = ({setIsModalOpen}) => {
             const formData = new FormData();
             formData.append('image', selectedFile);
             
-            // FormData 내용 확인
-            for (let pair of formData.entries()) {
-                console.log('FormData 내용:', pair[0], pair[1]);
-            }
-
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon/extract`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -191,8 +186,6 @@ const AddCouponModal = ({setIsModalOpen}) => {
                     </button>
                 </form>
             </div>
-
-
         </div>
     </div>
   )
