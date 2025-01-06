@@ -41,8 +41,6 @@ const WritePost = ({ user, setPosts }) => {
   //   },
   // };
 
-
-
   // 글쓰기 문제가 있어서 로직 변경
   // 0102 mkw fix
   const handleSubmit = async (e) => {
@@ -54,7 +52,7 @@ const WritePost = ({ user, setPosts }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-  
+
       if (id) { // 수정 로직
         await axios.put(`${import.meta.env.VITE_API_URL}/api/posts/${id}`, { title, content }, config);
         // 0102 mkw add
@@ -65,12 +63,16 @@ const WritePost = ({ user, setPosts }) => {
           )
         );
         alert('글이 수정되었습니다!');
+        navigate(`/post/${id}`); // 수정된 글 상세 페이지로 이동
       }
       if (!id) { // 새로운 게시글 작성 로직
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/posts`, { title, content }, config);
         // 새 게시글을 posts에 추가
         setPosts((prevPosts) => [response.data, ...prevPosts]);
         alert('글이 작성되었습니다!');
+        navigate(`/post/${response.data.id}`); // 작성된 글 상세 페이지로 이동
+        console.log('작성된 글 데이터:', response.data);
+
       }
       navigate('/');
     } catch (error) {

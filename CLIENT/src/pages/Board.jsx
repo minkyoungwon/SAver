@@ -1,51 +1,113 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Board = ({ posts, user }) => {
   // 페이지네이션 관련 상태
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
 
-  // 현재 페이지에 표시할 게시글 계산
+
+
+  // 검색 상태
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  // 검색 핸들러
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery) {
+        setIsSearching(false);
+        return;
+    }
+    try {
+        // fetch를 사용하여 GET 요청
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/search?query=${encodeURIComponent(searchQuery)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`, // 토큰 추가
+            },
+        });
+
+        // 응답 처리
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        setSearchResults(data); // 검색 결과 업데이트
+        setIsSearching(true);   // 검색 모드 활성화
+        setCurrentPage(1);      // 페이지 초기화
+    } catch (error) {
+        console.error("검색 오류:", error);
+        alert("검색 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+};
+
+
+  // 현재 페이지 계산
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
-  // 총 페이지 수 계산
-  const totalPages = Math.ceil(posts.length / postsPerPage);
+  // 검색 여부에 따른 게시글 데이터 결정
+  const displayedPosts = isSearching ? searchResults : posts;
+  const currentPosts = displayedPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.ceil(displayedPosts.length / postsPerPage);
+
 
   // 페이지 변경 핸들러
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-
     <div className="max-w-4xl mx-auto p-4">
+
+
+
+      {/* 상단에 검색 폼 추가 */}
+      <form onSubmit={handleSearch} className="mb-4">
+        <input
+          type="text"
+          placeholder="검색어를 입력하세요..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="border rounded px-2 py-1 mr-2"
+        />
+        <button className="glitch-btn text-black rounded-md px-4 py-2 shadow hover:bg-green-600 transition">
+          검색
+        </button>
+      </form>
+
+
+
       <div className="flex space-x-1">
-        {/* tailwind로 꾸민 부분임 */}
-        <Link to="/" className="glitch-btn">게시판</Link>
-        <Link to="/coupon" className="glitch-btn">쿠폰 페이지 (test1)</Link>
-
-
-        <div className='glitch-btn'>
-          {user ? <span>{user}님 반갑습니다</span> : <Link to="/login" className="text-blue-0">로그인</Link>}
+        <div className='glitch-btn text-black rounded-md px-4 py-2 shadow hover:bg-green-600 transition rancing-btn'>
+          {user ? <span>{user}님 반갑습니다</span> : <Link to="/login" className="text-green-0">로그인</Link>}
         </div>
-
       </div>
 
-      {/* tailwind로 적용 했는데  */}
-      {/* <div className="flex justify-between mb-4">
-        {user ? <span>{user}님 반갑습니다</span> : <Link to="/login" className="text-blue-500">로그인</Link>}
-      </div>
-      맘에 안들면 이것으로 바꾸면 됨됨 */}
-
+      <button className="relative group overflow-hidden bg-green-500 text-white font-bold py-2 px-6 rounded-lg">
+        {user ? <span>{user}님 반갑습니다</span> : <Link to="/login" className="text-green-0">로그인</Link>}
+        <span
+          className="absolute left-0 top-1 transform -translate-y-1 -translate-x-full group-hover:translate-x-[25%] transition-transform duration-1000 ease-in-out"
+        >
+          😀
+        </span>
+        <span
+          className="absolute left-0 top-1 transform -translate-y-1 -translate-x-full group-hover:translate-x-[800%] transition-transform duration-1000 ease-in-out"
+        >
+          😀
+        </span>
+      </button>
 
       <div className="fixed bottom-4 left-4">
-        <Link to="/coupon" className="glitch-btn">쿠폰 페이지(test2)</Link>
+        <Link to="/coupon" className="glitch-btn text-black rounded-md px-4 py-2 shadow hover:bg-green-600 transition">
+          쿠폰 페이지
+        </Link>
       </div>
 
-
       <table className="w-full border-collapse border border-gray-200">
-
         <thead>
           <tr className="bg-gray-100">
             <th className="border border-gray-200 p-2">번호</th>
@@ -59,17 +121,17 @@ const Board = ({ posts, user }) => {
             <tr key={post.id} className="hover:bg-gray-50 animate__animated animate__fadeInUp">
               <td className="border border-gray-200 p-2 text-center">{indexOfFirstPost + index + 1}</td>
               <td className="border border-gray-200 p-2">
-                <Link to={`/post/${post.id}`} className="text-blue-500">{post.title}</Link>
+                <Link to={`/post/${post.id}`} className="text-green-900">{post.title}</Link>
               </td>
               <td className="border border-gray-200 p-2">
-                <Link to={`/post/${post.id}`} className="text-blue-500">{post.author}</Link>
+                <Link to={`/post/${post.id}`} className="text-green-900">{post.author}</Link>
               </td>
-              <td className="border border-gray-200 p-2 text-center">{post.created_at}</td>
+              <td className="border border-gray-200 p-2 text-center text-green-700">
+                {post.posted_at}
+              </td>
             </tr>
           ))}
         </tbody>
-
-
       </table>
 
       {/* 페이지네이션 */}
@@ -78,21 +140,24 @@ const Board = ({ posts, user }) => {
           <button
             key={i}
             onClick={() => paginate(i + 1)}
-            className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            className={`mx-0.5 px-3 py-4 rounded ${
+              currentPage === i + 1
+                ? 'mx-0.5 px-5 py-0.5 bg-green-400 text-white'
+                : 'glitch-btn'
+            }`}
           >
             {i + 1}
           </button>
         ))}
-
       </div>
 
       <div className="fixed bottom-4 right-4">
-        <Link to="/write" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">글쓰기</Link>
+        <Link to="/write" className="glitch-btn text-black rounded-md px-4 py-2 shadow hover:bg-green-600 transition">
+          글쓰기
+        </Link>
       </div>
     </div>
-
   );
-
 };
 
 export default Board;

@@ -26,4 +26,8 @@ app.use((err, req, res, next) => {
     res.status(500).send(err.message);
 });
 
+app.listen(3000, () => {
+    console.log("서버가 3000번 포트에서 실행중입니다.");
+})
+
 module.exports = app;

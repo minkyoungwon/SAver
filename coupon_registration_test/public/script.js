@@ -46,7 +46,6 @@ addImageBtn.onclick = function () {
             alert('이미지를 첨부해주세요!');
             return;
         }
-
         //formData 객체 생성성
         const formData = new FormData();
 
@@ -56,25 +55,25 @@ addImageBtn.onclick = function () {
         fetch('/coupon-images', {
             method: 'POST',
             body: formData,
-        }).then((response) => {
-            if (!response.ok) {
-                throw new Error('이미지 업로드 실패');
-            }
-            console.log(response);
-            // return response.json();
-        });
-        // .then((data) => {
-        //     console.log('서버 응답:', data);
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('이미지 업로드 실패');
+                }
+                return response.json();
+            })
+            .then((coupons) => {
+                const imgInModal = document.createElement('img');
+                imgInModal.src = imagePreview.querySelector('img').src;
+                imagePreviewInModal.innerHTML = ''; // 기존 이미지 제거
+                imagePreviewInModal.appendChild(imgInModal); // 새 이미지 추가가
 
-        //     const imgSrc = imagePreview.querySelector('img').src;
-        //     const imgInModal = document.createElement('img');
-        //     imgInModal.src = imgSrc;
-        //     imagePreviewInModal.innerHTML = ''; // 기존 이미지 제거
-        //     imagePreviewInModal.appendChild(imgInModal); // 새 이미지 추가
+                modal.style.display = 'none'; // 첫 번째 모달 닫기
+                infoModal.style.display = 'block'; // 두 번쨰 모달 열기
 
-        //     modal.style.display = 'none'; // 첫 번째 모달 닫기
-        //     infoModal.style.display = 'block'; // 두 번째 모달 열기
-        // });
+                // 서버로부터 전달 받은 쿠폰 이미지 정보 두번째 모달창에 채워 넣기
+                barcode.value = coupons[0].barcode;
+            });
     } else {
         alert('이미지를 첨부해주세요!');
     }

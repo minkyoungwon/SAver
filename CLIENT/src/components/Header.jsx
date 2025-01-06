@@ -1,4 +1,4 @@
-// 0101 민경원 수정
+
 import { Link } from "react-router-dom";
 import logo from "/src/assets/logo.png";
 
@@ -26,6 +26,7 @@ const Header = ({ user, handleLogout }) => {
               <button onClick={handleLogout} className="text-sm mr-4">
                 로그아웃
               </button>
+
             </>
           ) : (
             <Link to="/login" className="text-sm mr-4">

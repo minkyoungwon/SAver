@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import WritePost from "./components/WritePost";
 import PostDetail from "./components/PostDetail";
@@ -14,7 +14,7 @@ import Header from "./components/Header";
 import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
 import MyCoupons from "./pages/MyCoupons";
-
+import Intro from "./pages/Intro";
 const App = () => {
   const getUserFromToken = () => {
     const token = localStorage.getItem("token");
@@ -35,6 +35,7 @@ const App = () => {
   console.log("유저변경", user);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   // 글 목록 가져오기
   useEffect(() => {
@@ -58,6 +59,14 @@ const App = () => {
       if (token) {
         const decodedToken = JSON.parse(atob(token.split(".")[1]));
         const currentTime = Math.floor(Date.now() / 1000);
+
+        if (decodedToken.exp < currentTime) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userEmail");
+          setUser(null);
+          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+          navigate("/login");
+        }
 
         // 만료 시간 확인
         if (decodedToken.exp < currentTime) {
@@ -137,7 +146,10 @@ const App = () => {
 
   return (
     <>
-      <Header user={user} handleLogout={handleLogout} />
+      
+      {location.pathname !== '/intro' && location.pathname !== '/login' && location.pathname !== '/signup' && (
+        <Header user={user} handleLogout={handleLogout} />
+      )}
       <Routes>
         <Route path="/" element={<Home coupons={coupons} />} />
         <Route path="/board" element={<Board posts={posts} user={user} />} />
@@ -150,8 +162,10 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/email-verification" element={<EmailVerification />} />
-        <Route path="/my-profile" element={<MyProfile user={user} />} />
-        <Route path="/my-coupons" element={<MyCoupons coupons={coupons} />} />
+
+        <Route path="/my-profile" element={<MyProfile user={user}/>} />
+        <Route path="/my-coupons" element={<MyCoupons coupons={coupons}/>} />
+        <Route path="/intro" element={<Intro />} />
       </Routes>
 
       {/* {user && (
