@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { Share, CustomCheckbox } from "../../icon";
 
-const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
+const CouponDetail = ({ setIsDetailModalOpen, coupon, isMdView }) => {
+  console.log("CouponDetail props:", { coupon, isMdView });
+  if (!coupon) return <div>쿠폰 데이터를 불러오는 중입니다...</div>;
+
   useEffect(() => {
     console.log("Coupon Selected: ", coupon);
-  },[coupon]);
+  }, [coupon]);
 
   //사용자 쿠폰 사용체크
   const [isUsed, setIsUsed] = useState(false);
@@ -37,9 +40,15 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center ">
+    <div
+      className={`${
+        isMdView
+          ? "w-full h-auto" // 4section 안에서 배치
+          : "fixed inset-0 z-50 flex justify-center items-center" // 중앙 fixed 모달
+      }`}
+    >
       <div
-        className="  p-4 pb-6 mr-10 w-[400px] h-[70vh] overflow-y-auto border-white bg-white rounded-xl shadow-md"
+        className="pb-6 mr-10 w-[380px] h-[70vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md"
         style={
           {
             // maxHeight: "70vh", // 모달 창 최대 높이
@@ -48,65 +57,68 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
         }
       >
         {/* 공유하기 + 사용체크박스 */}
-        <div className="flex justify-end text-xs font-semibold m-2 text-emerald-500 ">
-          <button className="flex items-center mr-2 ">
-            <Share className="mr-2" />
-            공유하기
+        <div className=" sticky top-0 z-50 pt-4 px-4 bg-stone-50 flex justify-between text-xs font-semibold  text-emerald-500 ">
+          <button className="hover:bg text-sm px-2" onClick={() => setIsDetailModalOpen(false)}>
+            X 닫기
           </button>
-
-          <div className="flex items-center">
-            <CustomCheckbox />
-            <span>사용완료</span>
+          <div className="flex justify-end gap-4 ">
+            <div className="flex items-center">
+              <CustomCheckbox />
+              <span>사용완료</span>
+            </div>
+            <button className="flex items-center mr-2 ">
+              <Share />
+            </button>
           </div>
         </div>
 
         {/* 바코드  */}
-        <div className="h-[90px] p-4 border-white rounded-lg shadow-md bg-white flex justify-center items-center mb-4 ">
+        <div className="h-[90px] m-4 border-white rounded-lg shadow-md bg-white flex justify-center items-center mb-4 ">
           <img src="barcode-placeholder.png" alt="바코드" className="h-10" />
         </div>
 
         {/* 쿠폰이미지 */}
-        <div className="h-[500px] p-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4">
+        <div className="h-[500px] m-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4">
           <img src="coupon-image.png" alt="쿠폰 이미지" className=" rounded-lg" />
         </div>
 
         {/* 브랜드+상세+발급일자+유효기간 */}
-        <div className="mt-4 p-2 rounded-lg shadow-md bg-gray-100 pr-4 pl-4 rounded-lg">
+        <div className=" m-4 p-2  shadow-md bg-white pr-4 pl-4 rounded-lg">
           {/* brand */}
           <div className="flex items-center">
             <label className=" flex text-sm font-medium mr-7 pt-1">교환처</label>
-            <input type="text" name="brand" value={couponData.brand} onChange={handleChange} className=" text-sm flex-1 p-2 border rounded-lg shadow-inner " />
+            <input type="text" name="brand" value={couponData.brand} onChange={handleChange} className=" text-sm flex-1 p-2 border bg-stone-50 rounded-lg  " />
           </div>
 
           {/* desc */}
           <div className="flex items-start">
             <label className=" flex text-sm font-medium pt-4 mr-10">상세</label>
-            <input type="text" name="desc" value={couponData.desc} onChange={handleChange} className=" text-sm flex-1 p-2 pb-12 border rounded-lg shadow-inner h-20" />
+            <input type="text" name="desc" value={couponData.desc} onChange={handleChange} className=" text-sm flex-1 p-2 pb-12 border bg-stone-50 rounded-lg shadow-inner h-20" />
           </div>
 
           {/* 발급일 */}
           <div className="flex items-center">
             <label className=" flex text-sm font-medium pt-1 mr-4">발행일자</label>
-            <input type="text" name="issueDate" value={couponData.issueDate} onChange={handleChange} className=" text-sm flex-1 p-2 border rounded-lg shadow-inner" />
+            <input type="text" name="issueDate" value={couponData.issueDate} onChange={handleChange} className=" text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner" />
           </div>
 
           {/* 유효기간 */}
           <div className="flex">
             <label className=" flex text-sm font-medium pt-4 mr-4">유효기간</label>
-            <input type="text" name="expiryDate" value={couponData.expiryDate} onChange={handleChange} className=" text-sm flex-1 p-2 border rounded-lg shadow-inner" />
+            <input type="text" name="expiryDate" value={couponData.expiryDate} onChange={handleChange} className=" text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner" />
           </div>
         </div>
 
         {/* 카테고리지정 */}
-        <div className="flex items-center mt-2">
+        <div className="flex items-center m-4 ">
           <label className=" flex text-sm pl-3 mr-5">카테고리</label>
           <select className=" flex-1 p-2 border-gray-100 rounded-md bg-gray-100 shadow-md">
-            <option value="카페">카페</option>
+            <option value="{category}">카페</option>
           </select>
         </div>
 
         {/* 저장 + 닫기 */}
-        <div className="flex mt-12 mb-2 space-x-2">
+        <div className="flex m-4 space-x-2">
           <button type="submit" className="flex-1 py-2 bg-emerald-400 text-white font-medium rounded-lg shadow-md hover:bg-emerald-500">
             저장
           </button>

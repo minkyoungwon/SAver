@@ -31,13 +31,12 @@ const App = () => {
 
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(getUserFromToken());
-  const [email, setEmail] = useState('');
-  console.log("유저변경",user);
+  const [email, setEmail] = useState("");
+  console.log("유저변경", user);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  
   // 글 목록 가져오기
   useEffect(() => {
     const fetchPosts = async () => {
@@ -53,14 +52,14 @@ const App = () => {
   }, []);
 
   // CLIENT 세션 만료 처리 여부 확인인
-  // 0102 mkw add 
+  // 0102 mkw add
   useEffect(() => {
     const checkSession = setInterval(() => {
       const token = localStorage.getItem("token");
       if (token) {
-        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        const decodedToken = JSON.parse(atob(token.split(".")[1]));
         const currentTime = Math.floor(Date.now() / 1000);
-  
+
         if (decodedToken.exp < currentTime) {
           localStorage.removeItem("token");
           localStorage.removeItem("userEmail");
@@ -83,9 +82,7 @@ const App = () => {
     }, 10000); // 10초마다 세션 확인
     return () => clearInterval(checkSession); // 컴포넌트 언마운트 시 인터벌 제거
   }, [navigate]);
-  
 
-  
   // 개인정보 페이지로 이동하는 함수
   const handleProfileClick = () => {
     navigate("/my-profile");
@@ -101,17 +98,19 @@ const App = () => {
     {
       id: 1,
       imageSrc: null, // 이미지 URL이 없을 경우 기본 "이미지" 텍스트가 표시됩니다.
-      title: "쿠폰명(상호명)",
-      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션",
+      title: "올리브영 50,000원",
+      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 ",
       expiryDate: "2024.12.31",
       category: "카테고리1",
       status: "available",
+      remain: "15,000",
+      used: "35,000",
     },
     {
       id: 2,
       imageSrc: null,
       title: "스타벅스 아메리카노",
-      description: "스타벅스 아메리카노 무료 쿠폰",
+      description: "스타벅스 아메리카노 무료 쿠폰 스타벅스 아메리카노 무료 쿠폰스타벅스 아메리카노 ",
       expiryDate: "2024.06.30",
       category: "카테고리2",
       status: "available",
@@ -147,30 +146,23 @@ const App = () => {
 
   return (
     <>
+      
       {location.pathname !== '/intro' && location.pathname !== '/login' && location.pathname !== '/signup' && (
-        <Header user={user} handleLogout={handleLogout}/>
+        <Header user={user} handleLogout={handleLogout} />
       )}
       <Routes>
-        <Route path="/" element={<Home coupons={coupons}/>} />
+        <Route path="/" element={<Home coupons={coupons} />} />
         <Route path="/board" element={<Board posts={posts} user={user} />} />
-        <Route
-          path="/write"
-          element={<WritePost user={user} setPosts={setPosts} />}
-        />
-        <Route
-          path="/write/:id"
-          element={<WritePost user={user} setPosts={setPosts} />}
-        />
-        <Route
-          path="/post/:id"
-          element={<PostDetail posts={posts} setPosts={setPosts} />}
-        />
+        <Route path="/write" element={<WritePost user={user} setPosts={setPosts} />} />
+        <Route path="/write/:id" element={<WritePost user={user} setPosts={setPosts} />} />
+        <Route path="/post/:id" element={<PostDetail posts={posts} setPosts={setPosts} />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup />} />
         {/* <Route path="/coupon" element={<Coupon />} /> */}
         <Route path="/profile" element={<Profile />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/email-verification" element={<EmailVerification />} />
+
         <Route path="/my-profile" element={<MyProfile user={user}/>} />
         <Route path="/my-coupons" element={<MyCoupons coupons={coupons}/>} />
         <Route path="/intro" element={<Intro />} />
