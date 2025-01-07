@@ -1,48 +1,48 @@
-require('dotenv').config(); //.env 파일에서 호출하는 부분 추가 01.01 민경원 추가
-const express = require('express');
+require("dotenv").config(); //.env 파일에서 호출하는 부분 추가 01.01 민경원 추가
+const express = require("express");
 const app = express();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const passport = require('passport');
-const passportLocal = require('passport-local').Strategy;
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const passport = require("passport");
+const passportLocal = require("passport-local").Strategy;
 const port = process.env.PORT;
-const db = require('./db');
-const flash = require('connect-flash');
-const path = require('path');
+const db = require("./db");
+const flash = require("connect-flash");
+const path = require("path");
 
-const passwordRoutes = require('./routes/password'); // 추가 0103 mkw
+const passwordRoutes = require("./routes/password"); // 추가 0103 mkw
 
-const couponRoutes = require('./routes/coupons');
-const authRoutes = require('./routes/auth').createRouter; // 0101 민경원 수정정
-const postRoutes = require('./routes/posts');
-const searchRoutes = require('./routes/search'); //add 0105 mkw
-
+const couponRoutes = require("./routes/coupons");
+const authRoutes = require("./routes/auth").createRouter; // 0101 민경원 수정정
+const postRoutes = require("./routes/posts");
+const searchRoutes = require("./routes/search"); //add 0105 mkw
+const categoryRoutes = require("./routes/category");
 // 미들웨어 설정
 
 // // CORS 설정
 // 01.01 혹시 몰라서 민경원 추가
 app.use(
-    cors({
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        credentials: true,
-    })
+  cors({
+    origin: "http://localhost:5175",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
 );
 
 app.use(cookieParser());
 app.use(
-    session({
-        secret: 'session-secret',
-        resave: false,
-        saveUninitialized: false,
-        cookie: { maxAge: 60 * 60 * 1000 }, // 세션 만료 시간 설정 (30분) // 0102 mkw put
-        // 30초(30 * 1000)
-        // 30분(30분 * 60초 * 1000밀리초)
-        // 60분(60분 * 60초 * 1000밀리초)
-    })
+  session({
+    secret: "session-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60 * 60 * 1000 }, // 세션 만료 시간 설정 (30분) // 0102 mkw put
+    // 30초(30 * 1000)
+    // 30분(30분 * 60초 * 1000밀리초)
+    // 60분(60분 * 60초 * 1000밀리초)
+  })
 );
 
 app.use(express.json());
@@ -52,16 +52,17 @@ app.use(flash());
 
 // 라우트 설정
 // 인증 관련 라우트
-app.use('/api/auth', authRoutes(db));
+app.use("/api/auth", authRoutes(db));
 // 게시글 관련 라우트
-app.use('/api/posts', postRoutes(db));
+app.use("/api/posts", postRoutes(db));
 // 쿠폰 관련 라우트
-app.use('/api/coupons', couponRoutes(db));
+app.use("/api/coupons", couponRoutes(db));
 // 비밀번호 변경 관련 라우트
-app.use('/api/password', passwordRoutes); // 추가 0103 mkw
+app.use("/api/password", passwordRoutes); // 추가 0103 mkw
 // 검색 관련 라우트
-app.use('/api/search', searchRoutes); // add 0105 mkw
-
+app.use("/api/search", searchRoutes); // add 0105 mkw
+// 카테고리 관련 라우트
+app.use("/api/category", categoryRoutes(db));
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
