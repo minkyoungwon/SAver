@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Share, CustomCheckbox } from "../../icon";
 
-const CouponDetail = ({ setIsDetailModalOpen, coupon, isMdView }) => {
-  console.log("CouponDetail props:", { coupon, isMdView });
+const CouponDetail = ({ setIsDetailModalOpen, setSelectedCoupon, coupon, isSmView }) => {
+  console.log("CouponDetail props:", { coupon, isSmView });
   if (!coupon) return <div>쿠폰 데이터를 불러오는 중입니다...</div>;
 
   useEffect(() => {
@@ -11,6 +11,7 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon, isMdView }) => {
 
   //사용자 쿠폰 사용체크
   const [isUsed, setIsUsed] = useState(false);
+
   // 목업 데이터 (바코드, 쿠폰이미지)
   // 목업 데이터 (db데이터 받아오면, 사용자 변경 가능한 데이터들)
   const [couponData, setCouponData] = useState({
@@ -42,23 +43,21 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon, isMdView }) => {
   return (
     <div
       className={`${
-        isMdView
+        isSmView
           ? "w-full h-auto" // 4section 안에서 배치
           : "fixed inset-0 z-50 flex justify-center items-center" // 중앙 fixed 모달
       }`}
     >
-      <div
-        className="pb-6 mr-10 w-[380px] h-[70vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md"
-        style={
-          {
-            // maxHeight: "70vh", // 모달 창 최대 높이
-            // clipPath: "inset(0 round 16px)",
-          }
-        }
-      >
+      <div className="pb-6 mr-10 w-[380px] h-[70vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md">
         {/* 공유하기 + 사용체크박스 */}
         <div className=" sticky top-0 z-50 pt-4 px-4 bg-stone-50 flex justify-between text-xs font-semibold  text-emerald-500 ">
-          <button className="hover:bg text-sm px-2" onClick={() => setIsDetailModalOpen(false)}>
+          <button
+            className="hover:bg text-sm px-2"
+            onClick={() => {
+              setIsDetailModalOpen(false); // 모달 상태 닫기 (모바일)
+              setSelectedCoupon(null); // 선택된 쿠폰 초기화 (데스크톱)
+            }}
+          >
             X 닫기
           </button>
           <div className="flex justify-end gap-4 ">
@@ -122,7 +121,13 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon, isMdView }) => {
           <button type="submit" className="flex-1 py-2 bg-emerald-400 text-white font-medium rounded-lg shadow-md hover:bg-emerald-500">
             저장
           </button>
-          <button className="flex-1 py-2 bg-gray-500 text-white font-medium rounded-lg shadow-md hover:bg-gray-600" onClick={() => setIsDetailModalOpen(false)}>
+          <button
+            className="flex-1 py-2 bg-gray-500 text-white font-medium rounded-lg shadow-md hover:bg-gray-600"
+            onClick={() => {
+              setIsDetailModalOpen(false); // 모달 상태 닫기 (모바일)
+              setSelectedCoupon(null); // 선택된 쿠폰 초기화 (데스크톱)
+            }}
+          >
             닫기
           </button>
         </div>
