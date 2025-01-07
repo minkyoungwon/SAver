@@ -189,8 +189,8 @@ function Home({ coupons, setCoupons }) {
           <div className="3section bg-slate-100 mr-4">
             <p className=" mb-1 text-sm">유효기간순</p>
             <div className=" space-y-4 h-screen overflow-auto no-scrollbar ">
-              {coupons.length === 0 && <div>쿠폰이 없습니다.</div>}
-              {coupons.map((coupon) => (
+              {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
+              {filteredCoupons.map((coupon) => (
                 <CouponCard key={coupon.id} coupon={coupon} handleCouponClick={handleCouponClick} />
               ))}
             </div>
