@@ -2,6 +2,7 @@
 
 프로젝트
 > AWS 주소 : http://34.228.198.11/
+> <BR>
 > 기획 노션 페이지 : https://lovehyun.notion.site/1-1516ebae57e180faa9cec3f138f17efc
 >
 > ## 초기 프로젝트 세팅 하는 법.
