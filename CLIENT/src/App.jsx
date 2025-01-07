@@ -151,7 +151,7 @@ const App = () => {
         <Header user={user} handleLogout={handleLogout} />
       )}
       <Routes>
-        <Route path="/" element={<Home coupons={coupons} />} />
+        <Route path="/" element={<Home coupons={coupons} setCoupons={setCoupons}/>} />
         <Route path="/board" element={<Board posts={posts} user={user} />} />
         <Route path="/write" element={<WritePost user={user} setPosts={setPosts} />} />
         <Route path="/write/:id" element={<WritePost user={user} setPosts={setPosts} />} />

@@ -6,16 +6,16 @@ import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import AddCouponModal from "../components/coupon/AddCouponModal";
 import CouponDetail from "../components/coupon/CouponDetail";
-function Home({ coupons }) {
+function Home({ coupons, setCoupons }) {
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
-  const [category, setCategory] = useState(["카테고리1", "카테고리2", "카테고리3", "일", "두울", "세글자", "올리브영", "여섯글자는은", "카테고리3", "카테고리3", "카테고리3", "카테고리3"]);
+  const [category, setCategory] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedCoupon, setSelectedCoupon] = useState(null); //클릭된 쿠폰 데이터 (hm)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // 모달 열림 상태 (hm)
 
+
+  // 선택한 카테고리 필터링
   const handleCategoryClick = (item) => {
-    console.log("선택된 카테고리", item);
-    // setCategory(item);
     const filteredCoupons = coupons.filter((coupon) => coupon.category === item);
     setFilteredCoupons(filteredCoupons);
   };
@@ -33,7 +33,7 @@ function Home({ coupons }) {
     setFilteredCoupons(filteredCoupons);
   };
 
-  const addCategory = (input) => {
+  const addCategory = async (input) => {
     if (input === "") {
       alert("카테고리를 입력해주세요.");
       return;
@@ -44,7 +44,19 @@ function Home({ coupons }) {
       alert("이미 존재하는 카테고리입니다.");
       return;
     }
-    setCategory([...category, input]);
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/category`, {
+      name: input,
+      user_id: localStorage.getItem("userId"),
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (response.status === 200) {
+      alert("카테고리 추가 완료");
+    } else {
+      alert("카테고리 추가 실패");
+    }
   };
 
   useEffect(() => {
@@ -53,17 +65,29 @@ function Home({ coupons }) {
   }, []);
 
   const fetchCoupons = async () => {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/coupons`);
-    setCoupons(response.data);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/coupon`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setCoupons(response.data);
+    } catch (error) {
+      console.error("쿠폰 조회 오류:", error);
+    }
   };
   const fetchCategory = async () => {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
     setCategory(response.data);
-  };
+  } catch (error) {
+    console.error("카테고리 조회 오류:", error);
+  }
+};
 
   //추가-hm
   const handleCouponClick = (coupon) => {
@@ -81,6 +105,19 @@ function Home({ coupons }) {
   useEffect(() => {
     console.log("Selected Coupon updated:", selectedCoupon); // 상태 업데이트 확인
   }, [selectedCoupon]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setCategory(response.data);
+    } catch (error) {
+      console.error("카테고리 조회 실패:", error);
+    }
+  };
 
   return (
     <div>
@@ -129,7 +166,12 @@ function Home({ coupons }) {
             </div>
 
             <div className="text-sm">
-              <CouponCategory category={category} handleCategoryClick={handleCategoryClick} addCategory={addCategory} />
+              <CouponCategory 
+                category={category} 
+                addCategory={addCategory} 
+                handleCategoryClick={handleCategoryClick}
+                refreshCategories={fetchCategories}
+              />
             </div>
           </div>
           <div className="2 bg-white border-white rounded-lg shadow-md mb-6 p-4 mr-4">
