@@ -15,7 +15,7 @@ const path = require('path');
 
 const passwordRoutes = require('./routes/password'); // 추가 0103 mkw
 
-const couponRoutes = require('./routes/coupon');
+const couponRoutes = require('./routes/coupons');
 const authRoutes = require('./routes/auth').createRouter; // 0101 민경원 수정정
 const postRoutes = require('./routes/posts');
 const searchRoutes = require('./routes/search'); //add 0105 mkw
@@ -56,7 +56,7 @@ app.use('/api/auth', authRoutes(db));
 // 게시글 관련 라우트
 app.use('/api/posts', postRoutes(db));
 // 쿠폰 관련 라우트
-app.use('/api/coupon', couponRoutes(db));
+app.use('/api/coupons', couponRoutes(db));
 // 비밀번호 변경 관련 라우트
 app.use('/api/password', passwordRoutes); // 추가 0103 mkw
 // 검색 관련 라우트
