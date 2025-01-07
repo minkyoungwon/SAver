@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS coupon_categories
   name    VARCHAR(255) NULL     COMMENT '카테고리명',
   user_id INT     NOT NULL COMMENT '사용자id',
   PRIMARY KEY (id)
+  FOREIGN KEY(user_id) REFERENCES users (id) 
 ) COMMENT '쿠폰 카테고리';
 
 CREATE TABLE IF NOT EXISTS coupons
@@ -74,6 +75,8 @@ CREATE TABLE IF NOT EXISTS comments
   depth     INT      NULL     COMMENT '댓글 계층/깊이 (depth>=0)',
   parent_id INT      NULL     COMMENT 'depth>=1 부모댓글 id',
   PRIMARY KEY (id),
+  FOREIGN KEY (post_id) REFERENCES posts (id),
+  FOREIGN KEY (user_id) REFERENCES users (id),
   CONSTRAINT CHK_comments_depth CHECK (depth >= 0)
 ) COMMENT '댓글';
 
