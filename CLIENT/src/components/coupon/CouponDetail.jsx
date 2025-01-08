@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Share, CustomCheckbox } from "../../icon";
 
-const CouponDetail = ({ setIsDetailModalOpen, setSelectedCoupon, coupon, isSmView }) => {
-  console.log("CouponDetail props:", { coupon, isSmView });
+const CouponDetail = ({ setIsDetailModalOpen, setSelectedCoupon, coupon, isMdView }) => {
+  console.log("CouponDetail props:", { coupon, isMdView });
   if (!coupon) return <div>쿠폰 데이터를 불러오는 중입니다...</div>;
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const CouponDetail = ({ setIsDetailModalOpen, setSelectedCoupon, coupon, isSmVie
   return (
     <div
       className={`${
-        isSmView
+        isMdView
           ? "w-full h-auto" // 4section 안에서 배치
           : "fixed inset-0 z-50 flex justify-center items-center" // 중앙 fixed 모달
       }`}

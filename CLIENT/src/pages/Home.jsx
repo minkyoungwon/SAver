@@ -108,12 +108,12 @@ function Home({ coupons, setCoupons }) {
   // 클릭한 쿠폰정보 담아두기
   const handleCouponClick = (coupon) => {
     console.log("Clicked coupon:", coupon); // 클릭한 쿠폰 데이터 확인
-    if (window.innerWidth >= 640) {
-      // sm 이상: 4section에 출력
+    if (window.innerWidth >= 768) {
+      // md 이상: 4section에 출력
       setSelectedCoupon(coupon);
       setIsDetailModalOpen(false);
     } else {
-      // sm 이하: 모달로 표시
+      // md 이하: 모달로 표시
       setSelectedCoupon(coupon);
       setIsDetailModalOpen(true);
     }
@@ -126,11 +126,11 @@ function Home({ coupons, setCoupons }) {
   // 모달창 열려있을때 브라우저 크기 감지
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 640 && isDetailModalOpen) {
-        // sm 이상으로 전환되면 모달을 닫고 섹션에 출력
+      if (window.innerWidth >= 768 && isDetailModalOpen) {
+        // md 이상으로 전환되면 모달을 닫고 섹션에 출력
         setIsDetailModalOpen(false);
-      } else if (window.innerWidth < 640 && selectedCoupon) {
-        // sm 이하로 전환되면 섹션에 출력 중인 것을 모달로 전환
+      } else if (window.innerWidth < 768 && selectedCoupon) {
+        // md 이하로 전환되면 섹션에 출력 중인 것을 모달로 전환
         setIsDetailModalOpen(true);
       }
     };
@@ -145,7 +145,7 @@ function Home({ coupons, setCoupons }) {
   return (
     <div>
       <div>
-        <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr]">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr]">
           <div className="1 bg-white border-white rounded-lg shadow-md mb-6 mr-4 p-4">
             <div className="flex justify-between items-center mb-4 ">
               <button
@@ -195,14 +195,14 @@ function Home({ coupons, setCoupons }) {
               ))}
             </div>
           </div>
-          {/* sm 이상 : 4section */}
-          <div className="4section hidden sm:block bg-slate-100 pt-6 mr-4">{selectedCoupon && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} isSmView={true} />}</div>
+          {/* md 이상 : 4section */}
+          <div className="4section hidden md:block bg-slate-100 pt-6 mr-4">{selectedCoupon && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} isMdView={true} />}</div>
         </div>
         <AddCoupon />
       </div>
 
       {/* 모바일 모달 */}
-      {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} isSmView={false} />}
+      {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} isMdView={false} />}
     </div>
   );
 }
