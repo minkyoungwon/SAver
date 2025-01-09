@@ -7,6 +7,7 @@ import axios from "axios";
 import AddCouponModal from "../components/coupon/AddCouponModal";
 import CouponDetail from "../components/coupon/CouponDetail";
 import ImageUploader from "../components/coupon/ImageUploader";
+import AddCouponInfo from "../components/coupon/AddCouponInfo";
 
 function Home({ coupons, setCoupons }) {
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
@@ -14,6 +15,12 @@ function Home({ coupons, setCoupons }) {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedCoupon, setSelectedCoupon] = useState(null); //클릭된 쿠폰 데이터
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // 상세 모달 열림 상태
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleImageUpload = (file) => {
+    console.log("Home: ImageUploader에서 전달된 파일:", file);
+    setSelectedFile(file);
+  };
 
   // 선택한 카테고리 필터링
   const handleCategoryClick = (item) => {
@@ -148,7 +155,16 @@ function Home({ coupons, setCoupons }) {
     <div>
       <div className="flex flex-col">
         <div className="m-10 mx-[20%] bg-gray-200">
-          <ImageUploader />
+          <ImageUploader onImageUpload={handleImageUpload} />
+          {selectedFile && (
+            <AddCouponInfo
+              selectedFile={selectedFile}
+              onModalClose={() => {
+                console.log("Home: Modal 닫기");
+                setSelectedFile(null);
+              }}
+            />
+          )}
         </div>
         <div className="content-wrapper">
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] ">
