@@ -6,6 +6,7 @@ import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import AddCouponModal from "../components/coupon/AddCouponModal";
 import CouponDetail from "../components/coupon/CouponDetail";
+import ImageUploader from "../components/coupon/ImageUploader";
 
 function Home({ coupons, setCoupons }) {
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
@@ -146,8 +147,8 @@ function Home({ coupons, setCoupons }) {
   return (
     <div>
       <div className="flex flex-col">
-        <div className="m-0 px-[10%] w-full bg-gray-200 h-40 mb-8">
-          <div className="">{/* <AddCouponModal mode="web" additionalContent="custom-style" onClose={handleClose} /> */}</div>
+        <div className="m-10 mx-[20%] bg-gray-200">
+          <ImageUploader />
         </div>
         <div className="content-wrapper">
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] ">

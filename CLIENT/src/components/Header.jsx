@@ -4,7 +4,7 @@ import logo from "/src/assets/logo.png";
 const Header = ({ user, handleLogout }) => {
   return (
     <header>
-      <div className="m-0 px-[10%] py-4 w-full flex justify-between  items-center  bg-gray-200">
+      <div className="m-0 px-[10%] py-4 w-full flex justify-between  items-center">
         <nav className="flex justify-center items-center">
           <Link to="/">
             <img src={logo} alt="logo" className=" mr-6 w-30 h-8  border-2 border-black rounded-md" />
