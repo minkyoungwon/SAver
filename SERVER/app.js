@@ -26,7 +26,7 @@ const categoryRoutes = require("./routes/category");
 // 01.01 혹시 몰라서 민경원 추가
 app.use(
   cors({
-    origin: "http://localhost:5175",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

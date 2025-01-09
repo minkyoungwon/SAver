@@ -27,7 +27,7 @@ const CouponCard = ({ coupon, handleCouponClick }) => {
               </div>
               {coupon.remain && coupon.used && <p className="text-sm text-gray-600 font-bold">{`잔액: ${coupon.remain}원 (${coupon.used}원 사용)`}</p>}
             </div>
-            <p className="text-sm text-gray-500 md:hidden"> 유효기간: {coupon.expiryDate}</p>
+            <p className="text-sm text-gray-500 pt-5 md:hidden"> 유효기간: {coupon.expiryDate}</p>
           </div>
         </div>
 

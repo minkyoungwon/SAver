@@ -6,12 +6,13 @@ import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import AddCouponModal from "../components/coupon/AddCouponModal";
 import CouponDetail from "../components/coupon/CouponDetail";
+
 function Home({ coupons, setCoupons }) {
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
   const [category, setCategory] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedCoupon, setSelectedCoupon] = useState(null); //클릭된 쿠폰 데이터
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // 모달 열림 상태
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // 상세 모달 열림 상태
 
   // 선택한 카테고리 필터링
   const handleCategoryClick = (item) => {
@@ -144,59 +145,64 @@ function Home({ coupons, setCoupons }) {
 
   return (
     <div>
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr]">
-          <div className="1 bg-white border-white rounded-lg shadow-md mb-6 mr-4 p-4">
-            <div className="flex justify-between items-center mb-4 ">
-              <button
-                onClick={() => showFilteredCoupons("available")}
-                className={` h-10 
-              ${selectedFilter === "available" ? " text-emerald-700 font-bold" : "bg-white text-emerald-500 hover:"}`}
-              >
-                사용가능
-              </button>
-              <button
-                onClick={() => showFilteredCoupons("expired")}
-                className={` h-10 
-              ${selectedFilter === "expired" ? " text-emerald-700 font-bold" : "bg-white  text-emerald-500 hover:"}`}
-              >
-                기간만료
-              </button>
-              <button
-                onClick={() => showFilteredCoupons("shared")}
-                className={` h-10 
-              ${selectedFilter === "shared" ? " text-emerald-700 font-bold" : "bg-white  text-emerald-500 hover:"}`}
-              >
-                공유쿠폰
-              </button>
-              <button
-                onClick={() => showFilteredCoupons("all")}
-                className={`  h-10 
-              ${selectedFilter === "all" ? " text-emerald-700 font-bold " : "bg-white  text-emerald-500 hover:"}`}
-              >
-                전체쿠폰
-              </button>
+      <div className="flex flex-col">
+        <div className="m-0 px-[10%] w-full bg-gray-200 h-40 mb-8">
+          <div className="">{/* <AddCouponModal mode="web" additionalContent="custom-style" onClose={handleClose} /> */}</div>
+        </div>
+        <div className="content-wrapper">
+          <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] ">
+            <div className="1 h-40 bg-white border rounded-lg mr-4 mb-4 p-4 px-8">
+              <div className="flex justify-between items-center mb-4 ">
+                <button
+                  onClick={() => showFilteredCoupons("available")}
+                  className={` h-10 
+              ${selectedFilter === "available" ? " text-emerald-700 font-bold" : " text-emerald-500 hover:"}`}
+                >
+                  사용가능
+                </button>
+                <button
+                  onClick={() => showFilteredCoupons("expired")}
+                  className={` h-10 
+              ${selectedFilter === "expired" ? " text-emerald-700 font-bold" : "  text-emerald-500 hover:"}`}
+                >
+                  기간만료
+                </button>
+                <button
+                  onClick={() => showFilteredCoupons("shared")}
+                  className={` h-10 
+              ${selectedFilter === "shared" ? " text-emerald-700 font-bold" : "  text-emerald-500 hover:"}`}
+                >
+                  공유쿠폰
+                </button>
+                <button
+                  onClick={() => showFilteredCoupons("all")}
+                  className={`  h-10 
+              ${selectedFilter === "all" ? " text-emerald-700 font-bold " : "  text-emerald-500 hover:"}`}
+                >
+                  전체쿠폰
+                </button>
+              </div>
+
+              <div className="text-sm">
+                <CouponCategory category={category} addCategory={addCategory} handleCategoryClick={handleCategoryClick} refreshCategories={fetchCategories} />
+              </div>
+            </div>
+            <div className="2 h-40 bg-white border rounded-lg mr-4 mb-6 p-6">
+              <div>22222222222</div>
             </div>
 
-            <div className="text-sm">
-              <CouponCategory category={category} addCategory={addCategory} handleCategoryClick={handleCategoryClick} refreshCategories={fetchCategories} />
+            <div className="3section bg-slate-100 mr-4 mb-4 ">
+              <p className=" mb-1 text-sm">유효기간순</p>
+              <div className=" space-y-4 h-screen overflow-auto no-scrollbar ">
+                {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
+                {filteredCoupons.map((coupon) => (
+                  <CouponCard key={coupon.id} coupon={coupon} handleCouponClick={handleCouponClick} />
+                ))}
+              </div>
             </div>
+            {/* md 이상 : 4section */}
+            <div className="4section hidden md:block bg-slate-100 mr-4">{selectedCoupon && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} isMdView={true} />}</div>
           </div>
-          <div className="2 bg-white border-white rounded-lg shadow-md mb-6 p-4 mr-4">
-            <div>222</div>
-          </div>
-
-          <div className="3section bg-slate-100 mr-4">
-            <p className=" mb-1 text-sm">유효기간순</p>
-            <div className=" space-y-4 h-screen overflow-auto no-scrollbar ">
-              {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
-              {filteredCoupons.map((coupon) => (
-                <CouponCard key={coupon.id} coupon={coupon} handleCouponClick={handleCouponClick} />
-              ))}
-            </div>
-          </div>
-          {/* md 이상 : 4section */}
-          <div className="4section hidden md:block bg-slate-100 pt-6 mr-4">{selectedCoupon && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} isMdView={true} />}</div>
         </div>
         <AddCoupon />
       </div>
