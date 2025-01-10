@@ -5,7 +5,7 @@ import AddCoupon from "../components/coupon/AddCoupon";
 import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import AddCouponModal from "../components/coupon/AddCouponModal";
-import CouponDetail from "../components/coupon/CouponDetail";
+// import CouponDetail from "../components/coupon/CouponDetail";
 import ImageUploader from "../components/coupon/ImageUploader";
 import AddCouponInfo from "../components/coupon/AddCouponInfo";
 
@@ -13,8 +13,8 @@ function Home({ coupons, setCoupons }) {
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
   const [category, setCategory] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const [selectedCoupon, setSelectedCoupon] = useState(null); //클릭된 쿠폰 데이터
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // 상세 모달 열림 상태
+  // const [selectedCoupon, setSelectedCoupon] = useState(null); //클릭된 쿠폰 데이터
+  // const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // 상세 모달 열림 상태
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleImageUpload = (file) => {
@@ -115,41 +115,41 @@ function Home({ coupons, setCoupons }) {
   };
 
   // 클릭한 쿠폰정보 담아두기
-  const handleCouponClick = (coupon) => {
-    console.log("Clicked coupon:", coupon); // 클릭한 쿠폰 데이터 확인
-    if (window.innerWidth >= 768) {
-      // md 이상: 4section에 출력
-      setSelectedCoupon(coupon);
-      setIsDetailModalOpen(false);
-    } else {
-      // md 이하: 모달로 표시
-      setSelectedCoupon(coupon);
-      setIsDetailModalOpen(true);
-    }
-  };
+  // const handleCouponClick = (coupon) => {
+  //   console.log("Clicked coupon:", coupon); // 클릭한 쿠폰 데이터 확인
+  //   if (window.innerWidth >= 768) {
+  //     // md 이상: 4section에 출력
+  //     setSelectedCoupon(coupon);
+  //     setIsDetailModalOpen(false);
+  //   } else {
+  //     // md 이하: 모달로 표시
+  //     setSelectedCoupon(coupon);
+  //     setIsDetailModalOpen(true);
+  //   }
+  // };
 
-  useEffect(() => {
-    console.log("Selected Coupon updated:", selectedCoupon); // 클릭된 쿠폰 상태 업데이트 확인
-  }, [selectedCoupon]);
+  // useEffect(() => {
+  //   console.log("Selected Coupon updated:", selectedCoupon); // 클릭된 쿠폰 상태 업데이트 확인
+  // }, [selectedCoupon]);
 
   // 모달창 열려있을때 브라우저 크기 감지
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768 && isDetailModalOpen) {
-        // md 이상으로 전환되면 모달을 닫고 섹션에 출력
-        setIsDetailModalOpen(false);
-      } else if (window.innerWidth < 768 && selectedCoupon) {
-        // md 이하로 전환되면 섹션에 출력 중인 것을 모달로 전환
-        setIsDetailModalOpen(true);
-      }
-    };
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     if (window.innerWidth >= 768 && isDetailModalOpen) {
+  //       // md 이상으로 전환되면 모달을 닫고 섹션에 출력
+  //       setIsDetailModalOpen(false);
+  //     } else if (window.innerWidth < 768 && selectedCoupon) {
+  //       // md 이하로 전환되면 섹션에 출력 중인 것을 모달로 전환
+  //       setIsDetailModalOpen(true);
+  //     }
+  //   };
 
-    window.addEventListener("resize", handleResize);
+  //   window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [isDetailModalOpen, selectedCoupon]);
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, [isDetailModalOpen, selectedCoupon]);
 
   return (
     <div>
@@ -167,8 +167,8 @@ function Home({ coupons, setCoupons }) {
           )}
         </div>
         <div className="content-wrapper">
-          <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] ">
-            <div className="1 h-40 bg-white border rounded-lg mr-4 mb-4 p-4 px-8">
+          <div className="  ">
+            <div className="h-40 bg-white border rounded-lg mr-4 mb-4 p-4 px-8">
               <div className="flex justify-between items-center mb-4 ">
                 <button
                   onClick={() => showFilteredCoupons("available")}
@@ -204,28 +204,25 @@ function Home({ coupons, setCoupons }) {
                 <CouponCategory category={category} addCategory={addCategory} handleCategoryClick={handleCategoryClick} refreshCategories={fetchCategories} />
               </div>
             </div>
-            <div className="2 h-40 bg-white border rounded-lg mr-4 mb-6 p-6">
-              <div>22222222222</div>
-            </div>
 
-            <div className="3section bg-slate-100 mr-4 mb-4 ">
+            <div className=" bg-slate-100 mr-4 mb-4 ">
               <p className=" mb-1 text-sm">유효기간순</p>
               <div className=" space-y-4 h-screen overflow-auto no-scrollbar ">
                 {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
                 {filteredCoupons.map((coupon) => (
-                  <CouponCard key={coupon.id} coupon={coupon} handleCouponClick={handleCouponClick} />
+                  <CouponCard key={coupon.id} coupon={coupon} />
                 ))}
               </div>
             </div>
             {/* md 이상 : 4section */}
-            <div className="4section hidden md:block bg-slate-100 mr-4">{selectedCoupon && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} isMdView={true} />}</div>
+            {/* <div className="4section hidden md:block bg-slate-100 mr-4">{selectedCoupon && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} isMdView={true} />}</div> */}
           </div>
         </div>
         <AddCoupon />
       </div>
 
       {/* 모바일 모달 */}
-      {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} isMdView={false} />}
+      {/* {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} setSelectedCoupon={setSelectedCoupon} coupon={selectedCoupon} />} */}
     </div>
   );
 }
