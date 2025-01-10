@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Share, CustomCheckbox } from "../../icon";
+import axios from "axios";
 
 const CouponDetail = ({ setIsDetailModalOpen, setSelectedCoupon, coupon, isMdView }) => {
   console.log("CouponDetail props:", { coupon, isMdView });
@@ -39,7 +40,11 @@ const CouponDetail = ({ setIsDetailModalOpen, setSelectedCoupon, coupon, isMdVie
       console.log("쿠폰이 사용되었습니다.");
     }
   };
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.put(`${import.meta.env.VITE_API_URL}/api/coupon/${coupon.id}`, couponData);
+    setIsDetailModalOpen(false);
+  };
   return (
     <div
       className={`${
@@ -70,7 +75,7 @@ const CouponDetail = ({ setIsDetailModalOpen, setSelectedCoupon, coupon, isMdVie
             </button>
           </div>
         </div>
-
+        <form onSubmit={handleSubmit}>
         {/* 바코드  */}
         <div className="h-[90px] m-4 border-white rounded-lg shadow-md bg-white flex justify-center items-center mb-4 ">
           <img src="barcode-placeholder.png" alt="바코드" className="h-10" />
@@ -131,6 +136,7 @@ const CouponDetail = ({ setIsDetailModalOpen, setSelectedCoupon, coupon, isMdVie
             닫기
           </button>
         </div>
+        </form>
       </div>
     </div>
   );

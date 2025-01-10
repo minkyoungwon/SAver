@@ -62,30 +62,8 @@ const AddCouponModal = ({setIsModalOpen}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        
-        if (selectedFile) {
-            formData.append('image', selectedFile);
-        }
-        // 쿠폰 정보도 함께 전송
-        Object.keys(couponInfo).forEach(key => {
-            formData.append(key, couponInfo[key]);
-        });
-
-        try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            if(response.status === 200) {
-                alert('쿠폰 추가 성공!');
-                setIsModalOpen(false);
-            }
-        } catch (error) {
-            console.error('쿠폰 추가 실패:', error);
-            setIsModalOpen(false);
-        }
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon`, couponInfo);
+        setIsModalOpen(false);
     };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
