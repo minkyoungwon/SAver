@@ -1,0 +1,38 @@
+import React, { useState } from "react";
+import AddCouponModal from "./AddCouponModal";
+import axios from "axios";
+
+const AddCouponInfo = ({ selectedFile, onModalClose }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [couponInfo, setCouponInfo] = useState(null);
+
+  const fetchCouponInfo = async () => {
+    if (!selectedFile) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon/extract`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (response.data) {
+        setCouponInfo(response.data);
+        setIsModalOpen(true); // Modal 열기
+      } else {
+        console.error("서버 응답에 데이터가 없습니다.");
+      }
+    } catch (error) {
+      console.error("쿠폰 정보 추출 실패:", error.response?.data || error.message);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchCouponInfo();
+  }, [selectedFile]);
+
+  return <>{isModalOpen && couponInfo && <AddCouponModal couponInfo={couponInfo} setIsModalOpen={setIsModalOpen} onModalClose={onModalClose} />}</>;
+};
+
+export default AddCouponInfo;

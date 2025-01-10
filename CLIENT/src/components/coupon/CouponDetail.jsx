@@ -49,7 +49,7 @@ const CouponDetail = ({ setIsDetailModalOpen, setSelectedCoupon, coupon, isMdVie
     <div
       className={`${
         isMdView
-          ? "w-full h-auto" // 4section 안에서 배치
+          ? " w-full h-auto" // 4section 안에서 배치
           : "fixed inset-0 z-50 flex justify-center items-center" // 중앙 fixed 모달
       }`}
     >

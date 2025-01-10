@@ -103,8 +103,8 @@ const App = () => {
       expiryDate: "2024.12.31",
       category: "카테고리1",
       status: "available",
-      remain: "15,000",
-      used: "35,000",
+      // remain: "15,000",
+      // used: "35,000",
     },
     {
       id: 2,
@@ -146,12 +146,9 @@ const App = () => {
 
   return (
     <>
-      
-      {location.pathname !== '/intro' && location.pathname !== '/login' && location.pathname !== '/signup' && (
-        <Header user={user} handleLogout={handleLogout} />
-      )}
+      {location.pathname !== "/intro" && location.pathname !== "/login" && location.pathname !== "/signup" && <Header user={user} handleLogout={handleLogout} />}
       <Routes>
-        <Route path="/" element={<Home coupons={coupons} setCoupons={setCoupons}/>} />
+        <Route path="/" element={<Home coupons={coupons} setCoupons={setCoupons} />} />
         <Route path="/board" element={<Board posts={posts} user={user} />} />
         <Route path="/write" element={<WritePost user={user} setPosts={setPosts} />} />
         <Route path="/write/:id" element={<WritePost user={user} setPosts={setPosts} />} />
@@ -163,8 +160,8 @@ const App = () => {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/email-verification" element={<EmailVerification />} />
 
-        <Route path="/my-profile" element={<MyProfile user={user}/>} />
-        <Route path="/my-coupons" element={<MyCoupons coupons={coupons}/>} />
+        <Route path="/my-profile" element={<MyProfile user={user} />} />
+        <Route path="/my-coupons" element={<MyCoupons coupons={coupons} />} />
         <Route path="/intro" element={<Intro />} />
       </Routes>
     </>

@@ -1,12 +1,11 @@
-
 import { Link } from "react-router-dom";
 import logo from "/src/assets/logo.png";
 
 const Header = ({ user, handleLogout }) => {
   return (
     <header>
-      <div className="flex justify-between my-4  items-center">
-        <nav className="flex justify-center items-center ">
+      <div className="m-0 px-[10%] py-4 w-full flex justify-between  items-center">
+        <nav className="flex justify-center items-center">
           <Link to="/">
             <img src={logo} alt="logo" className=" mr-6 w-30 h-8  border-2 border-black rounded-md" />
           </Link>
@@ -26,7 +25,6 @@ const Header = ({ user, handleLogout }) => {
               <button onClick={handleLogout} className="text-sm mr-4">
                 로그아웃
               </button>
-
             </>
           ) : (
             <Link to="/login" className="text-sm mr-4">
