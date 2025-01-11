@@ -34,7 +34,6 @@ module.exports = (db) => {
                 ...coupon,
                 categories: coupon.categories ? coupon.categories.split(',') : []
             }));
-            console.log("formattedResult : ", formattedResult);
             res.send(formattedResult);
         });
     });
@@ -45,7 +44,7 @@ module.exports = (db) => {
             if(err) {
                 return res.status(500).send(err);
             }
-            res.send(result);
+            res.send({message: "쿠폰 추가 완료"});
         })
     })
     router.post("/extract", upload.single('image'), async (req, res) => {

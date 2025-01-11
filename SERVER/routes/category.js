@@ -15,7 +15,6 @@ module.exports = (db) => {
   // 카테고리 추가 API
   router.post("/", (req, res) => {
     const { name, user_id } = req.body;
-    console.log(req.body);
     const query = "INSERT INTO coupon_categories (name, user_id) VALUES (?, ?)";
     db.query(query, [name, user_id], (err, result) => {
       if (err) {

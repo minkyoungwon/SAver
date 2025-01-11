@@ -52,7 +52,6 @@ const App = () => {
   }, []);
 
   // CLIENT 세션 만료 처리 여부 확인인
-  // 0102 mkw add
   useEffect(() => {
     const checkSession = setInterval(() => {
       const token = localStorage.getItem("token");

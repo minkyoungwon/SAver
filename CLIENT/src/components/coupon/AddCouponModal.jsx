@@ -27,7 +27,7 @@ const AddCouponModal = ({ setIsModalOpen }) => {
       const formData = new FormData();
       formData.append("image", selectedFile);
 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon/extract`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupons/extract`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -62,8 +62,12 @@ const AddCouponModal = ({ setIsModalOpen }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon`, couponInfo);
-        setIsModalOpen(false);
+        try {
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/coupons`, couponInfo);
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error("쿠폰 추가 중 오류 발생:", error.response?.data || error.message);
+        }
     };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
