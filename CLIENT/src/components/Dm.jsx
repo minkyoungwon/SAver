@@ -17,6 +17,9 @@ const DM = () => {
   // 웹소켓 관련
   const [socket, setSocket] = useState(null);
 
+  const [searchTriggered, setSearchTriggered] = useState(false); // 검색 여부 상태 추가
+
+
 
   // 1) 로컬 스토리지에서 로그인 사용자 정보를 꺼내서 currentUser에 저장
   useEffect(() => {
@@ -58,17 +61,47 @@ const DM = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (Array.isArray(response.data)) {
+
+      setSearchTriggered(true); // 검색 버튼이 눌렸음을 표시
+
+      if (Array.isArray(response.data) && response.data.length > 0) {
         setSearchResults(response.data);
       } else {
-        console.error("Unexpected API response 형식:", response.data);
-        setSearchResults([]);
+        setSearchResults([]); // 결과 없음
       }
     } catch (error) {
       console.error("검색 오류:", error);
+      setSearchTriggered(true);
       setSearchResults([]);
     }
   };
+
+
+
+  // const searchUser = async () => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const response = await axios.get(`/api/dm/search?query=${searchQuery}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     if (Array.isArray(response.data)) {
+  //       alert("유저 확인중중.");
+  //       setSearchResults(response.data);
+  //     } else {
+  //       console.error("Unexpected API response 형식:", response.data);
+  //       alert("검색 결과가 없습니다.");
+  //       setSearchResults([]);
+
+  //     }
+  //   } catch (error) {
+  //     console.error("검색 오류:", error);
+  //     alert("검색 결과가 없습니다.");
+  //     setSearchResults([]);
+
+  //   }
+  // };
 
   // 4) 유저 선택 시 대화 기록 불러오기
   const selectUser = (user) => {
@@ -138,33 +171,49 @@ const DM = () => {
   // 6) 화면 렌더링
   return (
     <div>
-      <h2>Direct Message</h2>
-      {/* 유저 검색 섹션 */}
       <div>
-        <input
-          type="text"
-          placeholder="유저 이메일 검색"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button className="bg-blue-500 font-semibold text-white py-2 px-3"onClick={searchUser}>검색</button>
-      </div>
-      <ul>
-        {Array.isArray(searchResults) &&
-          searchResults.map((user) => (
-            <div>
-              <li className="text-blue-700 font-medium">{user.email}님이 확인 되었습니다.</li>
-              <button
-                key={user.id}
-                onClick={() => selectUser(user)}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-200"
-              >
-                {user.email} 님과 대화하기
-              </button>
-            </div>
+        <h2>Direct Message</h2>
+        {/* 유저 검색 섹션 */}
+        <div>
+          <input
+            type="text"
+            placeholder="유저 이메일 혹은 아이디 앞부분 검색"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button
+            className="bg-blue-500 font-semibold text-white py-2 px-3"
+            onClick={searchUser}
+          >
+            검색
+          </button>
+        </div>
+        <ul>
+          {searchTriggered ? (
+            Array.isArray(searchResults) && searchResults.length > 0 ? (
+              searchResults.map((user) => (
+                <div key={user.id}>
+                  <li className="text-blue-700 font-medium">
+                    {user.email}님이 확인 되었습니다.
+                  </li>
+                  <button
+                    onClick={() => selectUser(user)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-200"
+                  >
+                    {user.email} 님과 대화하기
+                  </button>
+              </div>
+                  ))
+                  ) : (
+                  <li className="text-gray-500 font-medium">
+                    검색하신 결과가 나오지 않습니다.
+                  </li>
+                  )
+        ) : null}
+                </ul>
+    </div>
 
-          ))}
-      </ul>
+
 
       {/* 선택된 유저와의 대화 섹션 */}
       {selectedUser && (
