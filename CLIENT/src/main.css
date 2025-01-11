@@ -1,5 +1,6 @@
 /* @import "animate.css"; */
 
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,9 +11,9 @@
   body {
     margin: 0;
     padding: 0;
+    background-color: #ffffff;
     min-height: 100vh;
-    background-color: #fdfdfd;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 
   .content-wrapper {
@@ -21,15 +22,15 @@
 
   @screen md {
     .content-wrapper {
-      margin-left: 20%;
-      margin-right: 20%;
+      margin-left: 15%;
+      margin-right: 15%;
     }
   }
 }
 
 @layer components {
   .badge {
-    @apply text-xs w-[60px] py-0.5 text-center bg-emerald-200 rounded-full;
+    @apply text-xs font-semibold text-emerald-700 w-[65px] p-1 text-center bg-emerald-200 rounded-full;
   }
 }
 

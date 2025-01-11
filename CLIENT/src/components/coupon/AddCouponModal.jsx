@@ -60,13 +60,13 @@ const AddCouponModal = ({ setIsModalOpen }) => {
     }));
   };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon`, couponInfo);
-        setIsModalOpen(false);
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon`, couponInfo);
+    setIsModalOpen(false);
+  };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <div>
           <span className="text-2xl font-bold mb-4">쿠폰 추가</span>

@@ -44,7 +44,7 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
   };
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center ">
-      <div className="pb-6 mr-10 w-[380px] h-[70vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md">
+      <div className="pb-6 w-[400px] h-[80vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md">
         {/* 공유하기 + 사용체크박스 */}
         <div className=" sticky top-0 z-50 pt-4 px-4 bg-stone-50 flex justify-between text-xs font-semibold  text-emerald-500 ">
           <button
