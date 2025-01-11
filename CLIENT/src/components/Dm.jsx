@@ -17,9 +17,8 @@ const DM = () => {
   // 웹소켓 관련
   const [socket, setSocket] = useState(null);
 
-  // ---------------------------
+
   // 1) 로컬 스토리지에서 로그인 사용자 정보를 꺼내서 currentUser에 저장
-  // ---------------------------
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     const userEmail = localStorage.getItem("userEmail");
@@ -31,15 +30,13 @@ const DM = () => {
     }
   }, []);
 
-  // ---------------------------
   // 2) WebSocket 연결
-  // ---------------------------
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8080");
     setSocket(ws);
 
     ws.onmessage = (event) => {
-      const parsedData = JSON.parse(event.data); 
+      const parsedData = JSON.parse(event.data);
       setMessages((prevMessages) => [...prevMessages, parsedData]);
     };
 
@@ -52,9 +49,7 @@ const DM = () => {
     };
   }, []);
 
-  // ---------------------------
   // 3) 유저 검색 기능
-  // ---------------------------
   const searchUser = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -75,9 +70,7 @@ const DM = () => {
     }
   };
 
-  // ---------------------------
   // 4) 유저 선택 시 대화 기록 불러오기
-  // ---------------------------
   const selectUser = (user) => {
     setSelectedUser(user);
     fetchMessages(user.id);
@@ -97,9 +90,7 @@ const DM = () => {
     }
   };
 
-  // ---------------------------
   // 5) 메시지 전송
-  // ---------------------------
   const sendMessage = async () => {
     if (!socket) {
       console.error("WebSocket 연결이 설정되지 않았습니다.");
@@ -144,9 +135,7 @@ const DM = () => {
     }
   };
 
-  // ---------------------------
   // 6) 화면 렌더링
-  // ---------------------------
   return (
     <div>
       <h2>Direct Message</h2>
@@ -158,45 +147,71 @@ const DM = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <button onClick={searchUser}>검색</button>
+        <button className="bg-blue-500 font-semibold text-white py-2 px-3"onClick={searchUser}>검색</button>
       </div>
       <ul>
         {Array.isArray(searchResults) &&
           searchResults.map((user) => (
-            <li key={user.id} onClick={() => selectUser(user)}>
-              {user.email}
-            </li>
+            <div>
+              <li className="text-blue-700 font-medium">{user.email}님이 확인 되었습니다.</li>
+              <button
+                key={user.id}
+                onClick={() => selectUser(user)}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-200"
+              >
+                {user.email} 님과 대화하기
+              </button>
+            </div>
+
           ))}
       </ul>
 
       {/* 선택된 유저와의 대화 섹션 */}
       {selectedUser && (
         <div>
-          <h3>{selectedUser.email}님과의 대화</h3>
-          <div>
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={
-                  msg.senderId === (currentUser?.id || "") ? "sent" : "received"
-                }
+          <div className="flex flex-col items-center justify-center bg-gray-100">
+            <h3 className="text-lg font-bold mb-4">
+              {selectedUser.email}님과의 대화 내용
+            </h3>
+
+            {/* 메시지 내용 섹션 */}
+            <div className="w-full max-w-md bg-white p-4 rounded shadow mb-4 overflow-y-auto h-64">
+              {messages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`${msg.senderId === (currentUser?.id || "") ? "text-right" : "text-left"
+                    } mb-2`}
+                >
+                  <p className="p-2 rounded-lg inline-block bg-gray-200">
+                    {msg.content}
+                  </p>
+                  <span className="text-sm text-gray-500 block">
+                    {msg.sent_at || "방금"}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* 텍스트 입력 섹션 */}
+            <div className="w-full max-w-md flex items-center">
+              <input
+                type="text"
+                placeholder="메시지를 입력하세요"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-grow p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring focus:ring-blue-300"
+              />
+              <button
+                onClick={sendMessage}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-r-lg"
               >
-                <p>{msg.content}</p>
-                <span>{msg.sent_at || "방금"}</span>
-              </div>
-            ))}
+                전송
+              </button>
+            </div>
           </div>
-          <input
-            type="text"
-            placeholder="메시지를 입력하세요"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <button onClick={sendMessage}>전송</button>
         </div>
       )}
     </div>
   );
 };
-
 export default DM;
