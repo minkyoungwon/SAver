@@ -44,12 +44,18 @@ const ImageUploader = ({ onImageUpload }) => {
           )}
         </div>
       </div>
-      <div className="w-full h-80 bg-gray-100 flex items-start justify-center rounded-md overflow-hidden" style={{ overflow: "auto", scrollbarWidth: "none" }}>
-        {selectedFile && <img src={URL.createObjectURL(selectedFile)} alt="업로드된 이미지" className="object-contain" style={{ width: "50%", height: "auto" }} />}
+      <div>
+        {selectedFile && (
+          <div className="w-full h-80 bg-gray-100 flex items-start justify-center rounded-md overflow-hidden" style={{ overflow: "auto", scrollbarWidth: "none" }}>
+            <img src={URL.createObjectURL(selectedFile)} alt="업로드된 이미지" className="object-contain" style={{ width: "50%", height: "auto" }} />
+          </div>
+        )}
+        {selectedFile && (
+          <button onClick={handleUploadClick} className="">
+            등록하기
+          </button>
+        )}
       </div>
-      <button onClick={handleUploadClick} className="">
-        등록하기
-      </button>
     </div>
   );
 };

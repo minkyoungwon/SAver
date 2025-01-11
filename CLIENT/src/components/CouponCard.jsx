@@ -1,15 +1,15 @@
 import React from "react";
 import CouponDetail from "./coupon/CouponDetail";
 import { useState } from "react";
-const CouponCard = ({ coupon, handleCouponClick }) => {
+const CouponCard = ({ coupon }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const floatDetailModal = () => {
+    setIsDetailModalOpen(!isDetailModalOpen);
+  };
 
   return (
     <>
-      <div
-        className="grid grid-cols-[120px_auto_70px] gap-4 p-4 border rounded-lg shadow-md bg-white cursor-pointer"
-        onClick={() => handleCouponClick(coupon)} // 카드를 클릭 시 home의 함수 호출
-      >
+      <div className="grid grid-cols-[120px_auto_70px] gap-4 p-4 border rounded-lg shadow-md bg-white cursor-pointer" onClick={floatDetailModal}>
         {/* 이미지 컬럼 */}
         <div className="h-[120px] flex items-center justify-center bg-gray-200 rounded-lg overflow-hidden">{coupon.imageSrc ? <img src={coupon.imageSrc} alt={coupon.title} className="object-cover w-full h-full" /> : <span className="text-gray-500 text-sm">이미지</span>}</div>
 
@@ -35,6 +35,8 @@ const CouponCard = ({ coupon, handleCouponClick }) => {
         <div className="hidden md:flex items-center justify-end">
           <p className="text-sm text-gray-500"> 유효기간: {coupon.expiryDate}</p>
         </div>
+
+        {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} coupon={coupon} />}
       </div>
     </>
   );
