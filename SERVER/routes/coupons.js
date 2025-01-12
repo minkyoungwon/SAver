@@ -38,13 +38,14 @@ module.exports = (db) => {
         });
     });
     router.post("/", (req, res) => {
-        const [userId, barcode, type, productName, expiryDate, storeName, orderNumber] = req.body;
-        const query = "INSERT INTO coupons (userId, barcode, type, productName, expiryDate, storeName, orderNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        console.log(req.body);
+        const {userId, barcode, type, productName, expiryDate, storeName, orderNumber} = req.body;
+        const query = "INSERT INTO coupons (user_id, barcode, type, name, deadline, usage_location, orderNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
         db.query(query, [userId, barcode, type, productName, expiryDate, storeName, orderNumber], (err, result) => {
             if(err) {
                 return res.status(500).send(err);
             }
-            res.send({message: "쿠폰 추가 완료"});
+            res.status(200).send("쿠폰 추가 완료");
         })
     })
     router.post("/extract", upload.single('image'), async (req, res) => {
@@ -68,5 +69,98 @@ module.exports = (db) => {
             return res.status(500).json({ error: '쿠폰 정보 처리 중 오류가 발생했습니다.' });
         }
     })
+    // 쿠폰 삭제
+    router.delete("/:coupon_id", (req, res) => {
+        const { coupon_id } = req.params;
+        const query = "DELETE FROM coupons WHERE id = ?";
+        
+        db.query(query, [coupon_id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: '쿠폰 삭제 중 오류가 발생했습니다.' });
+            }
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: '해당 쿠폰을 찾을 수 없습니다.' });
+            }
+            res.json({ message: "쿠폰이 성공적으로 삭제되었습니다." });
+        });
+    });
+
+    // 쿠폰 수정
+    router.put("/:coupon_id", (req, res) => {
+        const { coupon_id } = req.params;
+        const { name, note, deadline, status, categories } = req.body;
+        
+        // 트랜잭션 시작
+        db.beginTransaction((err) => {
+            if (err) {
+                return res.status(500).json({ error: '트랜잭션 시작 중 오류가 발생했습니다.' });
+            }
+
+            // 쿠폰 정보 업데이트
+            const updateQuery = `
+                UPDATE coupons 
+                SET name = ?, note = ?, deadline = ?, status = ?
+                WHERE id = ?`;
+            
+            db.query(updateQuery, [name, note, deadline, status, coupon_id], (err, result) => {
+                if (err) {
+                    return db.rollback(() => {
+                        res.status(500).json({ error: '쿠폰 수정 중 오류가 발생했습니다.' });
+                    });
+                }
+                
+                if (result.affectedRows === 0) {
+                    return db.rollback(() => {
+                        res.status(404).json({ error: '해당 쿠폰을 찾을 수 없습니다.' });
+                    });
+                }
+
+                // 기존 카테고리 관계 삭제
+                const deleteRelationsQuery = "DELETE FROM coupon_category_realations WHERE coupon_id = ?";
+                db.query(deleteRelationsQuery, [coupon_id], (err) => {
+                    if (err) {
+                        return db.rollback(() => {
+                            res.status(500).json({ error: '카테고리 관계 삭제 중 오류가 발생했습니다.' });
+                        });
+                    }
+
+                    // 새로운 카테고리 관계 추가
+                    if (categories && categories.length > 0) {
+                        const insertRelationsQuery = "INSERT INTO coupon_category_realations (coupon_id, category_id) VALUES ?";
+                        const values = categories.map(categoryId => [coupon_id, categoryId]);
+
+                        db.query(insertRelationsQuery, [values], (err) => {
+                            if (err) {
+                                return db.rollback(() => {
+                                    res.status(500).json({ error: '카테고리 관계 추가 중 오류가 발생했습니다.' });
+                                });
+                            }
+
+                            // 트랜잭션 커밋
+                            db.commit((err) => {
+                                if (err) {
+                                    return db.rollback(() => {
+                                        res.status(500).json({ error: '트랜잭션 커밋 중 오류가 발생했습니다.' });
+                                    });
+                                }
+                                res.json({ message: "쿠폰이 성공적으로 수정되었습니다." });
+                            });
+                        });
+                    } else {
+                        // 카테고리가 없는 경우 바로 커밋
+                        db.commit((err) => {
+                            if (err) {
+                                return db.rollback(() => {
+                                    res.status(500).json({ error: '트랜잭션 커밋 중 오류가 발생했습니다.' });
+                                });
+                            }
+                            res.json({ message: "쿠폰이 성공적으로 수정되었습니다." });
+                        });
+                    }
+                });
+            });
+        });
+    });
+
     return router;
 }
