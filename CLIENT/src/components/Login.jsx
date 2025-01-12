@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';  // Link 추가
-import GoogleLoginButton from '../components/GoogleLogin'; // Google 로그인 버튼 컴포넌트
+// import GoogleLoginButton from '../components/GoogleLogin'; // Google 로그인 버튼 컴포넌트
 
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
