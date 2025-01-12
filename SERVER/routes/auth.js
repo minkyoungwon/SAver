@@ -7,6 +7,8 @@ const db = require('../db');
 
 const crypto = require('crypto'); // 0102 add mkw 
 
+const { OAuth2Client } = require('google-auth-library');
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // module.exports = (db) => {
 // Nodemailer 설정
@@ -23,8 +25,11 @@ const transporter = nodemailer.createTransport({
 
 // JWT 인증 미들웨어 // 01월 01일 민경원 추가
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization; 
+  const authHeader = req.headers.authorization;
+  console.log("인증 요청 헤더:", authHeader);
+   
   if (!authHeader) {
+    console.log("토큰이 없습니다.");
     return res.status(401).json({ message: "로그인이 필요합니다 (인증 토큰이 필요합니다)" });
   }
 
@@ -34,26 +39,11 @@ const authenticateToken = (req, res, next) => {
       return res.status(403).json({ message: "토큰 검증 실패" });
     }
     // user = { id: ..., email: ... }
+    console.log("토큰 검증 성공:", user);
     req.user = user;
     next();
   });
 };
-
-// const authenticateToken = (req, res, next) => {
-//   const token = req.headers['authorization']?.split(' ')[1];
-//   if (!token) return res.status(401).send({ message: "로그인이 필요합니다." });
-
-//   jwt.verify(token, process.env.JWT_SECRET || "보안 jwt", (err, user) => {
-//     if (err) return res.status(403).send({ message: "유효하지 않은 토큰입니다." });
-//     req.user = user; // 토큰에서 디코딩한 사용자 정보를 요청 객체에 추가
-//     next();
-//   });
-// };
-
-
-
-// module.exports = { authenticateToken };
-
 
 // 로그인 라우트
 router.post('/login', async (req, res) => {
@@ -216,11 +206,47 @@ router.post("/verify-code", (req, res) => {
   }
 });
 
-//     return router;
-// }
+// Google 소셜 로그인 라우트
+router.post('/google-login', async (req, res) => {
+  const { tokenId } = req.body;
 
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: tokenId,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
 
-// 0101 민경원 수정정
+    const { email, name, picture } = ticket.getPayload();
+
+    const query = 'SELECT * FROM users WHERE email = ?';
+    db.query(query, [email], async (err, results) => {
+      if (err) {
+        console.error('DB 오류:', err);
+        return res.status(500).send({ message: '서버 오류' });
+      }
+
+      if (results.length === 0) {
+        const insertQuery = `
+          INSERT INTO users (email, password, profile_image, join_date, is_verified)
+          VALUES (?, NULL, ?, NOW(), true)
+        `;
+        db.query(insertQuery, [email, picture], (insertErr) => {
+          if (insertErr) {
+            console.error('회원가입 중 오류:', insertErr);
+            return res.status(500).send({ message: '회원가입 중 오류' });
+          }
+        });
+      }
+
+      const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.status(200).send({ token, user: { email, name, picture } });
+    });
+  } catch (error) {
+    console.error('Google 로그인 처리 오류:', error);
+    res.status(400).send({ message: 'Google 로그인 실패' });
+  }
+});
+
 module.exports = {
   authenticateToken, // 인증 미들웨어 내보내기
   createRouter: (db) => {

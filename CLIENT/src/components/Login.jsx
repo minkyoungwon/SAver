@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';  // Link 추가
-
+import GoogleLoginButton from '../components/GoogleLogin'; // Google 로그인 버튼 컴포넌트
 
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
@@ -12,8 +12,6 @@ const Login = ({ setUser }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-
-
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
       const { token } = response.data;
 
@@ -23,24 +21,8 @@ const Login = ({ setUser }) => {
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
       const userEmail = decodedToken.email;
       localStorage.setItem('userId', decodedToken.id); // 사용자 ID 저장 //게시글 작성자 확인용
-
       localStorage.setItem('userEmail', userEmail); // 대댓글 작성자 확인용
       setUser({ email: userEmail, id: decodedToken.id });
-
-      // // 0101 민경원 - auth.js 수정으로 인하여 경로 바꿈
-      // //const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, { email, password });
-      // const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
-      // // [추가] 0103 mkw
-      // const { token, email: userEmail } = response.data;
-      // localStorage.setItem('token', token);
-      // localStorage.setItem('userEmail', userEmail);  // 추가
-      // // 토큰 디코딩 후 사용자 정보 저장
-      // const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      // // setUser({ email: decodedToken.email, id: decodedToken.id })
-      // // // App.jsx의 user 상태를 이메일 아이디로 설정 (ex: ~~~@~~.com에서 @ 앞부분)
-      // // setUser(user.email.split('@')[0]);
-
-
 
       alert('로그인 성공!');
       navigate('/');
@@ -53,6 +35,14 @@ const Login = ({ setUser }) => {
     }
   };
 
+  const handleGoogleLoginSuccess = ({ token, user }) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('userEmail', user.email);
+    setUser(user);
+    alert('Google 로그인 성공!');
+    navigate('/');
+  };
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-400 to-cyan-400 p-4">
       <div className="w-full max-w-md p-8 rounded-2xl backdrop-blur-lg bg-white/30 shadow-xl border border-white/20">
@@ -96,6 +86,9 @@ const Login = ({ setUser }) => {
               회원가입
             </button>
           </Link>
+        </div>
+        <div className="mt-6">
+          <GoogleLoginButton onLoginSuccess={handleGoogleLoginSuccess} />
         </div>
       </div>
     </div>

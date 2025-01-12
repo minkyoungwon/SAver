@@ -15,6 +15,8 @@ import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
 import MyCoupons from "./pages/MyCoupons";
 import Intro from "./pages/Intro";
+import DM from "./components/dm";
+
 const App = () => {
   const getUserFromToken = () => {
     const token = localStorage.getItem("token");
@@ -86,6 +88,12 @@ const App = () => {
   const handleProfileClick = () => {
     navigate("/my-profile");
   };
+
+  //잠시 주석석
+  // const dm = () => {
+  //   navigate("/dm");
+  // };
+  
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -114,6 +122,8 @@ const App = () => {
         <Route path="/my-profile" element={<MyProfile user={user} />} />
         <Route path="/my-coupons" element={<MyCoupons coupons={coupons} />} />
         <Route path="/intro" element={<Intro />} />
+        {/* <Route path="/dm" element={<DM user={user}/>} /> */}
+        <Route path="/dm" element={<DM />} />
       </Routes>
     </>
   );
