@@ -34,61 +34,60 @@ async function extractBarcodeAndText(imageBuffer) {
         const barcodeText = reader.decode(binaryBitmap).getText();
         console.log('바코드 번호:', barcodeText);
 
-
-        const filteredImage = await sharp(imageBuffer)// 이미지 크기 조정 (선명도 향상)
-        .resize(1000, null, {
-          fit: "contain",
-          withoutEnlargement: true,
-        })
-        // 회색조 변환
-        .grayscale()
-        // 대비 크게 증가
-        .linear(3, -0.3) // 기울기(contrast)를 2.5로 증가, 밝기 조정
-        // 노이즈 제거
-        .median(1)
-        // 강한 이진화 처리
-        .threshold(241) // 임계값을 높여서 흐린 텍스트도 감지
-        .toBuffer();
+        const filteredImage = await sharp(imageBuffer) // 이미지 크기 조정 (선명도 향상)
+            .resize(1000, null, {
+                fit: 'contain',
+                withoutEnlargement: true,
+            })
+            // 회색조 변환
+            .grayscale()
+            // 대비 크게 증가
+            .linear(3, -0.3) // 기울기(contrast)를 2.5로 증가, 밝기 조정
+            // 노이즈 제거
+            .median(1)
+            // 강한 이진화 처리
+            .threshold(241) // 임계값을 높여서 흐린 텍스트도 감지
+            .toBuffer();
 
         async function barcodeNumberOCR(imagePath) {
-  try {
-        // 이미지 전처리 강화
-        const preprocessedImage = await sharp(imagePath)
-        // 이미지 크기 조정 (선명도 향상)
-        .resize(1000, null, {
-            fit: "contain",
-            withoutEnlargement: true,
-        })
-        // 회색조 변환
-        .grayscale()
-        // 대비 크게 증가
-        .linear(2.5, -0.3) // 기울기(contrast)를 2.5로 증가, 밝기 조정
-        // 노이즈 제거
-        .median(1)
-        // 강한 이진화 처리
-        .threshold(200) // 임계값을 높여서 흐린 텍스트도 감지
-        .toBuffer();
+            try {
+                // 이미지 전처리 강화
+                const preprocessedImage = await sharp(imagePath)
+                    // 이미지 크기 조정 (선명도 향상)
+                    .resize(1000, null, {
+                        fit: 'contain',
+                        withoutEnlargement: true,
+                    })
+                    // 회색조 변환
+                    .grayscale()
+                    // 대비 크게 증가
+                    .linear(2.5, -0.3) // 기울기(contrast)를 2.5로 증가, 밝기 조정
+                    // 노이즈 제거
+                    .median(1)
+                    // 강한 이진화 처리
+                    .threshold(200) // 임계값을 높여서 흐린 텍스트도 감지
+                    .toBuffer();
 
-        // Tesseract OCR 설정 최적화
-        const result = await Tesseract.recognize(
-        preprocessedImage,
-        "eng+kor", // 숫자만 인식할 것이므로 영어 모드로 충분
-        {
-            // tessedit_char_whitelist: "0123456789-", // 바코드 숫자와 하이픈만 인식
-            tessedit_pageseg_mode: "6", // PSM 6: Uniform block of text
-            // 이미지 전처리 설정
-            preserve_interword_spaces: "1",
-            textord_heavy_nr: "1",
-            textord_min_linesize: "1",
+                // Tesseract OCR 설정 최적화
+                const result = await Tesseract.recognize(
+                    preprocessedImage,
+                    'eng+kor', // 숫자만 인식할 것이므로 영어 모드로 충분
+                    {
+                        // tessedit_char_whitelist: "0123456789-", // 바코드 숫자와 하이픈만 인식
+                        tessedit_pageseg_mode: '6', // PSM 6: Uniform block of text
+                        // 이미지 전처리 설정
+                        preserve_interword_spaces: '1',
+                        textord_heavy_nr: '1',
+                        textord_min_linesize: '1',
+                    }
+                );
+
+                return result.data.text.trim();
+            } catch (error) {
+                console.error('바코드 OCR 처리 중 오류 발생:', error);
+                throw error;
+            }
         }
-        );
-
-        return result.data.text.trim();
-    } catch (error) {
-        console.error("바코드 OCR 처리 중 오류 발생:", error);
-        throw error;
-    }
-    }
         // OCR을 사용하여 이미지에서 텍스트를 추출
         const ocrResult = await tesseract.recognize(imageBuffer, 'eng+kor', {
             // Tesseract로 이미지에서 텍스트 추출 (영어와 한국어)
@@ -98,22 +97,20 @@ async function extractBarcodeAndText(imageBuffer) {
 
         const couponType = classifyCoupon(ocrResult.data.text);
 
-        if(couponType === 'kakao') {
+        if (couponType === 'kakao') {
             const productName = extractProductName(ocrResult.data.text);
-            const expiryDate = extractExpiryDate(ocrResult.data.text);
+            const expirationDate = extractexpirationDate(ocrResult.data.text);
             const storeName = extractStoreName(ocrResult.data.text);
-            const orderNumber = extractOrderNumber(ocrResult.data.text);
             //결과 객체 배열
             const couponInfo = {
                 barcode: barcodeText,
                 type: couponType,
                 productName: productName,
-                expiryDate: expiryDate,
+                expirationDate: expirationDate,
                 storeName: storeName,
-                orderNumber: orderNumber
             };
             return couponInfo;
-        } else if(couponType === 'gifticon') {
+        } else if (couponType === 'gifticon') {
         }
     } catch (error) {
         console.error('오류 발생', error.message);
@@ -129,23 +126,25 @@ const classifyCoupon = (text) => {
     } else {
         return '알 수 없음';
     }
-}
+};
 // 쿠폰 상품명 추출 함수
 const extractProductName = (text) => {
     // 상품명은 보통 여러 줄 중에서 가장 긴 한글 텍스트
     const lines = text.split('\n');
     let productName = '';
     let maxLength = 0;
-    
+
     for (const line of lines) {
         const trimmedLine = removeAllSpaces(line);
         // 한글이 포함된 라인 중에서 가장 긴 것을 상품명으로 간주
         if (trimmedLine.match(/[가-힣]/) && trimmedLine.length > maxLength) {
             // "교환처", "유효기간" 등의 키워드가 포함되지 않은 라인만 선택
-            if (!trimmedLine.includes('교환처') && 
-            !trimmedLine.includes('유효기간') &&
-            !trimmedLine.includes('선물하기') && 
-            !trimmedLine.includes('주문번호')) {
+            if (
+                !trimmedLine.includes('교환처') &&
+                !trimmedLine.includes('유효기간') &&
+                !trimmedLine.includes('선물하기') &&
+                !trimmedLine.includes('주문번호')
+            ) {
                 productName = trimmedLine;
                 maxLength = trimmedLine.length;
             }
@@ -160,9 +159,9 @@ const removeAllSpaces = (text) => {
 };
 
 // 유효기간 추출 함수 수정
-const extractExpiryDate = (text) => {
+const extractexpirationDate = (text) => {
     const noSpaceText = removeAllSpaces(text);
-    if (noSpaceText.includes("년")) {
+    if (noSpaceText.includes('년')) {
         const expiryMatch = noSpaceText.match(/유효기간(20\d{2})년(\d{2})월(\d{2})일/);
         if (expiryMatch) {
             return `${expiryMatch[1]}-${expiryMatch[2]}-${expiryMatch[3]}`;
@@ -186,13 +185,4 @@ const extractStoreName = (text) => {
     return null;
 };
 
-// 주문번호 추출 함수 수정
-const extractOrderNumber = (text) => {
-    const noSpaceText = removeAllSpaces(text);
-    const orderMatch = noSpaceText.match(/주문번호(\d+)/);
-    return orderMatch ? orderMatch[1] : null;
-};
-
-
-
-module.exports = {extractBarcodeAndText};
+module.exports = { extractBarcodeAndText };
