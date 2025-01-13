@@ -22,6 +22,7 @@ const searchRoutes = require("./routes/search"); //add 0105 mkw
 const categoryRoutes = require("./routes/category");
 const dmRoutes = require("./routes/dm");
 
+app.use(cors());
 
 //웹 소켓
 const WebSocket = require("ws");

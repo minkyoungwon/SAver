@@ -88,7 +88,7 @@ const Login = ({ setUser }) => {
           </Link>
         </div>
         <div className="mt-6">
-          <GoogleLoginButton onLoginSuccess={handleGoogleLoginSuccess} />
+          {/* <GoogleLoginButton onLoginSuccess={handleGoogleLoginSuccess} /> */}
         </div>
       </div>
     </div>

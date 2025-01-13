@@ -6,7 +6,7 @@ import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import ImageUploader from "../components/coupon/ImageUploader";
 import AddCouponInfo from "../components/coupon/AddCouponInfo";
-
+import ImageDropzone from "../components/common/ImageDropzone";
 function Home({ coupons, setCoupons }) {
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
   const [category, setCategory] = useState([]);
@@ -141,7 +141,7 @@ function Home({ coupons, setCoupons }) {
       <div className="body">
         <div className="hidden md:flex justify-center bg-white">
           <div className="이미지업로더창 w-full mx-[20%] mt-40 mb-52 min-w-[400px]">
-            <ImageUploader onImageUpload={handleImageUpload} />
+            {/* <ImageUploader onImageUpload={handleImageUpload} />
             {selectedFile && (
               <AddCouponInfo
                 selectedFile={selectedFile}
@@ -150,7 +150,8 @@ function Home({ coupons, setCoupons }) {
                   setSelectedFile(null);
                 }}
               />
-            )}
+            )} */}
+            <ImageDropzone selectedFile={selectedFile} onDrop={handleImageUpload} />
           </div>
         </div>
         <div className="content-wrapper">

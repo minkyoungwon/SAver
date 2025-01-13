@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
-import { useDropzone } from "react-dropzone";
 import axios from "axios";
+import ImageUploader from "./ImageUploader";
 
 const AddCouponModal = ({ setIsModalOpen }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -13,6 +13,11 @@ const AddCouponModal = ({ setIsModalOpen }) => {
     storeName: "",
     orderNumber: "",
   });
+  
+  const handleImageUpload = (file) => {
+    console.log("Home: ImageUploader에서 전달된 파일:", file);
+    setSelectedFile(file);
+  };
 
   const onDrop = useCallback(async (acceptedFiles) => {
     setSelectedFile(acceptedFiles[0]);
@@ -46,13 +51,6 @@ const AddCouponModal = ({ setIsModalOpen }) => {
       console.error("쿠폰 정보 추출 중 오류 발생:", error.response?.data || error.message);
     }
   };
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      "image/*": [".jpeg", ".jpg", ".png"],
-    },
-    multiple: false,
-  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -88,27 +86,7 @@ const AddCouponModal = ({ setIsModalOpen }) => {
         </div>
         <div className="mt-5">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <div className="bg-gray-200 flex items-center justify-center rounded-md overflow-hidden">{selectedFile && <img src={URL.createObjectURL(selectedFile)} alt="쿠폰 이미지" className="w-full h-60 object-cover" />}</div>
-            <div
-              {...getRootProps()}
-              className={`p-6 border-2 border-dashed rounded-lg 
-                        ${isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"} 
-                        cursor-pointer hover:border-blue-500 transition-colors`}
-            >
-              <input {...getInputProps()} />
-              <div className="text-center">
-                {selectedFile ? (
-                  <div>
-                    <p className="text-green-600">선택된 파일: {selectedFile.name}</p>
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-gray-600">이미지를 드래그하여 놓거나 클릭하여 선택하세요</p>
-                    <p className="text-sm text-gray-400">지원 형식: JPG, JPEG, PNG</p>
-                  </>
-                )}
-              </div>
-            </div>
+            <ImageUploader onImageUpload={handleImageUpload} />
             {couponInfo && (
               <div>
                 {couponInfo && (
@@ -124,7 +102,7 @@ const AddCouponModal = ({ setIsModalOpen }) => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700">유효기간</label>
-                        <input type="text" name="expiryDate" value={couponInfo.expiryDate} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                        <input type="text" name="expiryDate" value={couponInfo.expirationDate} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700">매장명</label>
