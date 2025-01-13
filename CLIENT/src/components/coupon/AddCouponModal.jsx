@@ -27,7 +27,7 @@ const AddCouponModal = ({ setIsModalOpen }) => {
       const formData = new FormData();
       formData.append("image", selectedFile);
 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon/extract`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupons/extract`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -62,8 +62,12 @@ const AddCouponModal = ({ setIsModalOpen }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon`, couponInfo);
-    setIsModalOpen(false);
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/coupons`, couponInfo);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("쿠폰 추가 중 오류 발생:", error.response?.data || error.message);
+    }
   };
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
@@ -76,7 +80,7 @@ const AddCouponModal = ({ setIsModalOpen }) => {
         </div>
         <div className="mt-5">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <div className="w-full h-60 bg-gray-200 flex items-center justify-center rounded-md overflow-hidden">{selectedFile && <img src={URL.createObjectURL(selectedFile)} alt="쿠폰 이미지" className="w-full h-full object-contain" />}</div>
+            <div className="bg-gray-200 flex items-center justify-center rounded-md overflow-hidden">{selectedFile && <img src={URL.createObjectURL(selectedFile)} alt="쿠폰 이미지" className="w-full h-60 object-cover" />}</div>
             <div
               {...getRootProps()}
               className={`p-6 border-2 border-dashed rounded-lg 

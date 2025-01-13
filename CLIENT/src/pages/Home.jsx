@@ -20,7 +20,13 @@ function Home({ coupons, setCoupons }) {
 
   // 선택한 카테고리 필터링
   const handleCategoryClick = (item) => {
-    const filteredCoupons = coupons.filter((coupon) => coupon.category === item);
+    const filteredCoupons = coupons.filter((coupon) => {
+      console.log("coupon.category : ", coupon.category, item);
+      if (coupon.category.includes(item.name)) {
+        return true;
+      }
+      return false;
+    });
     setFilteredCoupons(filteredCoupons);
   };
 
@@ -70,16 +76,26 @@ function Home({ coupons, setCoupons }) {
   useEffect(() => {
     fetchCoupons();
     fetchCategory();
-  }, []);
+  }, [setCoupons]);
 
   const fetchCoupons = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/coupon`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/coupons`, {
+        params: {
+          user_id: localStorage.getItem("userId"),
         },
       });
-      setCoupons(response.data);
+      const coupons = response.data.map((coupon) => ({
+        title: coupon.name,
+        description: coupon.note,
+        expiryDate: coupon.deadline,
+        category: coupon.categories,
+        status: coupon.status,
+        imageSrc: coupon.coupon_image,
+        id: coupon.id,
+      }));
+      console.log("coupons : ", coupons);
+      setCoupons(coupons);
     } catch (error) {
       console.error("쿠폰 조회 오류:", error);
     }
@@ -109,6 +125,16 @@ function Home({ coupons, setCoupons }) {
       console.error("카테고리 조회 실패:", error);
     }
   };
+
+  // coupons가 변경될 때 filteredCoupons도 업데이트
+  useEffect(() => {
+    if (selectedFilter === "all") {
+      setFilteredCoupons(coupons);
+    } else {
+      const filtered = coupons.filter((coupon) => coupon.status === selectedFilter);
+      setFilteredCoupons(filtered);
+    }
+  }, [coupons, selectedFilter]);
 
   return (
     <div>

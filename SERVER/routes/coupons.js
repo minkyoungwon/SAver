@@ -9,15 +9,34 @@ const upload = multer({ storage: storage });
 module.exports = (db) => {
     // 쿠폰 목록 조회
     router.get("/", (req, res) => {
-        const {userId} = req.body;
-        const query = "SELECT * FROM coupons WHERE userId = ?";
-        db.query(query, [userId], (err, result) => {
+        const { user_id } = req.query;
+        const query = `
+        SELECT 
+            c.id as coupon_id,
+            c.user_id,
+            c.name,
+            c.note,
+            c.deadline,
+            c.status,
+            c.coupon_image,
+            GROUP_CONCAT(DISTINCT cc.name) as categories
+        FROM coupons c
+        LEFT JOIN coupon_category_realations ccr ON c.id = ccr.coupon_id
+        LEFT JOIN coupon_categories cc ON cc.id = ccr.category_id
+        WHERE c.user_id = ?
+        GROUP BY c.id;`;
+        db.query(query, [user_id], (err, result) => {
             if(err) {
                 return res.status(500).send(err);
             }
-            res.send(result);
-        })
-    })
+            // GROUP_CONCAT으로 묶인 카테고리 문자열을 배열로 변환
+            const formattedResult = result.map(coupon => ({
+                ...coupon,
+                categories: coupon.categories ? coupon.categories.split(',') : []
+            }));
+            res.send(formattedResult);
+        });
+    });
     router.post("/", (req, res) => {
         const [userId, barcode, type, productName, expiryDate, storeName, orderNumber] = req.body;
         const query = "INSERT INTO coupons (userId, barcode, type, productName, expiryDate, storeName, orderNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -25,7 +44,7 @@ module.exports = (db) => {
             if(err) {
                 return res.status(500).send(err);
             }
-            res.send(result);
+            res.send({message: "쿠폰 추가 완료"});
         })
     })
     router.post("/extract", upload.single('image'), async (req, res) => {

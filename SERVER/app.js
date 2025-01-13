@@ -20,6 +20,33 @@ const authRoutes = require("./routes/auth").createRouter; // 0101 민경원 수�
 const postRoutes = require("./routes/posts");
 const searchRoutes = require("./routes/search"); //add 0105 mkw
 const categoryRoutes = require("./routes/category");
+const dmRoutes = require("./routes/dm");
+
+
+//웹 소켓
+const WebSocket = require("ws");
+
+const wss = new WebSocket.Server({ port: 8080 });
+
+wss.on("connection", (ws) => {
+  ws.on("message", (data) => {
+    const message = JSON.parse(data);
+    console.log("메시지 수신:", message);
+
+    // 다른 클라이언트에게 메시지 브로드캐스트
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(message));
+      }
+    });
+  });
+
+  ws.on("close", () => {
+    console.log("클라이언트 연결 종료");
+  });
+});
+
+
 // 미들웨어 설정
 
 // // CORS 설정
@@ -63,6 +90,9 @@ app.use("/api/password", passwordRoutes); // 추가 0103 mkw
 app.use("/api/search", searchRoutes); // add 0105 mkw
 // 카테고리 관련 라우트
 app.use("/api/category", categoryRoutes(db));
+// DM 관련 라우트
+app.use("/api/dm", dmRoutes);
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

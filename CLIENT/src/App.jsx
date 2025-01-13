@@ -15,6 +15,8 @@ import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
 import MyCoupons from "./pages/MyCoupons";
 import Intro from "./pages/Intro";
+import DM from "./components/dm";
+
 const App = () => {
   const getUserFromToken = () => {
     const token = localStorage.getItem("token");
@@ -52,7 +54,6 @@ const App = () => {
   }, []);
 
   // CLIENT 세션 만료 처리 여부 확인인
-  // 0102 mkw add
   useEffect(() => {
     const checkSession = setInterval(() => {
       const token = localStorage.getItem("token");
@@ -87,6 +88,12 @@ const App = () => {
   const handleProfileClick = () => {
     navigate("/my-profile");
   };
+
+  //잠시 주석석
+  // const dm = () => {
+  //   navigate("/dm");
+  // };
+  
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -94,55 +101,7 @@ const App = () => {
     navigate("/");
   };
 
-  const [coupons, setCoupons] = useState([
-    {
-      id: 1,
-      imageSrc: null, // 이미지 URL이 없을 경우 기본 "이미지" 텍스트가 표시됩니다.
-      title: "올리브영 50,000원",
-      description: "쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 디스크립션 쿠폰 ",
-      expiryDate: "2024.12.31",
-      category: "카테고리1",
-      status: "available",
-      // remain: "15,000",
-      // used: "35,000",
-    },
-    {
-      id: 2,
-      imageSrc: null,
-      title: "스타벅스 아메리카노",
-      description: "스타벅스 아메리카노 무료 쿠폰 스타벅스 아메리카노 무료 쿠폰스타벅스 아메리카노 ",
-      expiryDate: "2024.06.30",
-      category: "카테고리2",
-      status: "available",
-    },
-    {
-      id: 3,
-      imageSrc: null,
-      title: "배스킨라빈스 싱글레귤러",
-      description: "배스킨라빈스 아이스크림 싱글레귤러 교환권",
-      expiryDate: "2024.08.31",
-      category: "카테고리1",
-      status: "used",
-    },
-    {
-      id: 4,
-      imageSrc: null,
-      title: "CGV 영화 관람권",
-      description: "CGV 2D 일반 영화 관람권",
-      expiryDate: "2024.12.31",
-      category: "카테고리3",
-      status: "expired",
-    },
-    {
-      id: 5,
-      imageSrc: null,
-      title: "버거킹 와퍼",
-      description: "버거킹 와퍼 단품 교환권",
-      expiryDate: "2024.09.30",
-      category: "카테고리2",
-      status: "available",
-    },
-  ]);
+  const [coupons, setCoupons] = useState([]);
 
   return (
     <>
@@ -163,6 +122,8 @@ const App = () => {
         <Route path="/my-profile" element={<MyProfile user={user} />} />
         <Route path="/my-coupons" element={<MyCoupons coupons={coupons} />} />
         <Route path="/intro" element={<Intro />} />
+        {/* <Route path="/dm" element={<DM user={user}/>} /> */}
+        <Route path="/dm" element={<DM />} />
       </Routes>
     </>
   );

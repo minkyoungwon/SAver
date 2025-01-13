@@ -23,8 +23,11 @@ const transporter = nodemailer.createTransport({
 
 // JWT 인증 미들웨어 // 01월 01일 민경원 추가
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization; 
+  const authHeader = req.headers.authorization;
+  console.log("인증 요청 헤더:", authHeader);
+   
   if (!authHeader) {
+    console.log("토큰이 없습니다.");
     return res.status(401).json({ message: "로그인이 필요합니다 (인증 토큰이 필요합니다)" });
   }
 
@@ -34,6 +37,7 @@ const authenticateToken = (req, res, next) => {
       return res.status(403).json({ message: "토큰 검증 실패" });
     }
     // user = { id: ..., email: ... }
+    console.log("토큰 검증 성공:", user);
     req.user = user;
     next();
   });
