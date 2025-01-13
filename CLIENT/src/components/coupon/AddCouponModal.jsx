@@ -5,6 +5,8 @@ import axios from "axios";
 const AddCouponModal = ({ setIsModalOpen }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [couponInfo, setCouponInfo] = useState({
+    userId: "",
+    barcode: "",
     type: "",
     productName: "",
     expiryDate: "",
@@ -63,7 +65,13 @@ const AddCouponModal = ({ setIsModalOpen }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/coupons`, couponInfo);
+      const userId = localStorage.getItem("userId");
+      const couponData = {
+        ...couponInfo,
+        userId: userId,
+      };
+
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/coupons`, couponData);
       setIsModalOpen(false);
     } catch (error) {
       console.error("쿠폰 추가 중 오류 발생:", error.response?.data || error.message);

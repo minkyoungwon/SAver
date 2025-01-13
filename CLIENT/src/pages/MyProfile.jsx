@@ -56,21 +56,37 @@ console.log("현재 user 객체: ", user);
 
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <h2 className="text-2xl font-bold">내 프로필</h2>
-      <img
-        src={user?.profileImage || "https://via.placeholder.com/150"}
-        alt="프로필 이미지"
-        className="rounded-full w-32 h-32"
-      />
-      <p className="text-lg">이메일: {user?.email}</p>
-      <button
-        onClick={handleChangePassword}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
-        비밀번호 변경
-      </button>
-      {message && <p className="text-red-500">{message}</p>}
+    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
+        <div className="flex flex-col items-center space-y-6">
+          <h2 className="text-3xl font-extrabold text-gray-900">내 프로필</h2>
+          <div className="relative group">
+            <img
+              src={user?.profileImage || "https://via.placeholder.com/150"}
+              alt="프로필 이미지"
+              className="rounded-full w-40 h-40 object-cover border-4 border-blue-500 transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+          <div className="w-full space-y-4">
+            <div className="bg-gray-50 rounded-lg p-4">
+              <p className="text-lg text-gray-700">
+                <span className="font-semibold">이메일:</span> {user?.email}
+              </p>
+            </div>
+            <button
+              onClick={handleChangePassword}
+              className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-600 transform transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+            >
+              비밀번호 변경
+            </button>
+            {message && (
+              <p className="text-center py-2 px-4 rounded-lg bg-red-50 text-red-500">
+                {message}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
