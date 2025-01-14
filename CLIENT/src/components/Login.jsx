@@ -1,48 +1,71 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';  // Link 추가
-// import GoogleLoginButton from '../components/GoogleLogin'; // Google 로그인 버튼 컴포넌트
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google"; // @react-oauth/google 사용
+
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const Login = ({ setUser }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // 기존 일반 로그인 로직
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
       const { token } = response.data;
 
-      localStorage.setItem('token', token);
+      localStorage.setItem("token", token);
 
       // 토큰 디코딩 후 이메일과 ID 설정
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
       const userEmail = decodedToken.email;
-      localStorage.setItem('userId', decodedToken.id); // 사용자 ID 저장 //게시글 작성자 확인용
-      localStorage.setItem('userEmail', userEmail); // 대댓글 작성자 확인용
+      localStorage.setItem("userId", decodedToken.id); // 사용자 ID 저장
+      localStorage.setItem("userEmail", userEmail); // 이메일 저장
       setUser({ email: userEmail, id: decodedToken.id });
 
-      alert('로그인 성공!');
-      navigate('/');
+      alert("로그인 성공!");
+      navigate("/");
       setTimeout(() => {
         window.location.reload();
       }, 10);
     } catch (error) {
-      console.error('로그인 중 오류:', error);
-      alert('로그인에 실패하였습니다. 아이디 혹은 비밀번호를 확인해주세요.');
+      console.error("로그인 중 오류:", error);
+      alert("로그인에 실패하였습니다. 아이디 혹은 비밀번호를 확인해주세요.");
     }
   };
 
-  const handleGoogleLoginSuccess = ({ token, user }) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('userEmail', user.email);
-    setUser(user);
-    alert('Google 로그인 성공!');
-    navigate('/');
+  // 구글 로그인 성공 처리
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const { credential } = credentialResponse;
+
+      // 구글에서 받은 credential을 서버로 전송
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/socialAuth/google-login`, { // 수정정
+        tokenId: credential,
+      });
+
+      const { token, user } = response.data;
+      localStorage.setItem("token", token);
+      setUser(user);
+
+      alert("구글 로그인 성공!");
+      navigate("/");
+    } catch (error) {
+      console.error("구글 로그인 처리 중 오류:", error);
+      alert("구글 로그인에 실패했습니다.");
+    }
   };
-  
+
+  // 구글 로그인 실패 처리
+  const handleGoogleFailure = (error) => {
+    console.error("구글 로그인 실패:", error);
+    alert("구글 로그인에 실패했습니다. 다시 시도해주세요.");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-400 to-cyan-400 p-4">
       <div className="w-full max-w-md p-8 rounded-2xl backdrop-blur-lg bg-white/30 shadow-xl border border-white/20">
@@ -87,8 +110,13 @@ const Login = ({ setUser }) => {
             </button>
           </Link>
         </div>
+
+        {/* 구글 로그인 */}
         <div className="mt-6">
-          {/* <GoogleLoginButton onLoginSuccess={handleGoogleLoginSuccess} /> */}
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleFailure}
+          />
         </div>
       </div>
     </div>

@@ -156,7 +156,7 @@ function Home({ coupons, setCoupons }) {
         </div>
         <div className="content-wrapper">
           <div className="필터박스 sticky top-[10px] z-10 h-40 bg-white">
-            <div className="필터탭 flex justify-start space-x-12 mb-6">
+            <div className="필터탭 flex justify-start space-x-4 sm:space-x-12 mb-6">
               {[
                 { label: "사용가능", filter: "available" },
                 { label: "기간만료", filter: "expired" },

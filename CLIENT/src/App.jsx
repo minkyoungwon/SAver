@@ -17,7 +17,12 @@ import MyCoupons from "./pages/MyCoupons";
 import Intro from "./pages/Intro";
 import DM from "./components/dm";
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 const App = () => {
+
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
   const getUserFromToken = () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -104,6 +109,8 @@ const App = () => {
   const [coupons, setCoupons] = useState([]);
 
   return (
+    // GoogleOAuthProvider 감싸는거 추가함함 0114 mkw
+    <GoogleOAuthProvider clientId={clientId}> 
     <>
       {location.pathname !== "/intro" && location.pathname !== "/login" && location.pathname !== "/signup" && <Header user={user} handleLogout={handleLogout} />}
       <Routes>
@@ -126,6 +133,7 @@ const App = () => {
         <Route path="/dm" element={<DM />} />
       </Routes>
     </>
+    </GoogleOAuthProvider>
   );
 };
 

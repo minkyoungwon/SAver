@@ -12,7 +12,7 @@ const Header = ({ user, handleLogout }) => {
             <Link to="/">
               <img src={logo3} alt="logo" className=" mr-6 w-30 h-8 pb-1 rounded-md" />
             </Link>
-            <Link to="/my-coupons">
+            <Link to="/">
               <div className=" pr-6 hover: ">쿠폰</div>
             </Link>
             <Link to="/board">

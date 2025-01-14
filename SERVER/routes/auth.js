@@ -206,46 +206,8 @@ router.post("/verify-code", (req, res) => {
   }
 });
 
-// Google 소셜 로그인 라우트
-router.post('/google-login', async (req, res) => {
-  const { tokenId } = req.body;
 
-  try {
-    const ticket = await googleClient.verifyIdToken({
-      idToken: tokenId,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
 
-    const { email, name, picture } = ticket.getPayload();
-
-    const query = 'SELECT * FROM users WHERE email = ?';
-    db.query(query, [email], async (err, results) => {
-      if (err) {
-        console.error('DB 오류:', err);
-        return res.status(500).send({ message: '서버 오류' });
-      }
-
-      if (results.length === 0) {
-        const insertQuery = `
-          INSERT INTO users (email, password, profile_image, join_date, is_verified)
-          VALUES (?, NULL, ?, NOW(), true)
-        `;
-        db.query(insertQuery, [email, picture], (insertErr) => {
-          if (insertErr) {
-            console.error('회원가입 중 오류:', insertErr);
-            return res.status(500).send({ message: '회원가입 중 오류' });
-          }
-        });
-      }
-
-      const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      res.status(200).send({ token, user: { email, name, picture } });
-    });
-  } catch (error) {
-    console.error('Google 로그인 처리 오류:', error);
-    res.status(400).send({ message: 'Google 로그인 실패' });
-  }
-});
 
 module.exports = {
   authenticateToken, // 인증 미들웨어 내보내기

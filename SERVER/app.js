@@ -13,7 +13,7 @@ const db = require("./db");
 const flash = require("connect-flash");
 const path = require("path");
 
-const passwordRoutes = require("./routes/password"); // 추가 0103 mkw
+const passwordRoutes = require("./routes/password");
 
 const couponRoutes = require("./routes/coupons");
 const authRoutes = require("./routes/auth").createRouter; // 0101 민경원 수정정
@@ -23,6 +23,9 @@ const categoryRoutes = require("./routes/category");
 const dmRoutes = require("./routes/dm");
 
 app.use(cors());
+
+//소셜로그인
+const socialAuth = require("./routes/socialAuth")
 
 //웹 소켓
 const WebSocket = require("ws");
@@ -93,6 +96,10 @@ app.use("/api/search", searchRoutes); // add 0105 mkw
 app.use("/api/category", categoryRoutes(db));
 // DM 관련 라우트
 app.use("/api/dm", dmRoutes);
+// 소셜 로그인 라우트
+app.use("/api/socialAuth",socialAuth(db));
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
