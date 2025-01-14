@@ -125,48 +125,34 @@ const DM = () => {
 
   // 5) 메시지 전송
   const sendMessage = async () => {
-    if (!socket) {
-      console.error("WebSocket 연결이 설정되지 않았습니다.");
-      return;
-    }
-    if (!selectedUser || !selectedUser.id) {
-      console.error("선택된 사용자가 없습니다.");
-      return;
-    }
-    if (!currentUser || !currentUser.id) {
-      console.error("로그인된 사용자가 없습니다.");
+    if (!selectedUser || !selectedUser.email) {
+      console.error("수신자의 이메일 정보가 없습니다.");
       return;
     }
     if (!message) {
-      console.error("메시지가 비어 있습니다.");
+      console.error("메시지 내용이 비어 있습니다.");
       return;
     }
-
+  
     const messageData = {
-      senderId: currentUser.id,
-      receiverId: selectedUser.id,
+      receiverId: selectedUser.email, // 선택된 사용자의 이메일 전달
       content: message,
     };
-
+  
     try {
       const token = localStorage.getItem("token");
-      // REST API로 메시지 저장 요청
       await axios.post(`/api/dm/send`, messageData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      // WebSocket으로 메시지 전송
-      socket.send(JSON.stringify(messageData));
-
-      // 전송 성공 후 상태 업데이트
       setMessages((prevMessages) => [...prevMessages, messageData]);
       setMessage("");
     } catch (error) {
       console.error("메시지 전송 중 오류 발생:", error);
     }
   };
+  
 
   // 6) 화면 렌더링
   return (

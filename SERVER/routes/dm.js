@@ -23,24 +23,23 @@ router.get("/search", authenticateToken, (req, res) => {
   });
 
   // 메시지 보내기 및 저장
-router.post("/send", authenticateToken, (req, res) => {
+  router.post("/send", authenticateToken, (req, res) => {
 	const { receiverId, content } = req.body;
-	const senderId = req.user.id; // JWT에서 가져온 사용자 ID
+	const senderEmail = req.user.email; // JWT에서 가져온 사용자 이메일
   
 	if (!receiverId || !content) {
-	  return res.status(400).send({ message: "잘못된 요청입니다. 수신자와 내용을 확인하세요." });
+	  return res.status(400).send({ message: "수신자와 내용을 확인하세요." });
 	}
   
 	const query = "INSERT INTO dm_direct_messages (sender_id, receiver_id, content) VALUES (?, ?, ?)";
-	db.query(query, [senderId, receiverId, content], (err, result) => {
+	db.query(query, [senderEmail, receiverId, content], (err, result) => {
 	  if (err) {
 		console.error("메시지 저장 중 오류 발생:", err);
 		return res.status(500).send({ message: "메시지 저장 중 오류가 발생했습니다.", error: err });
 	  }
-	  console.log("메시지 저장 성공:", result);
 	  res.status(201).send({
 		message: "메시지가 성공적으로 저장되었습니다.",
-		data: { id: result.insertId, senderId, receiverId, content },
+		data: { id: result.insertId, senderEmail, receiverId, content },
 	  });
 	});
   });

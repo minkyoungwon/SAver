@@ -37,6 +37,12 @@ wss.on("connection", (ws) => {
     const message = JSON.parse(data);
     console.log("메시지 수신:", message);
 
+    // 메시지 데이터 검증
+    if (!message.senderId || !message.receiverId || !message.content) {
+      console.error("잘못된 메시지 데이터");
+      return;
+    }
+
     // 다른 클라이언트에게 메시지 브로드캐스트
     wss.clients.forEach((client) => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
@@ -49,6 +55,7 @@ wss.on("connection", (ws) => {
     console.log("클라이언트 연결 종료");
   });
 });
+
 
 
 // 미들웨어 설정
