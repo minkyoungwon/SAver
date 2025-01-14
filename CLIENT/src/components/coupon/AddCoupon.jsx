@@ -1,7 +1,5 @@
 import AddCouponModal from "./AddCouponModal";
-import { useState } from "react";
-const AddCoupon = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const AddCoupon = ({setIsModalOpen, isModalOpen}) => {
     const floatModal = () => {
         setIsModalOpen(!isModalOpen);
     }

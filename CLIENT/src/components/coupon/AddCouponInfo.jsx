@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import AddCouponModal from "./AddCouponModal";
 import axios from "axios";
 
-const AddCouponInfo = ({ selectedFile, onModalClose }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen }) => {
   const [couponInfo, setCouponInfo] = useState(null);
 
   const fetchCouponInfo = async () => {
