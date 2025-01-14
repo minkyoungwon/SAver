@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import AddCouponModal from "./AddCouponModal";
 import axios from "axios";
 
-const AddCouponInfo = ({ selectedFile, onModalClose }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen }) => {
   const [couponInfo, setCouponInfo] = useState(null);
 
   const fetchCouponInfo = async () => {
@@ -13,11 +12,12 @@ const AddCouponInfo = ({ selectedFile, onModalClose }) => {
       const formData = new FormData();
       formData.append("image", selectedFile);
 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupon/extract`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupons/extract`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (response.data) {
+        console.log("response.data: ", response.data);
         setCouponInfo(response.data);
         setIsModalOpen(true); // Modal 열기
       } else {
@@ -32,7 +32,7 @@ const AddCouponInfo = ({ selectedFile, onModalClose }) => {
     fetchCouponInfo();
   }, [selectedFile]);
 
-  return <>{isModalOpen && couponInfo && <AddCouponModal couponInfo={couponInfo} setIsModalOpen={setIsModalOpen} onModalClose={onModalClose} />}</>;
+  return <>{isModalOpen && <AddCouponModal couponInfo={couponInfo} setIsModalOpen={setIsModalOpen} onModalClose={onModalClose} />}</>;
 };
 
 export default AddCouponInfo;

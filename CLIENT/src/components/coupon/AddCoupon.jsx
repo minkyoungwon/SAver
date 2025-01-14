@@ -1,7 +1,7 @@
 import AddCouponModal from "./AddCouponModal";
-import { useState } from "react";
-const AddCoupon = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+import ImageUploader from "./ImageUploader";
+import AddCouponInfo from "./AddCouponInfo";
+const AddCoupon = ({setIsModalOpen, isModalOpen}) => {
     const floatModal = () => {
         setIsModalOpen(!isModalOpen);
     }
@@ -13,7 +13,7 @@ const AddCoupon = () => {
         +
       </button>
     </div>
-    {isModalOpen && <AddCouponModal setIsModalOpen={setIsModalOpen}/>}
+    {isModalOpen && <AddCouponInfo setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen}/>}
     </>)
 }
 

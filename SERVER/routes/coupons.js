@@ -12,13 +12,14 @@ module.exports = (db) => {
         const { user_id } = req.query;
         const query = `
         SELECT 
-            c.id as coupon_id,
+            c.id,
             c.user_id,
             c.name,
             c.note,
             c.deadline,
             c.status,
             c.coupon_image,
+            c.usage_location,
             GROUP_CONCAT(DISTINCT cc.name) as categories
         FROM coupons c
         LEFT JOIN coupon_category_realations ccr ON c.id = ccr.coupon_id
@@ -39,12 +40,12 @@ module.exports = (db) => {
     });
     router.post('/', (req, res) => {
         console.log(req.body);
-        const { userId, barcode, type, productName, expirationDate, storeName } = req.body;
+        const { userId, barcode, type, productName, expirationDate, storeName, note } = req.body;
         const query =
-            'INSERT INTO coupons (user_id, barcode, type, name, deadline, usage_location) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            'INSERT INTO coupons (user_id, barcode, type, name, deadline, usage_location, note, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
         db.query(
             query,
-            [userId, barcode, type, productName, expirationDate, storeName],
+            [userId, barcode, type, productName, expirationDate, storeName, note, '사용가능'],
             (err, result) => {
                 if (err) {
                     return res.status(500).send(err);

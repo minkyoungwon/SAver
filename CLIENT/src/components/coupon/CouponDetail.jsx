@@ -12,12 +12,7 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
 
   // 목업 데이터 (바코드, 쿠폰이미지)
   // 목업 데이터 (db데이터 받아오면, 사용자 변경 가능한 데이터들)
-  const [couponData, setCouponData] = useState({
-    brand: "스타벅스",
-    desc: "카페아메리카노 T",
-    issueDate: "2024.06.01",
-    expiryDate: "2024.12.31",
-  });
+  const [couponData, setCouponData] = useState(coupon);
 
   // 데이터 변경 핸들러
   const handleChange = (e) => {
@@ -81,20 +76,20 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
             {/* brand */}
             <div className="flex items-center">
               <label className=" flex text-sm font-medium mr-7 pt-1">교환처</label>
-              <input type="text" name="brand" value={couponData.brand} onChange={handleChange} className=" text-sm flex-1 p-2 border bg-stone-50 rounded-lg  " />
+              <input type="text" name="brand" value={couponData.usage_location} onChange={handleChange} className=" text-sm flex-1 p-2 border bg-stone-50 rounded-lg  " />
             </div>
 
             {/* desc */}
             <div className="flex items-start">
               <label className=" flex text-sm font-medium pt-4 mr-10">상세</label>
-              <input type="text" name="desc" value={couponData.desc} onChange={handleChange} className=" text-sm flex-1 p-2 pb-12 border bg-stone-50 rounded-lg shadow-inner h-20" />
+              <input type="text" name="desc" value={couponData.description} onChange={handleChange} className=" text-sm flex-1 p-2 pb-12 border bg-stone-50 rounded-lg shadow-inner h-20" />
             </div>
 
-            {/* 발급일 */}
+            {/* 발급일
             <div className="flex items-center">
               <label className=" flex text-sm font-medium pt-1 mr-4">발행일자</label>
               <input type="text" name="issueDate" value={couponData.issueDate} onChange={handleChange} className=" text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner" />
-            </div>
+            </div> */}
 
             {/* 유효기간 */}
             <div className="flex">
