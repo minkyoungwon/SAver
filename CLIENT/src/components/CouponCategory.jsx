@@ -106,8 +106,8 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
 
       {/* 추가 모달 */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg">
+        <div className="fixed inset-0 top-0 flex items-center justify-center">
+          <div className="bg-gray-100 p-6 rounded-lg">
             <input 
               type="text" 
               placeholder="카테고리 추가" 
