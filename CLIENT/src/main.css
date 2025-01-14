@@ -32,6 +32,14 @@
   .badge {
     @apply text-xs font-semibold text-emerald-700 w-[65px] p-1 text-center bg-emerald-200 rounded-full;
   }
+  @layer components {
+    .btn-primary-s {
+      @apply px-4 py-2 rounded-lg text-sm font-medium  transition-all bg-emerald-400 text-white hover:bg-emerald-500  focus:bg-emerald-600 disabled:bg-gray-300;
+    }
+    .btn-primary-r {
+      @apply w-28 px-4 py-2 rounded-full text-sm font-medium  transition-all bg-emerald-400 text-white hover:bg-emerald-500  focus:bg-emerald-600 disabled:bg-gray-300;
+    }
+  }
 }
 
 @layer utilities {
@@ -95,14 +103,6 @@
   color: black;
 }
 
-/* body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background-color: #74C79E;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-} */
-
 .form-container {
   max-width: 600px;
   margin: 50px auto;
@@ -114,19 +114,23 @@
 
 input,
 select {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  font-size: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  transition: border-color 0.3s ease;
+  /* width: 100%; */
+  /* padding: 12px; */
+  font-size: 14px;
+  /* border: 2px solid #e0e0e0; */
+  /* transition: border-color 0.3s ease; */
 }
 
 input:focus,
 select:focus {
   outline: none;
   border-color: #34d399;
+}
+
+th {
+  font-size: 14px;
+  font-weight: 400;
+  color: #4b4b4b;
 }
 
 .signup-btn {
