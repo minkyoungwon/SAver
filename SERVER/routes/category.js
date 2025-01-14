@@ -4,8 +4,9 @@ const router = express.Router();
 module.exports = (db) => {
   // 카테고리 조회 API
   router.get("/", (req, res) => {
-    const query = "SELECT * FROM coupon_categories";
-    db.query(query, (err, result) => {
+    console.log("req.query.user_id : ", req.query.user_id);
+    const query = "SELECT * FROM coupon_categories where user_id = ?";
+    db.query(query, [req.query.user_id], (err, result) => {
       if (err) {
         return res.status(500).send(err);
       }
@@ -13,15 +14,23 @@ module.exports = (db) => {
     });
   });
   // 카테고리 추가 API
-  router.post("/", (req, res) => {
-    const { name, user_id } = req.body;
-    const query = "INSERT INTO coupon_categories (name, user_id) VALUES (?, ?)";
-    db.query(query, [name, user_id], (err, result) => {
-      if (err) {
-        return res.status(500).send(err);
+  router.post("/", async (req, res) => {
+    try {
+      const { name, user_id } = req.body;
+      if (!name || !user_id) {
+        return res.status(400).send("필수 파라미터가 누락되었습니다.");
       }
-      res.status(200).send("카테고리 추가 완료");
-    });
+      const query = "INSERT INTO coupon_categories (name, user_id) VALUES (?, ?)";
+      db.query(query, [name, user_id], (err, result) => {
+        if (err) {
+          return res.status(500).send(err);
+        }
+        res.status(200).send("카테고리 추가 완료");
+      });
+    } catch (error) {
+      console.error("카테고리 추가 에러:", error);
+      res.status(500).send("서버 에러가 발생했습니다.");
+    }
   });
 
   // 카테고리 수정 API

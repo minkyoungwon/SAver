@@ -6,12 +6,14 @@ import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import ImageUploader from "../components/coupon/ImageUploader";
 import AddCouponInfo from "../components/coupon/AddCouponInfo";
-import ImageDropzone from "../components/common/ImageDropzone";
 function Home({ coupons, setCoupons }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
   const [category, setCategory] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isImageInfoModalOpen, setIsImageInfoModalOpen] = useState(false);
+  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
 
   const handleImageUpload = (file) => {
     console.log("Home: ImageUploader에서 전달된 파일:", file);
@@ -44,6 +46,7 @@ function Home({ coupons, setCoupons }) {
   };
 
   const addCategory = async (input) => {
+    console.log("addCategory : ", input);
     if (input === "") {
       alert("카테고리를 입력해주세요.");
       return;
@@ -68,6 +71,7 @@ function Home({ coupons, setCoupons }) {
     );
     if (response.status === 200) {
       alert("카테고리 추가 완료");
+      fetchCategories();
     } else {
       alert("카테고리 추가 실패");
     }
@@ -75,7 +79,7 @@ function Home({ coupons, setCoupons }) {
 
   useEffect(() => {
     fetchCoupons();
-    fetchCategory();
+    fetchCategories();
   }, [setCoupons]);
 
   const fetchCoupons = async () => {
@@ -83,6 +87,9 @@ function Home({ coupons, setCoupons }) {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/coupons`, {
         params: {
           user_id: localStorage.getItem("userId"),
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       const coupons = response.data.map((coupon) => ({
@@ -93,6 +100,7 @@ function Home({ coupons, setCoupons }) {
         status: coupon.status,
         imageSrc: coupon.coupon_image,
         id: coupon.id,
+        usage_location: coupon.usage_location,
       }));
       console.log("coupons : ", coupons);
       setCoupons(coupons);
@@ -100,26 +108,26 @@ function Home({ coupons, setCoupons }) {
       console.error("쿠폰 조회 오류:", error);
     }
   };
-  const fetchCategory = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      setCategory(response.data);
-    } catch (error) {
-      console.error("카테고리 조회 오류:", error);
-    }
-  };
 
   const fetchCategories = async () => {
     try {
+      const userId = localStorage.getItem("userId");
+      console.log("fetchCategories userId:", userId);
+
+      if (!userId) {
+        console.error("userId가 없습니다!");
+        return;
+      }
+
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`, {
+        params: {
+          user_id: userId,
+        },
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+      console.log("response.data : ", response.data);
       setCategory(response.data);
     } catch (error) {
       console.error("카테고리 조회 실패:", error);
@@ -141,7 +149,7 @@ function Home({ coupons, setCoupons }) {
       <div className="body">
         <div className="hidden md:flex justify-center bg-white">
           <div className="이미지업로더창 w-full mx-[20%] mt-40 mb-52 min-w-[400px]">
-            {/* <ImageUploader onImageUpload={handleImageUpload} />
+            <ImageUploader onImageUpload={handleImageUpload} />
             {selectedFile && (
               <AddCouponInfo
                 selectedFile={selectedFile}
@@ -149,9 +157,10 @@ function Home({ coupons, setCoupons }) {
                   console.log("Home: Modal 닫기");
                   setSelectedFile(null);
                 }}
+                setIsModalOpen={setIsModalOpen}
+                isModalOpen={isModalOpen}
               />
-            )} */}
-            <ImageDropzone selectedFile={selectedFile} onDrop={handleImageUpload} />
+            )}
           </div>
         </div>
         <div className="content-wrapper">
@@ -220,7 +229,7 @@ function Home({ coupons, setCoupons }) {
             </div>
           </div>
         </div>
-        <AddCoupon />
+        {/* <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen}/> */}
       </div>
     </div>
   );

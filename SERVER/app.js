@@ -63,11 +63,7 @@ wss.on("connection", (ws) => {
 // // CORS 설정
 // 01.01 혹시 몰라서 민경원 추가
 app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
+  cors()
 );
 
 app.use(cookieParser());
