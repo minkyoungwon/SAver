@@ -6,7 +6,7 @@ import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import ImageUploader from "../components/coupon/ImageUploader";
 import AddCouponInfo from "../components/coupon/AddCouponInfo";
-import ImageDropzone from "../components/common/ImageDropzone";
+// import ImageDropzone from "../components/common/ImageDropzone";
 function Home({ coupons, setCoupons }) {
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
   const [category, setCategory] = useState([]);
@@ -144,14 +144,15 @@ function Home({ coupons, setCoupons }) {
             {/* <ImageUploader onImageUpload={handleImageUpload} />
             {selectedFile && (
               <AddCouponInfo
-                selectedFile={selectedFile}
-                onModalClose={() => {
-                  console.log("Home: Modal 닫기");
-                  setSelectedFile(null);
+              selectedFile={selectedFile}
+              onModalClose={() => {
+                console.log("Home: Modal 닫기");
+                setSelectedFile(null);
                 }}
-              />
-            )} */}
-            <ImageDropzone selectedFile={selectedFile} onDrop={handleImageUpload} />
+                />
+                )} */}
+
+            <ImageUploader selectedFile={selectedFile} onDrop={handleImageUpload} />
           </div>
         </div>
         <div className="content-wrapper">
