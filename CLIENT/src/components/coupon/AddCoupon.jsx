@@ -1,4 +1,6 @@
 import AddCouponModal from "./AddCouponModal";
+import ImageUploader from "./ImageUploader";
+import AddCouponInfo from "./AddCouponInfo";
 const AddCoupon = ({setIsModalOpen, isModalOpen}) => {
     const floatModal = () => {
         setIsModalOpen(!isModalOpen);
@@ -11,7 +13,7 @@ const AddCoupon = ({setIsModalOpen, isModalOpen}) => {
         +
       </button>
     </div>
-    {isModalOpen && <AddCouponModal setIsModalOpen={setIsModalOpen}/>}
+    {isModalOpen && <AddCouponInfo setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen}/>}
     </>)
 }
 

@@ -12,6 +12,8 @@ function Home({ coupons, setCoupons }) {
   const [category, setCategory] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isImageInfoModalOpen, setIsImageInfoModalOpen] = useState(false);
+  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
 
   const handleImageUpload = (file) => {
     console.log("Home: ImageUploader에서 전달된 파일:", file);
@@ -155,6 +157,8 @@ function Home({ coupons, setCoupons }) {
                   console.log("Home: Modal 닫기");
                   setSelectedFile(null);
                 }}
+                setIsModalOpen={setIsModalOpen}
+                isModalOpen={isModalOpen}
               />
             )}
           </div>
@@ -225,7 +229,7 @@ function Home({ coupons, setCoupons }) {
             </div>
           </div>
         </div>
-        <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen}/>
+        {/* <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen}/> */}
       </div>
     </div>
   );
