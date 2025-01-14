@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google"; // @react-oauth/google 사용
+import { GoogleLogin } from "@react-oauth/google";
 
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -11,20 +11,22 @@ const Login = ({ setUser }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // 기존 일반 로그인 로직
+  // 일반 로그인
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        { email, password }
+      );
       const { token } = response.data;
 
       localStorage.setItem("token", token);
 
-      // 토큰 디코딩 후 이메일과 ID 설정
       const decodedToken = JSON.parse(atob(token.split(".")[1]));
       const userEmail = decodedToken.email;
-      localStorage.setItem("userId", decodedToken.id); // 사용자 ID 저장
-      localStorage.setItem("userEmail", userEmail); // 이메일 저장
+      localStorage.setItem("userId", decodedToken.id);
+      localStorage.setItem("userEmail", userEmail);
       setUser({ email: userEmail, id: decodedToken.id });
 
       alert("로그인 성공!");
@@ -42,18 +44,30 @@ const Login = ({ setUser }) => {
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const { credential } = credentialResponse;
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/socialAuth/google-verify-only`,
+        { tokenId: credential }
+      );
 
-      // 구글에서 받은 credential을 서버로 전송
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/socialAuth/google-login`, { // 수정정
-        tokenId: credential,
-      });
-
-      const { token, user } = response.data;
-      localStorage.setItem("token", token);
-      setUser(user);
-
-      alert("구글 로그인 성공!");
-      navigate("/");
+      if (response.data.existingUser) {
+        const { token, user } = response.data;
+        localStorage.setItem("token", token);
+        setUser(user);
+        alert("구글 로그인 성공!");
+        navigate("/");
+      } else {
+        alert("새 소셜 사용자입니다. 회원가입이 필요합니다.");
+        navigate("/signup", {
+          state: {
+            googleUser: {
+              email: response.data.email,
+              googleId: response.data.googleId,
+              name: response.data.name,
+              picture: response.data.picture,
+            },
+          },
+        });
+      }
     } catch (error) {
       console.error("구글 로그인 처리 중 오류:", error);
       alert("구글 로그인에 실패했습니다.");
