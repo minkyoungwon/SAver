@@ -6,6 +6,7 @@ import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import ImageUploader from "../components/coupon/ImageUploader";
 import AddCouponInfo from "../components/coupon/AddCouponInfo";
+import Footer from "../components/Footer";
 function Home({ coupons, setCoupons }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
@@ -145,8 +146,8 @@ function Home({ coupons, setCoupons }) {
   }, [coupons, selectedFilter]);
 
   return (
-    <div>
-      <div className="body ">
+    <div className="min-h-screen flex flex-col">
+      <div className="main body flex-grow">
         <div className="hidden md:flex justify-center bg-white">
           <div className="이미지업로더창 w-full mx-[20%] mt-40 mb-52 min-w-[400px]">
             <ImageUploader onImageUpload={handleImageUpload} />
@@ -230,6 +231,7 @@ function Home({ coupons, setCoupons }) {
           </div>
         </div>
         <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} />
+      <Footer />
       </div>
     </div>
   );

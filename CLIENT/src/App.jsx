@@ -113,7 +113,6 @@ const App = () => {
     <GoogleOAuthProvider clientId={clientId}>
       <>
         {location.pathname !== "/intro" && location.pathname !== "/login" && location.pathname !== "/signup" && <Header user={user} handleLogout={handleLogout} />}
-        {/* {location.pathname !== "/intro" && location.pathname !== "/login" && location.pathname !== "/signup" && <Footer user={user} handleLogout={handleLogout} />} */}
         <Routes>
           <Route path="/" element={<Home coupons={coupons} setCoupons={setCoupons} />} />
           <Route path="/board" element={<Board posts={posts} user={user} />} />
