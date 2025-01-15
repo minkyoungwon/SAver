@@ -146,7 +146,7 @@ function Home({ coupons, setCoupons }) {
 
   return (
     <div>
-      <div className="body ">
+      <div className="body">
         <div className="hidden md:flex justify-center bg-white">
           <div className="이미지업로더창 w-full mx-[20%] mt-40 mb-52 min-w-[400px]">
             <ImageUploader onImageUpload={handleImageUpload} />
@@ -163,8 +163,8 @@ function Home({ coupons, setCoupons }) {
             )}
           </div>
         </div>
-        <div className="content-wrapper ">
-          <div className="필터박스 sticky top-[16px] z-10 h-40 pt-2 bg-white">
+        <div className="content-wrapper">
+          <div className="필터박스 sticky top-[10px] z-10 h-40 bg-white">
             <div className="필터탭 flex justify-start space-x-4 sm:space-x-12 mb-6">
               {[
                 { label: "사용가능", filter: "available" },
@@ -182,10 +182,10 @@ function Home({ coupons, setCoupons }) {
 
                     // 현재 클릭된 버튼의 필터 설정 및 스타일 적용
                     showFilteredCoupons(filter);
-                    e.target.style.transform = "scale(1)";
+                    e.target.style.transform = "scale(1.1)";
                   }}
                   className={`h-10 transition-all duration-300 
-                  ${selectedFilter === filter ? "text-emerald-400 font-semibold text-xl scale-100 " : "text-emerald-600 text-lg"}
+                  ${selectedFilter === filter ? "text-emerald-400 font-semibold text-xl scale-110 " : "text-emerald-600 text-lg"}
                   `}
                   style={{
                     transformOrigin: "bottom center", // 아래 중심 기준으로 크기 변경
@@ -193,7 +193,7 @@ function Home({ coupons, setCoupons }) {
                   onMouseEnter={(e) => {
                     // 호버 시 텍스트 크기와 스타일 변경
                     if (selectedFilter !== filter) {
-                      e.target.style.transform = "scale(1)";
+                      e.target.style.transform = "scale(1.1)";
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -222,14 +222,14 @@ function Home({ coupons, setCoupons }) {
               </div>
             </div>
             <div className="쿠폰카드 pb-4 space-y-4 h-screen overflow-auto no-scrollbar">
-              {filteredCoupons.length === 0 && <div className="flex justify-center align-middle my-40 text-gray-500">등록된 쿠폰이 없습니다</div>}
+              {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
               {filteredCoupons.map((coupon) => (
                 <CouponCard key={coupon.id} coupon={coupon} />
               ))}
             </div>
           </div>
         </div>
-        <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} />
+        {/* <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen}/> */}
       </div>
     </div>
   );
