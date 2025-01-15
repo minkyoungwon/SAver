@@ -62,12 +62,17 @@ const Board = ({ posts, user }) => {
       {/* <UiComponents /> */}
       {/* 상단에 검색 폼 추가 */}
       <div className="content-wrapper">
-        <div className="검색부 flex justify-end space-x-2 mt-12 mb-4  bg-red-200">
-          <form onSubmit={handleSearch} className="w-full md:w-[460px]">
-            <input type="text" placeholder="검색어를 입력하세요..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="flex w-full h-full px-4 border rounded-full " />
+        
+        <div className="검색부 flex justify-end space-x-2 mt-24 mb-8">
+          
+          <form onSubmit={handleSearch} className=" w-[260px]">
+            <input type="text" placeholder="검색어를 입력하세요..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="flex w-full h-full px-4 border rounded-full "/>
           </form>
-          <button className="btn-primary-r">검색하기</button>
+          <button className="btn-primary-r py-1.5">검색하기</button>
+
         </div>
+
+        
         {/* <div className="flex space-x-1">
         <div className="glitch-btn text-black rounded-md px-4 py-2 shadow hover:bg-green-600 transition rancing-btn">
         {user ? (
@@ -90,14 +95,21 @@ const Board = ({ posts, user }) => {
             <span className="absolute left-0 top-1 transform -translate-y-1 -translate-x-full group-hover:translate-x-[25%] transition-transform duration-1000 ease-in-out">😀</span>
             <span className="absolute left-0 top-1 transform -translate-y-1 -translate-x-full group-hover:translate-x-[800%] transition-transform duration-1000 ease-in-out">😀</span>
             </button> */}
-        <div className="테이블 bg-gray-200 ">
-          <table className="w-full border-collapse border min-h-[500px]">
+        
+        <div className="테이블부">
+          <div className="flex justify-start mb-2">
+            <Link to="/write" className="flex px-4 py-1 rounded-sm border bg-gray-100 hover:bg-emerald-500 hover:text-white transition">
+              게시글 작성하기
+            </Link>
+          </div>
+          
+          <table className="w-full border-collapse border  ">
             <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-200 p-2 ">번호</th>
-                <th className="border border-gray-200 p-2 ">제목</th>
-                <th className="border border-gray-200 p-2 ">이름</th>
-                <th className="border border-gray-200 p-2 ">작성시간</th>
+              <tr className="bg-gray-100 ">
+                <th className="border border-gray-200 p-2 w-12 text-center">번호</th>
+                <th className="border border-gray-200 p-2  text-center">제목</th>
+                <th className="border border-gray-200 p-2 w-20 text-center">이름</th>
+                <th className="border border-gray-200 p-2 w-44 text-center">작성시간</th>
               </tr>
             </thead>
             <tbody>
@@ -114,32 +126,27 @@ const Board = ({ posts, user }) => {
                       {post.author}
                     </Link>
                   </td>
-                  <td className="border border-gray-200 p-2 text-center text-green-700">{post.posted_at}</td>
+                  <td className="border border-gray-200 p-2 text-center text-green-900">{post.posted_at}</td>
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+           
         </div>
 
-        <div className="하단부 flex-row my-4 bg-red-200">
+        <div className="하단부 flex grid-flow-col mt-4 bg-white">
           {/* 페이지네이션 */}
-          <div className="flex justify-center bg-amber-100">
+          <div className="flex justify-center w-full  bg-white">
             {Array.from({ length: totalPages }, (_, i) => (
-              <button key={i} onClick={() => paginate(i + 1)} className={`mx-0.5 px-3 py-4 rounded ${currentPage === i + 1 ? "mx-0.5 px-5 py-0.5 bg-green-400 text-white" : "glitch-btn"}`}>
+              <button key={i} onClick={() => paginate(i + 1)}
+                className={`mx-3  ${currentPage === i + 1 ? "mx-3 text-emerald-400" : " mx-3 "}`}>
                 {i + 1}
               </button>
             ))}
           </div>
-          <div className="flex justify-end ">
-            <Link to="/write" className="flex btn-primary-r justify-center">
-              글쓰기
-            </Link>
-          </div>
-          {/* <div className="fixed bottom-4 right-4">
-            <Link to="/write" className="glitch-btn text-black rounded-md px-4 py-2 shadow hover:bg-green-600 transition">
-              글쓰기
-            </Link>
-          </div> */}
+          
+          
+          
         </div>
       </div>
     </div>

@@ -37,7 +37,7 @@
       @apply px-4 py-2 rounded-lg text-sm font-medium  transition-all bg-emerald-400 text-white hover:bg-emerald-500  focus:bg-emerald-600 disabled:bg-gray-300;
     }
     .btn-primary-r {
-      @apply w-28 px-4 py-2 rounded-full text-sm font-medium  transition-all bg-emerald-400 text-white hover:bg-emerald-500  focus:bg-emerald-600 disabled:bg-gray-300;
+      @apply px-4 py-2 rounded-full text-sm font-medium  transition-all bg-emerald-400 text-white hover:bg-emerald-500  focus:bg-emerald-600 disabled:bg-gray-300;
     }
   }
 }

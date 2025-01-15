@@ -10,7 +10,7 @@ const Header = ({ user, handleLogout }) => {
   return (
     <div className=" sticky top-0 z-10 ">
       <header>
-        <div className="py-4 px-[16px] md:px-[15%] text-lg w-full flex justify-between items-center text-emerald-600  bg-white">
+        <div className="py-4 px-[16px] md:px-[15%] text-lg w-full flex justify-between items-center text-emerald-600 bg-white">
           <nav className="flex justify-center items-center">
             <Link to="/">
               <img src={logo3} alt="logo" className=" mr-6 w-30 h-8 pb-1 rounded-md" />
@@ -26,18 +26,18 @@ const Header = ({ user, handleLogout }) => {
           <nav className="flex justify-end space-x-4">
             {user ? (
               <>
-                <Link to="/my-profile" className="text-sm mr-4">
+                <Link to="/dm" className="text-sm">
+                  DM
+                </Link>
+                <Link to="/my-profile" className="text-sm">
                   마이페이지
                 </Link>
-                <Link to="/dm" className="test-sm mr-4">
-                  DM 칸
-                </Link>
-                <button onClick={handleLogout} className="text-sm mr-4">
+                <button onClick={handleLogout} className="text-sm">
                   로그아웃
                 </button>
               </>
             ) : (
-              <Link to="/login" className="text-sm  ">
+              <Link to="/login" className="text-sm">
                 로그인
               </Link>
             )}
