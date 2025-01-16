@@ -40,6 +40,15 @@
     .btn-primary-r {
       @apply px-4 py-2 rounded-full text-sm font-medium  transition-all bg-emerald-400 text-white hover:bg-emerald-500  focus:bg-emerald-600 disabled:bg-gray-300;
     }
+    .modal-btn-add {
+      @apply rounded-md bg-emerald-400 hover:bg-emerald-600 w-20 h-7 text-white
+    }
+    .modal-btn-close {
+      @apply rounded-md bg-gray-200 hover:bg-gray-300 w-20 h-7 text-gray-600
+    }
+    .CategoryAddModal {
+      @apply p-6 rounded-md shadow-md bg-neutral-50
+    }
   }
 }
 

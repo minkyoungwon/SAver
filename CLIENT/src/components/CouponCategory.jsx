@@ -71,7 +71,7 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if(response.status === 200) {
+      if (response.status === 200) {
         alert("카테고리 삭제 완료");
         closeEditModal();
       }
@@ -82,20 +82,20 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
   }
   return (
     <>
-      <div className="justify-center items-center">
-        <button 
-          onClick={() => openModal()} 
+      <div className="relative justify-center items-center">
+        <button
+          onClick={() => openModal()}
           className="rounded-full bg-gray-100 hover:bg-gray-200 mr-4 w-16 h-7 text-gray-600 inline-block"
         >
           +
         </button>
         {category.map((item) => (
-          <button 
-            key={item.id} 
-            onClick={() => handleCategoryButtonClick(item)} 
+          <button
+            key={item.id}
+            onClick={() => handleCategoryButtonClick(item)}
             className={`rounded-full mr-4 px-3 py-1 mb-2 inline-block
-              ${selectedCategory === item 
-                ? 'bg-blue-100 text-blue-600' 
+              ${selectedCategory === item
+                ? 'bg-blue-100 text-blue-600'
                 : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
               }`}
           >
@@ -106,20 +106,20 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
 
       {/* 추가 모달 */}
       {isModalOpen && (
-        <div className="fixed inset-0 top-0 flex items-center justify-center">
-          <div className="bg-gray-100 p-6 rounded-lg">
-            <input 
-              type="text" 
-              placeholder="카테고리 추가" 
-              value={input} 
-              onChange={(e) => setInput(e.target.value)} 
-              className="border p-2 rounded"
+        <div className="absolute left-0 mt-2 flex">
+          <div className="CategoryAddModal">
+            <input
+              type="text"
+              placeholder="카테고리 추가"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="w-full border p-2 rounded-md"
             />
-            <div className="flex justify-end gap-4 mt-4">
-              <button onClick={addCategoryFunction} className="bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600">
+            <div className="flex justify-end gap-2 mt-3">
+              <button onClick={addCategoryFunction} className="modal-btn-add">
                 추가
               </button>
-              <button onClick={closeModal} className="bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600">
+              <button onClick={closeModal} className="modal-btn-close">
                 닫기
               </button>
             </div>
@@ -132,11 +132,11 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg">
             <h3 className="text-lg font-medium mb-4">카테고리 수정</h3>
-            <input 
-              type="text" 
-              placeholder="카테고리 수정" 
-              value={input} 
-              onChange={(e) => setInput(e.target.value)} 
+            <input
+              type="text"
+              placeholder="카테고리 수정"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
               className="border p-2 rounded w-full mb-4"
             />
             <button onClick={deleteCategoryFunction} className="bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600">

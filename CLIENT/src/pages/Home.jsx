@@ -216,8 +216,8 @@ function Home({ coupons, setCoupons }) {
           </div>
 
           <div className="mb-32">
-            <div className="sticky top-[160px] z-10 flex justify-between text-base mb-0 text-gray-500 bg-white p-4">
-              <p className="pb-6">유효기간순</p>
+            <div className="sticky top-[160px] z-10 flex justify-between text-base text-gray-500 bg-white p-4">
+              <p>유효기간순</p>
               <div>
                 <span>조회쿠폰 : </span>
                 <span className="font-semibold text-black">{filteredCoupons.length}개</span>
