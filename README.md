@@ -12,14 +12,25 @@
 > ```shell
 > git clone https://github.com/LimJ2023/GDT.git
 > cd GDT
-> cd SAVER
+> 
+> cd server
+> npm install cors dotenv express mysql2 bcrypt jsonwebtoken nodemailer tesseract.js ws cookie-parser
+> cd ..
+> 
+> cd client
+> npm install --save-dev vite
+> npm install @react-oauth/google
 > npm install
 > ```
 >
 > ## 실행법
 >
 > ```shell
+> cd client 
 > npm run dev
+> 다른 터미널 창 여신다음에
+> cd server
+> node app.js
 > ```
 
 <!--

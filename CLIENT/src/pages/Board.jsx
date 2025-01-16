@@ -62,11 +62,17 @@ const Board = ({ posts, user }) => {
       {/* <UiComponents /> */}
       {/* 상단에 검색 폼 추가 */}
       <div className="content-wrapper">
-        <div className="검색부 flex justify-end space-x-2 mt-12 mb-4  bg-red-200">
-          <form onSubmit={handleSearch} className="w-full md:w-[460px]">
-            <input type="text" placeholder="검색어를 입력하세요..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="flex w-full h-full px-4 border rounded-full " />
+        <div className="검색부 flex justify-end space-x-2 mt-12 mb-4 bg-red-200">
+          <form onSubmit={handleSearch} className="w-full md:w-[460px] flex items-center">
+            <input
+              type="text"
+              placeholder="검색어를 입력하세요..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex w-full h-full px-4 border rounded-full"
+            />
+            <button type="submit" className="btn-primary-r ml-2">검색하기</button>
           </form>
-          <button className="btn-primary-r">검색하기</button>
         </div>
         {/* <div className="flex space-x-1">
         <div className="glitch-btn text-black rounded-md px-4 py-2 shadow hover:bg-green-600 transition rancing-btn">
