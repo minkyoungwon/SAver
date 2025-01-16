@@ -12,7 +12,17 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
 
   // 목업 데이터 (바코드, 쿠폰이미지)
   // 목업 데이터 (db데이터 받아오면, 사용자 변경 가능한 데이터들)
-  const [couponData, setCouponData] = useState(coupon);
+  const [couponData, setCouponData] = useState({
+    name: coupon.name,
+    note: coupon.note,
+    deadline: coupon.deadline,
+    categories: coupon.categories,
+    status: coupon.status,
+    coupon_image: coupon.coupon_image,
+    usage_location: coupon.usage_location,
+    id: coupon.id,
+    image: coupon.image
+  });
 
   // 데이터 변경 핸들러
   const handleChange = (e) => {
@@ -32,11 +42,23 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
       console.log("쿠폰이 사용되었습니다.");
     }
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    axios.put(`${import.meta.env.VITE_API_URL}/api/coupon/${coupon.id}`, couponData);
+
+  // 모달 닫기 핸들러 추가
+  const handleCloseModal = () => {
     setIsDetailModalOpen(false);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.put(`${import.meta.env.VITE_API_URL}/api/coupon/${coupon.id}`, couponData)
+      .then(() => {
+        handleCloseModal(); // 저장 성공 후 모달 닫기
+      })
+      .catch((error) => {
+        console.error('쿠폰 업데이트 실패:', error);
+      });
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center ">
       <div className="pb-6 w-[400px] h-[80vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md">
@@ -44,9 +66,7 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
         <div className=" sticky top-0 z-50 pt-4 px-4 bg-stone-50 flex justify-between text-xs font-semibold  text-emerald-500 ">
           <button
             className="hover:bg text-sm px-2"
-            onClick={() => {
-              setIsDetailModalOpen(false); // 모달 상태 닫기
-            }}
+            onClick={handleCloseModal}
           >
             X 닫기
           </button>
@@ -68,41 +88,58 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
 
           {/* 쿠폰이미지 */}
           <div className="h-[500px] m-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4">
-            <img src="coupon-image.png" alt="쿠폰 이미지" className=" rounded-lg" />
+            <img src={couponData.image} alt="쿠폰 이미지" className=" rounded-lg" />
           </div>
 
-          {/* 브랜드+상세+발급일자+유효기간 */}
+          {/* 브랜드+상세+유효기간 */}
           <div className=" m-4 p-2  shadow-md bg-white pr-4 pl-4 rounded-lg">
             {/* brand */}
             <div className="flex items-center">
-              <label className=" flex text-sm font-medium mr-7 pt-1">교환처</label>
-              <input type="text" name="brand" value={couponData.usage_location} onChange={handleChange} className=" text-sm flex-1 p-2 border bg-stone-50 rounded-lg  " />
+              <label className="flex text-sm font-medium mr-7 pt-1">교환처</label>
+              <input 
+                type="text" 
+                name="usage_location" 
+                value={couponData.usage_location} 
+                onChange={handleChange} 
+                className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg" 
+              />
             </div>
 
             {/* desc */}
             <div className="flex items-start">
-              <label className=" flex text-sm font-medium pt-4 mr-10">상세</label>
-              <input type="text" name="desc" value={couponData.description} onChange={handleChange} className=" text-sm flex-1 p-2 pb-12 border bg-stone-50 rounded-lg shadow-inner h-20" />
+              <label className="flex text-sm font-medium pt-4 mr-10">상세</label>
+              <input 
+                type="text" 
+                name="note" 
+                value={couponData.note} 
+                onChange={handleChange} 
+                className="text-sm flex-1 p-2 pb-12 border bg-stone-50 rounded-lg shadow-inner h-20" 
+              />
             </div>
-
-            {/* 발급일
-            <div className="flex items-center">
-              <label className=" flex text-sm font-medium pt-1 mr-4">발행일자</label>
-              <input type="text" name="issueDate" value={couponData.issueDate} onChange={handleChange} className=" text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner" />
-            </div> */}
 
             {/* 유효기간 */}
             <div className="flex">
-              <label className=" flex text-sm font-medium pt-4 mr-4">유효기간</label>
-              <input type="text" name="expiryDate" value={couponData.expiryDate} onChange={handleChange} className=" text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner" />
+              <label className="flex text-sm font-medium pt-4 mr-4">유효기간</label>
+              <input 
+                type="text" 
+                name="deadline" 
+                value={couponData.deadline} 
+                onChange={handleChange} 
+                className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner" 
+              />
             </div>
           </div>
 
           {/* 카테고리지정 */}
           <div className="flex items-center m-4 ">
             <label className=" flex text-sm pl-3 mr-5">카테고리</label>
-            <select className=" flex-1 p-2 border-gray-100 rounded-md bg-gray-100 shadow-md">
-              <option value="{category}">카페</option>
+            <select 
+              name="categories"
+              value={couponData.categories}
+              onChange={handleChange}
+              className="flex-1 p-2 border-gray-100 rounded-md bg-gray-100 shadow-md"
+            >
+              <option value="">{couponData.categories}</option>
             </select>
           </div>
 
@@ -112,10 +149,9 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
               저장
             </button>
             <button
+              type="button"
               className="flex-1 py-2 bg-gray-500 text-white font-medium rounded-lg shadow-md hover:bg-gray-600"
-              onClick={() => {
-                setIsDetailModalOpen(false); // 모달 상태 닫기
-              }}
+              onClick={handleCloseModal}
             >
               닫기
             </button>

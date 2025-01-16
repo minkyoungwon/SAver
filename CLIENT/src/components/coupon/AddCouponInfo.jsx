@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import AddCouponModal from "./AddCouponModal";
 import axios from "axios";
+import CouponDetail from "./CouponDetail";
 
 const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen }) => {
-  const [couponInfo, setCouponInfo] = useState(null);
+  const [couponInfo, setCouponInfo] = useState({
+    barcode: '',
+    type: '',
+    name: '',
+    deadline: '',
+    usage_location: ''
+  });
 
   const fetchCouponInfo = async () => {
     if (!selectedFile) return;
@@ -32,7 +39,7 @@ const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen
     fetchCouponInfo();
   }, [selectedFile]);
 
-  return <>{isModalOpen && <AddCouponModal couponInfo={couponInfo} setIsModalOpen={setIsModalOpen} onModalClose={onModalClose} />}</>;
+  return <>{isModalOpen && <CouponDetail coupon={couponInfo} setIsDetailModalOpen={setIsModalOpen}/>}</>;
 };
 
 export default AddCouponInfo;

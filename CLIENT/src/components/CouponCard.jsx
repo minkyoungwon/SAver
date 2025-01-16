@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CouponDetail from "./coupon/CouponDetail";
-import { useState } from "react";
+
 const CouponCard = ({ coupon }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isUsed, setIsUsed] = useState(false);
   const floatDetailModal = () => {
     setIsDetailModalOpen(!isDetailModalOpen);
   };
+
+  useEffect(() => {
+    setIsUsed(coupon.status === 'used');
+  }, [coupon.status]);
 
   return (
     <>
@@ -18,22 +23,21 @@ const CouponCard = ({ coupon }) => {
           <div>
             <div className="flex space-x-3 pb-3">
               <span className="badge">{"7일남음"}</span>
-              <span className="badge">{coupon.status}</span>
+              <span className="badge">{isUsed ? "사용완료" : "사용가능"}</span>
             </div>
             <div className="flex flex-col space-y-2">
               <div>
-                <p className="pb-2 text-base font-semibold">{coupon.title}</p>
-                <p className="text-sm text-gray-600">{coupon.description}</p>
+                <p className="pb-2 text-base font-semibold">{coupon.name}</p>
+                <p className="text-sm text-gray-600">{coupon.usage_location}</p>
               </div>
-              {coupon.remain && coupon.used && <p className="text-sm text-gray-600 font-bold">{`잔액: ${coupon.remain}원 (${coupon.used}원 사용)`}</p>}
             </div>
-            <p className="absolute bottom-6 text-sm text-gray-500 md:hidden"> {coupon.expiryDate} 까지 </p>
+            <p className="absolute bottom-6 text-sm text-gray-500 md:hidden"> {coupon.deadline} 까지 </p>
           </div>
         </div>
 
         {/* 세 번째 (오른쪽 정렬) */}
         <div className="hidden md:flex items-center justify-end bg-white">
-          <p className="text-sm text-gray-500"> {coupon.expiryDate} 까지</p>
+          <p className="text-sm text-gray-500"> {coupon.deadline} 까지</p>
         </div>
 
         {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} coupon={coupon} />}

@@ -105,9 +105,10 @@ async function extractBarcodeAndText(imageBuffer) {
             const couponInfo = {
                 barcode: barcodeText,
                 type: couponType,
-                productName: productName,
-                expirationDate: expirationDate,
-                storeName: storeName,
+                name: productName,
+                deadline: expirationDate,
+                usage_location: storeName,
+                image: imageBuffer
             };
             return couponInfo;
         } else if (couponType === 'gifticon') {
