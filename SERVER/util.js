@@ -129,28 +129,86 @@ const classifyCoupon = (text) => {
 };
 // 쿠폰 상품명 추출 함수
 const extractProductName = (text) => {
-    // 상품명은 보통 여러 줄 중에서 가장 긴 한글 텍스트
     const lines = text.split('\n');
-    let productName = '';
-    let maxLength = 0;
+    
+    // 각 라인에 대해 점수 계산
+    const scoredProducts = lines
+        .map(line => ({
+            text: removeAllSpaces(line),
+            score: calculateProductScore(removeAllSpaces(line))
+        }))
+        .filter(item => item.score > 0); // 0점 이하는 제외
+    
+    // 점수순으로 정렬하고 가장 높은 점수의 상품명 반환
+    const bestMatches = scoredProducts.sort((a, b) => b.score - a.score);
+    
+    // 디버깅을 위한 로그 (필요시 주석 해제)
+    console.log('상품명 후보:', bestMatches.slice(0, 3));
+    
+    return bestMatches.length > 0 ? bestMatches[0].text : '';
+};
 
-    for (const line of lines) {
-        const trimmedLine = removeAllSpaces(line);
-        // 한글이 포함된 라인 중에서 가장 긴 것을 상품명으로 간주
-        if (trimmedLine.match(/[가-힣]/) && trimmedLine.length > maxLength) {
-            // "교환처", "유효기간" 등의 키워드가 포함되지 않은 라인만 선택
-            if (
-                !trimmedLine.includes('교환처') &&
-                !trimmedLine.includes('유효기간') &&
-                !trimmedLine.includes('선물하기') &&
-                !trimmedLine.includes('주문번호')
-            ) {
-                productName = trimmedLine;
-                maxLength = trimmedLine.length;
-            }
-        }
+// 상품명 점수 계산 함수
+const calculateProductScore = (text) => {
+    let score = 0;
+    
+    // 1. 길이 기반 점수 (4-20자 사이가 적당)
+    if (text.length >= 4 && text.length <= 20) {
+        score += 3;
+    } else if (text.length > 20) {
+        score -= (text.length - 20) * 0.5; // 길이가 길수록 감점
     }
-    return productName;
+    
+    // 2. 일반적인 카페/식품 관련 키워드 점수
+    const productKeywords = {
+        high: ['라떼', '아메리카노', '케이크', '음료', '티', '주스', '프라푸치노', '블렌디드', '콤보', '콜라', '감자'],  // 가중치 높은 키워드
+        medium: ['초코', '딸기', '바닐라', '카라멜', '에이드', '스무디', '샌드위치',], // 중간 가중치
+        low: ['핫', '아이스', '콜드', '따뜻한', '차가운', '큰', '작은'] // 낮은 가중치
+    };
+    
+    for (const keyword of productKeywords.high) {
+        if (text.includes(keyword)) score += 4;
+    }
+    for (const keyword of productKeywords.medium) {
+        if (text.includes(keyword)) score += 2;
+    }
+    for (const keyword of productKeywords.low) {
+        if (text.includes(keyword)) score += 1;
+    }
+    
+    // 3. 브랜드명 포함 시 추가 점수
+    const brandKeywords = ['스타벅스', '투썸플레이스', '이디야', '할리스', '탐앤탐스'];
+    for (const brand of brandKeywords) {
+        if (text.includes(brand)) score += 2;
+    }
+    
+    // 4. 불필요한 정보 감점
+    const negativeKeywords = {
+        high: ['교환처', '유효기간', '선물하기', '주문번호', '결제금액', '바코드'], // 큰 감점
+        medium: ['매장', '지점', '번호', '날짜', '시간', '발행'], // 중간 감점
+        low: ['적립', '포인트', '신청', '예약'] // 작은 감점
+    };
+    
+    for (const keyword of negativeKeywords.high) {
+        if (text.includes(keyword)) score -= 5;
+    }
+    for (const keyword of negativeKeywords.medium) {
+        if (text.includes(keyword)) score -= 3;
+    }
+    for (const keyword of negativeKeywords.low) {
+        if (text.includes(keyword)) score -= 1;
+    }
+    
+    // 5. 텍스트 품질 점수
+    if (!text.match(/\d/)) score += 2; // 숫자가 없으면 추가 점수
+    if (!text.match(/[!@#$%^&*(),.?":{}|<>]/)) score += 2; // 특수문자가 없으면 추가 점수
+    if (text.match(/^[가-힣\s]+$/)) score += 3; // 한글과 공백만 있으면 추가 점수
+    
+    // 6. 문자열 패턴 점수
+    if (text.match(/^[가-힣]+\s[가-힣]+$/)) score += 2; // 두 단어로 구성된 경우 (예: "아메리카노 라떼")
+    if (text.match(/[가-힣]+\([가-힣]+\)/)) score += 1; // 괄호를 포함한 상품명 (예: "아메리카노(핫)")
+    
+    return score;
 };
 
 // OCR 결과 텍스트에서 모든 공백을 제거하는 함수 추가
