@@ -101,6 +101,8 @@ function Home({ coupons, setCoupons }) {
         image: coupon.image,
         id: coupon.id,
         usage_location: coupon.usage_location,
+        user_id: localStorage.getItem("userId"),
+        barcode: coupon.barcode
       }));
       console.log("coupons : ", coupons);
       setCoupons(coupons);

@@ -6,23 +6,44 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
   useEffect(() => {
     console.log("Coupon Selected: ", coupon);
   }, [coupon]);
-
+  const [couponData, setCouponData] = useState({
+    ...coupon,
+    categories: Array.isArray(coupon.categories) 
+      ? coupon.categories 
+      : (coupon.categories ? coupon.categories.split(',') : [])
+  });
   //사용자 쿠폰 사용체크
   const [isUsed, setIsUsed] = useState(false);
 
-  // 목업 데이터 (바코드, 쿠폰이미지)
-  // 목업 데이터 (db데이터 받아오면, 사용자 변경 가능한 데이터들)
-  const [couponData, setCouponData] = useState({
-    name: coupon.name,
-    note: coupon.note,
-    deadline: coupon.deadline,
-    categories: coupon.categories,
-    status: coupon.status,
-    coupon_image: coupon.coupon_image,
-    usage_location: coupon.usage_location,
-    id: coupon.id,
-    image: coupon.image
-  });
+
+  const [image, setImage] = useState(coupon.image);
+
+  // 카테고리 관리를 위한 새로운 상태
+  const [newCategory, setNewCategory] = useState('');
+
+  // 카테고리 추가 핸들러
+  const handleAddCategory = (e) => {
+    if (e.key === 'Enter' && newCategory.trim()) {
+      e.preventDefault();
+      setCouponData(prevData => ({
+        ...prevData,
+        categories: Array.isArray(prevData.categories) 
+          ? [...prevData.categories, newCategory.trim()]
+          : [newCategory.trim()]
+      }));
+      setNewCategory('');
+    }
+  };
+
+  // 카테고리 삭제 핸들러
+  const handleRemoveCategory = (indexToRemove) => {
+    setCouponData(prevData => ({
+      ...prevData,
+      categories: Array.isArray(prevData.categories)
+        ? prevData.categories.filter((_, index) => index !== indexToRemove)
+        : []
+    }));
+  };
 
   // 데이터 변경 핸들러
   const handleChange = (e) => {
@@ -48,14 +69,20 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
     setIsDetailModalOpen(false);
   };
 
+  // 쿠폰 저장하기
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`${import.meta.env.VITE_API_URL}/api/coupon/${coupon.id}`, couponData)
+    
+    // 이미지를 제외한 데이터만 전송
+    const { image, ...submissionData } = couponData;
+
+    axios.post(`${import.meta.env.VITE_API_URL}/api/coupons`, submissionData)
       .then(() => {
-        handleCloseModal(); // 저장 성공 후 모달 닫기
+        handleCloseModal();
       })
       .catch((error) => {
-        console.error('쿠폰 업데이트 실패:', error);
+        console.error('쿠폰 저장 실패:', error);
+        alert('쿠폰 저장에 실패했습니다.');
       });
   };
 
@@ -92,16 +119,16 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
         <form onSubmit={handleSubmit}>
           {/* 바코드  */}
           <div className="h-[90px] m-4 border-white rounded-lg shadow-md bg-white flex justify-center items-center mb-4 ">
-            <img src="barcode-placeholder.png" alt="바코드" className="h-10" />
+            <input type="text" name="barcode" value={couponData.barcode} onChange={handleChange} className="text-lg flex-1 p-2 border bg-stone-50 rounded-lg" />
           </div>
 
           {/* 쿠폰이미지 */}
           <div className="h-[500px] m-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4">
             {couponData.image ? (
               <img 
-                src={`data:image/jpeg;base64,${bufferToBase64(couponData.image)}`} 
+                src={`data:image/jpeg;base64,${bufferToBase64(image)}`} 
                 alt="쿠폰 이미지" 
-                className="rounded-lg" 
+                className="object-contain w-full h-full" 
               />
             ) : (
               <div>이미지 없음</div>
@@ -147,17 +174,34 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
             </div>
           </div>
 
-          {/* 카테고리지정 */}
-          <div className="flex items-center m-4 ">
-            <label className=" flex text-sm pl-3 mr-5">카테고리</label>
-            <select 
-              name="categories"
-              value={couponData.categories}
-              onChange={handleChange}
-              className="flex-1 p-2 border-gray-100 rounded-md bg-gray-100 shadow-md"
-            >
-              <option value="">{couponData.categories}</option>
-            </select>
+          {/* 카테고리 입력 UI 부분 */}
+          <div className="m-4">
+            <label className="text-sm pl-3 mb-2 block">카테고리</label>
+            <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-white min-h-[45px]">
+              {Array.isArray(couponData.categories) && couponData.categories.map((category, index) => (
+                <span 
+                  key={index} 
+                  className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm flex items-center"
+                >
+                  {category}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveCategory(index)}
+                    className="ml-2 text-emerald-500 hover:text-emerald-700"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              <input
+                type="text"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                onKeyDown={handleAddCategory}
+                placeholder="카테고리 입력 후 Enter"
+                className="flex-1 outline-none min-w-[150px] text-sm p-1"
+              />
+            </div>
           </div>
 
           {/* 저장 + 닫기 */}

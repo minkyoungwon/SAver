@@ -10,7 +10,11 @@ const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen
     name: '',
     deadline: '',
     usage_location: '',
-    image: ''
+    image: '',
+    user_id: '',
+    status: '',
+    note: '',
+    categories: []
   });
 
   const fetchCouponInfo = async () => {
@@ -25,9 +29,9 @@ const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen
       });
 
       if (response.data) {
-        console.log("response.data: ", response.data);
-        setCouponInfo(response.data);
-        setIsModalOpen(true); // Modal 열기
+        console.log("response.data: ", {...response.data, user_id: localStorage.getItem('userId'), status: '사용가능'});
+        setCouponInfo({...response.data, user_id: localStorage.getItem('userId'), status: '사용가능'});
+        setIsModalOpen(true);
       } else {
         console.error("서버 응답에 데이터가 없습니다.");
       }
