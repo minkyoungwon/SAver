@@ -93,12 +93,12 @@ function Home({ coupons, setCoupons }) {
         },
       });
       const coupons = response.data.map((coupon) => ({
-        title: coupon.name,
-        description: coupon.note,
-        expiryDate: coupon.deadline,
+        name: coupon.name,
+        note: coupon.note,
+        deadline: coupon.deadline,
         category: coupon.categories,
         status: coupon.status,
-        imageSrc: coupon.coupon_image,
+        image: coupon.image,
         id: coupon.id,
         usage_location: coupon.usage_location,
       }));

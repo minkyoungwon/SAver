@@ -9,7 +9,8 @@ const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen
     type: '',
     name: '',
     deadline: '',
-    usage_location: ''
+    usage_location: '',
+    image: ''
   });
 
   const fetchCouponInfo = async () => {

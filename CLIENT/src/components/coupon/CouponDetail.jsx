@@ -59,6 +59,15 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
       });
   };
 
+  // Buffer 데이터를 Base64로 변환하는 함수 수정
+  const bufferToBase64 = (buffer) => {
+    if (!buffer || !buffer.data) return '';
+    const bytes = new Uint8Array(buffer.data);
+    let binary = '';
+    bytes.forEach(byte => binary += String.fromCharCode(byte));
+    return window.btoa(binary);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center ">
       <div className="pb-6 w-[400px] h-[80vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md">
@@ -72,7 +81,7 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
           </button>
           <div className="flex justify-end gap-4 ">
             <div className="flex items-center">
-              <CustomCheckbox />
+              <CustomCheckbox onChange={handleCheckboxChange} checked={isUsed} />
               <span>사용완료</span>
             </div>
             <button className="flex items-center mr-2 ">
@@ -88,7 +97,15 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
 
           {/* 쿠폰이미지 */}
           <div className="h-[500px] m-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4">
-            <img src={couponData.image} alt="쿠폰 이미지" className=" rounded-lg" />
+            {couponData.image ? (
+              <img 
+                src={`data:image/jpeg;base64,${bufferToBase64(couponData.image)}`} 
+                alt="쿠폰 이미지" 
+                className="rounded-lg" 
+              />
+            ) : (
+              <div>이미지 없음</div>
+            )}
           </div>
 
           {/* 브랜드+상세+유효기간 */}

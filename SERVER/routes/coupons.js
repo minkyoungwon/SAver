@@ -18,7 +18,7 @@ module.exports = (db) => {
             c.note,
             c.deadline,
             c.status,
-            c.coupon_image,
+            c.coupon_image as image,
             c.usage_location,
             GROUP_CONCAT(DISTINCT cc.name) as categories
         FROM coupons c
