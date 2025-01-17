@@ -66,8 +66,33 @@ async function extractText(imageBuffer) {
         let ocrText = await getTextFromMask(blackMask);
         // 쿠폰 종류
         const couponType = classifyCoupon(ocrText);
-        // 상품명
-        const productName = removeAllSpaces(ocrText.split('\n')[0]);
+        // 상품명 (보통 한줄이지만 두줄이상일 수도 있음)
+        const ocrTextArray = removeEmptyLinesAsArray(ocrText);
+        ocrTextArray.forEach((element, index) => {
+            ocrTextArray[index] = removeAllSpaces(element);
+        });
+
+        let barcodeIndex = ocrTextArray.findIndex(
+            // 바코드 번호가 있는 익덱스 찾기 (숫자8개 이상)
+            (element) => typeof element === 'string' && /^\d{8,}$/.test(element)
+        );
+
+        let productName;
+        if (barcodeIndex <= 1) {
+            // 상품명 한 줄일 가능성 높음
+            barcodeIndex = 1;
+            productName = ocrTextArray[0];
+        } else {
+            // 상품명 두 줄일 가능성 높음
+            const filteredArray = ocrTextArray
+                .slice(0, barcodeIndex - 1)
+                .filter((element) => element.length >= 12); // 문자열 길이 12개 미만 인 텍스트들 제거
+            if (filteredArray.length === 0) {
+                productName = ocrTextArray[barcodeIndex - 1];
+            } else {
+                productName = filteredArray.join('\n') + '\n' + ocrTextArray[barcodeIndex - 1];
+            }
+        }
 
         // 2.2 매장명, 유효기간 추출 (grayMask)
         ocrText = await getTextFromMask(grayMask);
@@ -122,6 +147,11 @@ function classifyCoupon(text) {
     }
 }
 
+// OCR 결과 텍스트에서 공백이 있는 줄 제거 후 배열로 return
+function removeEmptyLinesAsArray(text) {
+    return text.split('\n').filter((line) => line.trim() != '');
+}
+
 // OCR 결과 텍스트에서 모든 공백을 제거하는 함수 추가
 function removeAllSpaces(text) {
     return text.replace(/\s+/g, '');
@@ -144,5 +174,16 @@ function formateDateToISO(date) {
     }
     throw new Error('유효하지 않은 날짜 형식입니다');
 }
+
+const fs = require('fs');
+const imagePath = './images/kakao/img5.jpg';
+const imageBufferSample = fs.readFileSync(imagePath);
+extractText(imageBufferSample)
+    .then((result) => {
+        console.log(result);
+    })
+    .catch((error) => {
+        console.error('출력 에러');
+    });
 
 module.exports = { extractBarcode, extractText };
