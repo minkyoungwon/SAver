@@ -59,12 +59,13 @@ const Board = ({ posts, user }) => {
   return (
     <div className="min-h-screen flex flex-col overflow-auto no-scrollbar">
       {/* 상단에 검색 폼 추가 */}
+
       <div className="flex-grow content-wrapper">
         <div className="검색부 flex justify-end space-x-2 mt-24 mb-8">
           <form onSubmit={handleSearch} className=" w-[260px]">
             <input type="text" placeholder="검색어를 입력하세요..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="flex w-full h-full px-4 border rounded-full " />
-          </form>
           <button className="btn-primary-r py-1.5">검색하기</button>
+          </form>
         </div>
 
         <div className="테이블부">

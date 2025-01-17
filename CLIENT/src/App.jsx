@@ -11,16 +11,16 @@ import VerifyEmail from "./components/VerifyEmail";
 import EmailVerification from "./components/EmailVerification";
 import Board from "./pages/Board";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
 import MyCoupons from "./pages/MyCoupons";
 import Intro from "./pages/Intro";
 import DM from "./components/dm";
 
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const App = () => {
+
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   const getUserFromToken = () => {
@@ -98,7 +98,7 @@ const App = () => {
   // const dm = () => {
   //   navigate("/dm");
   // };
-
+  
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -110,29 +110,31 @@ const App = () => {
 
   return (
     // GoogleOAuthProvider 감싸는거 추가함함 0114 mkw
-    <GoogleOAuthProvider clientId={clientId}>
-      <>
-        {location.pathname !== "/intro" && location.pathname !== "/login" && location.pathname !== "/signup" && <Header user={user} handleLogout={handleLogout} />}
-        <Routes>
-          <Route path="/" element={<Home coupons={coupons} setCoupons={setCoupons} />} />
-          <Route path="/board" element={<Board posts={posts} user={user} />} />
-          <Route path="/write" element={<WritePost user={user} setPosts={setPosts} />} />
-          <Route path="/write/:id" element={<WritePost user={user} setPosts={setPosts} />} />
-          <Route path="/post/:id" element={<PostDetail posts={posts} setPosts={setPosts} />} />
-          <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route path="/signup" element={<Signup />} />
-          {/* <Route path="/coupon" element={<Coupon />} /> */}
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/email-verification" element={<EmailVerification />} />
 
-          <Route path="/my-profile" element={<MyProfile user={user} />} />
-          <Route path="/my-coupons" element={<MyCoupons coupons={coupons} />} />
-          <Route path="/intro" element={<Intro />} />
-          {/* <Route path="/dm" element={<DM user={user}/>} /> */}
-          <Route path="/dm" element={<DM />} />
-        </Routes>
-      </>
+    <GoogleOAuthProvider clientId={clientId}> 
+    <>
+      {location.pathname !== "/intro" && location.pathname !== "/login" && location.pathname !== "/signup" && <Header user={user} handleLogout={handleLogout} />}
+      <Routes>
+        <Route path="/" element={<Home coupons={coupons} setCoupons={setCoupons} />} />
+        <Route path="/board" element={<Board posts={posts} user={user} />} />
+        <Route path="/write" element={<WritePost user={user} setPosts={setPosts} />} />
+        <Route path="/write/:id" element={<WritePost user={user} setPosts={setPosts} />} />
+        <Route path="/post/:id" element={<PostDetail posts={posts} setPosts={setPosts} />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/signup" element={<Signup />} />
+        {/* <Route path="/coupon" element={<Coupon />} /> */}
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/email-verification" element={<EmailVerification />} />
+
+        <Route path="/my-profile" element={<MyProfile user={user} />} />
+        <Route path="/my-coupons" element={<MyCoupons coupons={coupons} />} />
+        <Route path="/intro" element={<Intro />} />
+        {/* <Route path="/dm" element={<DM user={user}/>} /> */}
+        <Route path="/dm" element={<DM />} />
+      </Routes>
+    </>
+
     </GoogleOAuthProvider>
   );
 };

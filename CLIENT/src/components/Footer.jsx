@@ -1,3 +1,4 @@
+
 // import { useLocation } from "react-router-dom";
 
 const Footer = () => {
@@ -10,6 +11,7 @@ const Footer = () => {
         <p>{new Date().getFullYear()} &copy; Saver-All rights reserved.</p>
      </div>
        
+
 
     </footer>
   );

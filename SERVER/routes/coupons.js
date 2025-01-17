@@ -18,7 +18,7 @@ module.exports = (db) => {
             c.note,
             c.deadline,
             c.status,
-            c.coupon_image,
+            c.coupon_image as image,
             c.usage_location,
             GROUP_CONCAT(DISTINCT cc.name) as categories
         FROM coupons c
@@ -39,20 +39,57 @@ module.exports = (db) => {
         });
     });
     router.post('/', (req, res) => {
-        console.log(req.body);
-        const { userId, barcode, type, productName, expirationDate, storeName, note } = req.body;
-        const query =
-            'INSERT INTO coupons (user_id, barcode, type, name, deadline, usage_location, note, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        db.query(
-            query,
-            [userId, barcode, type, productName, expirationDate, storeName, note, '사용가능'],
-            (err, result) => {
-                if (err) {
-                    return res.status(500).send(err);
-                }
-                res.status(200).send('쿠폰 추가 완료');
+        const { user_id, barcode, name, deadline, usage_location, note, status, newCategories } = req.body;
+        
+        // 트랜잭션 시작
+        db.beginTransaction(async (err) => {
+            if (err) {
+                return res.status(500).json({ error: '트랜잭션 시작 중 오류가 발생했습니다.' });
             }
-        );
+
+            try {
+                // 1. 쿠폰 저장
+                const [couponResult] = await db.promise().query(
+                    'INSERT INTO coupons (user_id, barcode, name, deadline, usage_location, note, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [user_id, barcode, name, deadline, usage_location, note, status]
+                );
+                const couponId = couponResult.insertId;
+
+                // 2. 새로운 카테고리들 저장
+                if (newCategories && newCategories.length > 0) {
+                    // 카테고리 생성
+                    const categoryValues = newCategories.map(categoryName => [categoryName, user_id]);
+                    const [categoryResult] = await db.promise().query(
+                        'INSERT INTO coupon_categories (name, user_id) VALUES ?',
+                        [categoryValues]
+                    );
+
+                    // 생성된 카테고리들과 쿠폰 연결
+                    const startId = categoryResult.insertId;
+                    const relationValues = newCategories.map((_, index) => 
+                        [couponId, startId + index]
+                    );
+                    
+                    await db.promise().query(
+                        'INSERT INTO coupon_category_realations (coupon_id, category_id) VALUES ?',
+                        [relationValues]
+                    );
+                }
+
+                // 트랜잭션 커밋
+                await db.promise().commit();
+                res.status(200).json({ 
+                    message: '쿠폰과 카테고리가 성공적으로 저장되었습니다.',
+                    couponId: couponId
+                });
+
+            } catch (error) {
+                // 오류 발생 시 롤백
+                await db.promise().rollback();
+                console.error('에러:', error);
+                res.status(500).json({ error: '저장 중 오류가 발생했습니다.' });
+            }
+        });
     });
     router.post('/extract', upload.single('image'), async (req, res) => {
         try {
