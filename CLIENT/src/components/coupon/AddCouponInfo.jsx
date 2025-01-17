@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import AddCouponModal from "./AddCouponModal";
 import axios from "axios";
 import CouponDetail from "./CouponDetail";
+import { useModal } from '../../context/ModalContext';
 
-const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen }) => {
+const AddCouponInfo = ({ selectedFile }) => {
+  const { openModal } = useModal();
   const [couponInfo, setCouponInfo] = useState({
     barcode: '',
     type: '',
@@ -29,9 +30,9 @@ const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen
       });
 
       if (response.data) {
-        console.log("response.data: ", {...response.data, user_id: localStorage.getItem('userId'), status: '사용가능'});
-        setCouponInfo({...response.data, user_id: localStorage.getItem('userId'), status: '사용가능'});
-        setIsModalOpen(true);
+        const newCouponInfo = {...response.data, user_id: localStorage.getItem('userId'), status: '사용가능'};
+        setCouponInfo(newCouponInfo);
+        openModal(newCouponInfo);
       } else {
         console.error("서버 응답에 데이터가 없습니다.");
       }
@@ -44,7 +45,7 @@ const AddCouponInfo = ({ selectedFile, onModalClose, setIsModalOpen, isModalOpen
     fetchCouponInfo();
   }, [selectedFile]);
 
-  return <>{isModalOpen && <CouponDetail coupon={couponInfo} setIsDetailModalOpen={setIsModalOpen}/>}</>;
+  return null;
 };
 
 export default AddCouponInfo;

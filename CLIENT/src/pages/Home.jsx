@@ -229,7 +229,7 @@ function Home({ coupons, setCoupons }) {
             <div className="쿠폰카드 pb-4 space-y-4 h-screen overflow-auto no-scrollbar">
               {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
               {filteredCoupons.map((coupon) => (
-                <CouponCard key={coupon.id} coupon={coupon} />
+                <CouponCard key={coupon.id} coupon={coupon}  />
               ))}
             </div>
           </div>

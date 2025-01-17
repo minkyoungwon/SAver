@@ -22,7 +22,6 @@ const searchRoutes = require("./routes/search"); //add 0105 mkw
 const categoryRoutes = require("./routes/category");
 const dmRoutes = require("./routes/dm");
 
-app.use(cors());
 
 //소셜로그인
 const socialAuth = require("./routes/socialAuth")
@@ -98,6 +97,7 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 라우트 설정
 // 인증 관련 라우트

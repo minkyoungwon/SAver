@@ -1,5 +1,3 @@
-import AddCouponModal from "./AddCouponModal";
-import ImageUploader from "./ImageUploader";
 import AddCouponInfo from "./AddCouponInfo";
 const AddCoupon = ({setIsModalOpen, isModalOpen}) => {
     const floatModal = () => {
