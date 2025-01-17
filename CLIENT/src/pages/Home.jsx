@@ -170,7 +170,6 @@ function Home({ coupons, setCoupons }) {
         </div>
         <div className="content-wrapper ">
           <div className="필터박스 sticky top-[16px] z-20 h-40 pt-2 bg-white">
-
             <div className="필터탭 flex justify-start space-x-4 sm:space-x-12 mb-6">
               {[
                 { label: "사용가능", filter: "available" },
@@ -188,10 +187,10 @@ function Home({ coupons, setCoupons }) {
 
                     // 현재 클릭된 버튼의 필터 설정 및 스타일 적용
                     showFilteredCoupons(filter);
-                    e.target.style.transform = "scale(1.1)";
+                    e.target.style.transform = "scale(1)";
                   }}
                   className={`h-10 transition-all duration-300 
-                  ${selectedFilter === filter ? "text-emerald-400 font-semibold text-xl scale-110 " : "text-emerald-600 text-lg"}
+                  ${selectedFilter === filter ? "text-emerald-400 font-semibold text-xl scale-100 " : "text-emerald-600 text-lg"}
                   `}
                   style={{
                     transformOrigin: "bottom center", // 아래 중심 기준으로 크기 변경
@@ -199,7 +198,7 @@ function Home({ coupons, setCoupons }) {
                   onMouseEnter={(e) => {
                     // 호버 시 텍스트 크기와 스타일 변경
                     if (selectedFilter !== filter) {
-                      e.target.style.transform = "scale(1.1)";
+                      e.target.style.transform = "scale(1)";
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -237,7 +236,6 @@ function Home({ coupons, setCoupons }) {
         </div>
         <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} />
         <Footer />
-
       </div>
     </div>
   );

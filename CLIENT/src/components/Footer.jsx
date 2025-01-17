@@ -2,24 +2,24 @@
 // import { useLocation } from "react-router-dom";
 
 const Footer = () => {
-  // const location = useLocation();
+   // const location = useLocation();
 
-  return (
-    <footer className="flex grid-flow-col text-xs space-x-10 px-[15%] py-2 bg-gray-50 text-emerald-600"> 
-     <div className="flex text-lg font-bold justify-end items-start text-emerald-600">Saver</div>     
-     <div className="flex w-full justify-end items-end">
-        <p>{new Date().getFullYear()} &copy; Saver-All rights reserved.</p>
-     </div>
-       
+   return (
+      <footer className="flex grid-flow-col text-xs space-x-10 px-[16px] md:px-[15%] py-2 bg-gray-50 text-emerald-600">
+         <div className="flex text-lg font-bold justify-end items-start text-emerald-600">Saver</div>
+         <div className="flex w-full justify-end items-end">
+            <p>{new Date().getFullYear()} &copy; Saver-All rights reserved.</p>
+         </div>
 
 
-    </footer>
-  );
+
+      </footer>
+   );
 };
 
 export default Footer;
 
-    {/* <div className="flex w-full space-x-2 items-center">
+{/* <div className="flex w-full space-x-2 items-center">
         <h4>
            <a href="https://github.com/LimJ2023">임요한</a>
         </h4>
