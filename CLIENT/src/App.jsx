@@ -110,6 +110,7 @@ const App = () => {
 
   return (
     // GoogleOAuthProvider 감싸는거 추가함함 0114 mkw
+
     <GoogleOAuthProvider clientId={clientId}> 
     <>
       {location.pathname !== "/intro" && location.pathname !== "/login" && location.pathname !== "/signup" && <Header user={user} handleLogout={handleLogout} />}
@@ -133,6 +134,7 @@ const App = () => {
         <Route path="/dm" element={<DM />} />
       </Routes>
     </>
+
     </GoogleOAuthProvider>
   );
 };

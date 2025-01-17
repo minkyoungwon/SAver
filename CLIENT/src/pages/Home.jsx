@@ -6,6 +6,7 @@ import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import ImageUploader from "../components/coupon/ImageUploader";
 import AddCouponInfo from "../components/coupon/AddCouponInfo";
+import Footer from "../components/Footer";
 function Home({ coupons, setCoupons }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
@@ -45,37 +46,38 @@ function Home({ coupons, setCoupons }) {
     setFilteredCoupons(filteredCoupons);
   };
 
-  const addCategory = async (input) => {
-    console.log("addCategory : ", input);
-    if (input === "") {
-      alert("카테고리를 입력해주세요.");
-      return;
-    }
-
-    const isCategoryExist = category.includes(input);
-    if (isCategoryExist) {
-      alert("이미 존재하는 카테고리입니다.");
-      return;
-    }
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/category`,
-      {
-        name: input,
-        user_id: localStorage.getItem("userId"),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+  const
+    addCategory = async (input) => {
+      console.log("addCategory : ", input);
+      if (input === "") {
+        alert("카테고리를 입력해주세요.");
+        return;
       }
-    );
-    if (response.status === 200) {
-      alert("카테고리 추가 완료");
-      fetchCategories();
-    } else {
-      alert("카테고리 추가 실패");
-    }
-  };
+
+      const isCategoryExist = category.includes(input);
+      if (isCategoryExist) {
+        alert("이미 존재하는 카테고리입니다.");
+        return;
+      }
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/category`,
+        {
+          name: input,
+          user_id: localStorage.getItem("userId"),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert("카테고리 추가 완료");
+        fetchCategories();
+      } else {
+        alert("카테고리 추가 실패");
+      }
+    };
 
   useEffect(() => {
     fetchCoupons();
@@ -147,8 +149,9 @@ function Home({ coupons, setCoupons }) {
   }, [coupons, selectedFilter]);
 
   return (
-    <div>
-      <div className="body">
+    <div className="min-h-screen flex flex-col">
+      <div className="main body flex-grow">
+
         <div className="hidden md:flex justify-center bg-white">
           <div className="이미지업로더창 w-full mx-[20%] mt-40 mb-52 min-w-[400px]">
             <ImageUploader onImageUpload={handleImageUpload} />
@@ -165,8 +168,9 @@ function Home({ coupons, setCoupons }) {
             )}
           </div>
         </div>
-        <div className="content-wrapper">
-          <div className="필터박스 sticky top-[10px] z-10 h-40 bg-white">
+        <div className="content-wrapper ">
+          <div className="필터박스 sticky top-[16px] z-20 h-40 pt-2 bg-white">
+
             <div className="필터탭 flex justify-start space-x-4 sm:space-x-12 mb-6">
               {[
                 { label: "사용가능", filter: "available" },
@@ -210,14 +214,14 @@ function Home({ coupons, setCoupons }) {
               ))}
             </div>
 
-            <div className="text-sm ">
+            <div className="text-sm">
               <CouponCategory category={category} addCategory={addCategory} handleCategoryClick={handleCategoryClick} refreshCategories={fetchCategories} />
             </div>
           </div>
 
           <div className="mb-32">
-            <div className="sticky top-[160px] flex z-10 justify-between text-base mb-0 text-gray-500 bg-white">
-              <p className="pb-6">유효기간순</p>
+            <div className="sticky top-[160px] z-10 flex justify-between text-base text-gray-500 bg-white p-4">
+              <p>유효기간순</p>
               <div>
                 <span>조회쿠폰 : </span>
                 <span className="font-semibold text-black">{filteredCoupons.length}개</span>
@@ -231,7 +235,9 @@ function Home({ coupons, setCoupons }) {
             </div>
           </div>
         </div>
-        {/* <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen}/> */}
+        <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} />
+        <Footer />
+
       </div>
     </div>
   );
