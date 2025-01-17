@@ -1,28 +1,50 @@
 import { useEffect, useState } from "react";
 import { Share, CustomCheckbox } from "../../icon";
 import axios from "axios";
+import { useModal } from '../../context/ModalContext';
 
-const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
+const CouponDetail = () => {
+  const { isModalOpen, selectedCoupon, closeModal } = useModal();
+  
+  // 쿠폰 데이터 상태 추가
+  const [couponData, setCouponData] = useState(selectedCoupon || {});
+  const [isUsed, setIsUsed] = useState(selectedCoupon?.is_used || false);
+  
+  // selectedCoupon이 변경될 때마다 couponData 업데이트
   useEffect(() => {
-    console.log("Coupon Selected: ", coupon);
-  }, [coupon]);
+    if (selectedCoupon) {
+      setCouponData(selectedCoupon);
+      setIsUsed(selectedCoupon.is_used || false);
+    }
+  }, [selectedCoupon]);
 
-  //사용자 쿠폰 사용체크
-  const [isUsed, setIsUsed] = useState(false);
 
-  // 목업 데이터 (바코드, 쿠폰이미지)
-  // 목업 데이터 (db데이터 받아오면, 사용자 변경 가능한 데이터들)
-  const [couponData, setCouponData] = useState({
-    name: coupon.name,
-    note: coupon.note,
-    deadline: coupon.deadline,
-    categories: coupon.categories,
-    status: coupon.status,
-    coupon_image: coupon.coupon_image,
-    usage_location: coupon.usage_location,
-    id: coupon.id,
-    image: coupon.image
-  });
+  // 카테고리 관리를 위한 새로운 상태
+  const [newCategory, setNewCategory] = useState('');
+
+  // 카테고리 추가 핸들러
+  const handleAddCategory = (e) => {
+    if (e.key === 'Enter' && newCategory.trim()) {
+      e.preventDefault();
+      setCouponData(prevData => ({
+        ...prevData,
+        categories: Array.isArray(prevData.categories) 
+          ? [...prevData.categories, newCategory.trim()]
+          : [newCategory.trim()]
+      }));
+      setNewCategory('');
+    }
+  };
+
+  // 카테고리 삭제 핸들러
+  const handleRemoveCategory = (indexToRemove) => {
+    setCouponData(prevData => ({
+      ...prevData,
+      categories: Array.isArray(prevData.categories)
+        ? prevData.categories.filter((_, index) => index !== indexToRemove)
+        : []
+    }));
+  };
 
   // 데이터 변경 핸들러
   const handleChange = (e) => {
@@ -43,20 +65,52 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
     }
   };
 
-  // 모달 닫기 핸들러 추가
-  const handleCloseModal = () => {
-    setIsDetailModalOpen(false);
-  };
 
-  const handleSubmit = (e) => {
+  // 쿠폰 저장하기
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.put(`${import.meta.env.VITE_API_URL}/api/coupon/${coupon.id}`, couponData)
-      .then(() => {
-        handleCloseModal(); // 저장 성공 후 모달 닫기
-      })
-      .catch((error) => {
-        console.error('쿠폰 업데이트 실패:', error);
+    
+    const formData = new FormData();
+    
+    // 이미지 데이터 처리 개선
+    if (selectedCoupon.image) {
+      // Buffer 데이터인 경우
+      if (selectedCoupon.image.data) {
+        const base64String = bufferToBase64(selectedCoupon.image);
+        const base64Response = await fetch(`data:image/jpeg;base64,${base64String}`);
+        const imageBlob = await base64Response.blob();
+        formData.append('image', imageBlob, 'coupon_image.jpg');
+      } 
+      // 이미 문자열 형태의 이미지 URL인 경우
+      else if (typeof selectedCoupon.image === 'string') {
+        const imageResponse = await fetch(selectedCoupon.image);
+        const imageBlob = await imageResponse.blob();
+        formData.append('image', imageBlob, 'coupon_image.jpg');
+      }
+    }
+    
+    // 필수 데이터 추가
+    formData.append('barcode', couponData.barcode || '');
+    formData.append('usage_location', couponData.usage_location || '');
+    formData.append('note', couponData.note || '');
+    formData.append('deadline', couponData.deadline || '');
+    formData.append('categories', JSON.stringify(couponData.categories || []));
+    formData.append('is_used', isUsed);
+    formData.append('user_id', couponData.user_id);
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/coupons`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
       });
+      
+      closeModal();
+      alert("쿠폰 저장 완료");
+    } catch (error) {
+      console.error('쿠폰 저장 실패:', error);
+      alert('쿠폰 저장에 실패했습니다.');
+    }
   };
 
   // Buffer 데이터를 Base64로 변환하는 함수 수정
@@ -68,6 +122,8 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
     return window.btoa(binary);
   };
 
+  if (!isModalOpen || !selectedCoupon) return null;
+
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center ">
       <div className="pb-6 w-[400px] h-[80vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md">
@@ -75,7 +131,7 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
         <div className=" sticky top-0 z-50 pt-4 px-4 bg-stone-50 flex justify-between text-xs font-semibold  text-emerald-500 ">
           <button
             className="hover:bg text-sm px-2"
-            onClick={handleCloseModal}
+            onClick={closeModal}
           >
             X 닫기
           </button>
@@ -92,16 +148,16 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
         <form onSubmit={handleSubmit}>
           {/* 바코드  */}
           <div className="h-[90px] m-4 border-white rounded-lg shadow-md bg-white flex justify-center items-center mb-4 ">
-            <img src="barcode-placeholder.png" alt="바코드" className="h-10" />
+            <input type="text" name="barcode" value={couponData.barcode} onChange={handleChange} className="text-lg flex-1 p-2 border bg-stone-50 rounded-lg" />
           </div>
 
           {/* 쿠폰이미지 */}
           <div className="h-[500px] m-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4">
-            {couponData.image ? (
+            {selectedCoupon.image ? (
               <img 
-                src={`data:image/jpeg;base64,${bufferToBase64(couponData.image)}`} 
+                src={`http://localhost:5000${selectedCoupon.image}`} 
                 alt="쿠폰 이미지" 
-                className="rounded-lg" 
+                className="object-contain w-full h-full" 
               />
             ) : (
               <div>이미지 없음</div>
@@ -116,7 +172,7 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
               <input 
                 type="text" 
                 name="usage_location" 
-                value={couponData.usage_location} 
+                value={selectedCoupon.usage_location} 
                 onChange={handleChange} 
                 className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg" 
               />
@@ -128,7 +184,7 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
               <input 
                 type="text" 
                 name="note" 
-                value={couponData.note} 
+                value={selectedCoupon.note} 
                 onChange={handleChange} 
                 className="text-sm flex-1 p-2 pb-12 border bg-stone-50 rounded-lg shadow-inner h-20" 
               />
@@ -140,24 +196,41 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
               <input 
                 type="text" 
                 name="deadline" 
-                value={couponData.deadline} 
+                value={selectedCoupon.deadline} 
                 onChange={handleChange} 
                 className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner" 
               />
             </div>
           </div>
 
-          {/* 카테고리지정 */}
-          <div className="flex items-center m-4 ">
-            <label className=" flex text-sm pl-3 mr-5">카테고리</label>
-            <select 
-              name="categories"
-              value={couponData.categories}
-              onChange={handleChange}
-              className="flex-1 p-2 border-gray-100 rounded-md bg-gray-100 shadow-md"
-            >
-              <option value="">{couponData.categories}</option>
-            </select>
+          {/* 카테고리 입력 UI 부분 */}
+          <div className="m-4">
+            <label className="text-sm pl-3 mb-2 block">카테고리</label>
+            <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-white min-h-[45px]">
+              {Array.isArray(selectedCoupon.categories) && selectedCoupon.categories.map((category, index) => (
+                <span 
+                  key={index} 
+                  className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm flex items-center"
+                >
+                  {category}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveCategory(index)}
+                    className="ml-2 text-emerald-500 hover:text-emerald-700"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              <input
+                type="text"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                onKeyDown={handleAddCategory}
+                placeholder="카테고리 입력 후 Enter"
+                className="flex-1 outline-none min-w-[150px] text-sm p-1"
+              />
+            </div>
           </div>
 
           {/* 저장 + 닫기 */}
@@ -168,7 +241,7 @@ const CouponDetail = ({ setIsDetailModalOpen, coupon }) => {
             <button
               type="button"
               className="flex-1 py-2 bg-gray-500 text-white font-medium rounded-lg shadow-md hover:bg-gray-600"
-              onClick={handleCloseModal}
+              onClick={closeModal}
             >
               닫기
             </button>

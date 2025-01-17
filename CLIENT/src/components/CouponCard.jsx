@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from "react";
 import CouponDetail from "./coupon/CouponDetail";
+import { useModal } from '../context/ModalContext';
 
 const CouponCard = ({ coupon }) => {
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const { openModal, isModalOpen, closeModal } = useModal();
   const [isUsed, setIsUsed] = useState(false);
+  console.log("coupon: ", coupon);
   const floatDetailModal = () => {
-    setIsDetailModalOpen(!isDetailModalOpen);
+    openModal(coupon);
   };
 
   useEffect(() => {
     setIsUsed(coupon.status === 'used');
   }, [coupon.status]);
 
+  
+  const handleModalClose = () => {
+    closeModal();
+  };
+
   return (
     <>
       <div className="grid grid-cols-[150px_auto]  md:grid-cols-[150px_auto_80px] gap-6 p-6 border rounded-md  bg-white cursor-pointer relative hover:shadow-md " onClick={floatDetailModal}>
         {/* 이미지 컬럼 */}
-        <div className="h-[150px] flex items-center justify-center bg-emerald-300 rounded-3xl overflow-hidden">{coupon.imageSrc ? <img src={coupon.imageSrc} alt={coupon.title} className="object-cover w-full h-full" /> : <span className="text-gray-500 text-sm">이미지</span>}</div>
+        <div className="h-[150px] flex items-center justify-center bg-emerald-300 rounded-3xl overflow-hidden">{coupon.image ? <img src={`http://localhost:5000${coupon.image}`}  alt={coupon.title} className="object-contain w-full h-full" /> : <span className="text-gray-500 text-sm">이미지</span>}</div>
 
         {/* 텍스트 정보 컬럼 (왼쪽 정렬) */}
         <div className="flex items-top pt-1 justify-start bg-white">
@@ -40,7 +47,12 @@ const CouponCard = ({ coupon }) => {
           <p className="text-sm text-gray-500"> {coupon.deadline} 까지</p>
         </div>
 
-        {isDetailModalOpen && <CouponDetail setIsDetailModalOpen={setIsDetailModalOpen} coupon={coupon} />}
+        {isModalOpen && (
+          <CouponDetail 
+            coupon={coupon} 
+            setIsModalOpen={handleModalClose}
+          />
+        )}
       </div>
     </>
   );
