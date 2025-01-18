@@ -18,6 +18,13 @@ const AddCouponInfo = ({ selectedFile }) => {
     categories: []
   });
 
+  const [errorMessage, setErrorMessage] = useState(null); // 에러 메시지 상태 추가
+
+  const closeModal = () => {
+    //에러창 닫기
+    setErrorMessage(null);
+  };
+
   const fetchCouponInfo = async () => {
     if (!selectedFile) return;
 
@@ -30,14 +37,16 @@ const AddCouponInfo = ({ selectedFile }) => {
       });
 
       if (response.data) {
-        const newCouponInfo = {...response.data, user_id: localStorage.getItem('userId'), status: '사용가능'};
+        const newCouponInfo = { ...response.data, user_id: localStorage.getItem('userId'), status: '사용가능' };
         setCouponInfo(newCouponInfo);
         openModal(newCouponInfo);
       } else {
         console.error("서버 응답에 데이터가 없습니다.");
+        setErrorMessage("쿠폰 정보를 추출하지 못했습니다.\n다시 시도해주세요.(데이터못받음)");
       }
     } catch (error) {
       console.error("쿠폰 정보 추출 실패:", error.response?.data || error.message);
+      setErrorMessage("쿠폰 정보를 추출하지 못했습니다.\n다시 시도해주세요.(catch문)");
     }
   };
 
@@ -45,7 +54,25 @@ const AddCouponInfo = ({ selectedFile }) => {
     fetchCouponInfo();
   }, [selectedFile]);
 
-  return null;
+  return (
+    <>
+      {errorMessage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <p className="text-red-500 text-md font-medium mb-4 whitespace-pre-line">{errorMessage}</p>
+            <div className="flex justify-end">
+              <button
+                onClick={closeModal}
+                className="font-medium bg-gray-200 hover:bg-gray-500 text-xs px-4 py-2 rounded text-gray-600 hover:text-white shadow-sm"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );;
 };
 
 export default AddCouponInfo;
