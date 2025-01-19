@@ -64,7 +64,16 @@ const CouponDetail = () => {
       console.log("쿠폰이 사용되었습니다.");
     }
   };
+  const handleDeleteCoupon = async () => {
+    console.log("쿠폰 삭제");
 
+    const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/coupons/${selectedCoupon.id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    console.log(response.data.message);
+  };
 
   // 쿠폰 저장하기
   const handleSubmit = async (e) => {
@@ -140,6 +149,9 @@ const CouponDetail = () => {
               <CustomCheckbox onChange={handleCheckboxChange} checked={isUsed} />
               <span>사용완료</span>
             </div>
+            <div>
+              <button className="text-sm" onClick={handleDeleteCoupon}>삭제</button>
+            </div>
             <button className="flex items-center mr-2 ">
               <Share />
             </button>
@@ -169,7 +181,7 @@ const CouponDetail = () => {
             {/* brand */}
             <div className="flex items-center">
               <label className="flex text-sm font-medium mr-7 pt-1">교환처</label>
-              <input 
+              <input
                 type="text" 
                 name="usage_location" 
                 value={selectedCoupon.usage_location} 
