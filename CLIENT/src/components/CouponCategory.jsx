@@ -82,10 +82,10 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
   }
   return (
     <>
-      <div className="relative justify-center items-center">
+      <div className="relative justify-stretch items-center py-2 ">
         <button
           onClick={() => openModal()}
-          className="rounded-full bg-gray-100 hover:bg-gray-200 mr-4 w-16 h-7 text-gray-600 inline-block"
+          className="rounded-full border hover:bg-gray-200  mr-4 w-16 h-7 text-gray-500 font-bold inline-block"
         >
           +
         </button>
@@ -93,10 +93,10 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
           <button
             key={item.id}
             onClick={() => handleCategoryButtonClick(item)}
-            className={`rounded-full mr-4 px-3 py-1 mb-2 inline-block
+            className={`rounded-full mr-3 p-3 py-1 mb-2 inline-block 
               ${selectedCategory === item
-                ? 'bg-blue-100 text-blue-600'
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                ? 'bg-emerald-500 text-white font-medium'
+                : 'bg-emerald-100 hover:bg-emerald-500 hover:text-white text-emerald-700'
               }`}
           >
             {item.name}

@@ -28,31 +28,32 @@ const ImageUploader = ({ onImageUpload }) => {
     <div>
       <div
         {...getRootProps()}
-        className={`p-1 flex justify-center w-full  border rounded-full bg-white
-                    ${isDragActive ? "border-emerald-200 bg-blue-50" : "border-gray-300"}
-                    cursor-pointer hover:border-emerald-200 transition-colors`}
+        className={`p-1 flex justify-center  w-full bg-white  border border-dashed rounded-3xl mb-5
+                    ${isDragActive ? "border-emerald-400 bg-blue-50" : "border-gray-400"}
+                    cursor-pointer hover:border-emerald-400 transition-colors`}
       >
         <input {...getInputProps()} />
-        <div className="text-center py-1 space-y-1">
+        <div className="text-center py-2">
           {selectedFile ? (
-            <p className="text-sm text-emerald-400">선택된 파일: {selectedFile.name}</p>
+            <p className="text-sm text-emerald-500 ">{selectedFile.name}</p>
           ) : (
             <>
               <p className="text-sm text-gray-600">이미지를 드래그하여 놓거나 클릭하여 선택하세요</p>
               <p className="text-xs text-gray-400">지원 형식: JPG, JPEG, PNG</p>
             </>
           )}
+          {selectedFile && (
+            <div className="w-full h-80  border-gray-300 mt-2 p-2 mb-2 flex items-start justify-center rounded-xl overflow-hidden" style={{ overflow: "auto", scrollbarWidth: "none" }}>
+              <img src={URL.createObjectURL(selectedFile)} alt="업로드된 이미지" className="object-contain" style={{ width: "70%", height: "auto" }} />
+            </div>
+          )}
         </div>
       </div>
+
       <div>
         {selectedFile && (
-          <div className="w-full h-80 bg-black mt-2 p-2 flex items-start justify-center rounded-t-3xl overflow-hidden" style={{ overflow: "auto", scrollbarWidth: "none" }}>
-            <img src={URL.createObjectURL(selectedFile)} alt="업로드된 이미지" className="object-contain" style={{ width: "50%", height: "auto" }} />
-          </div>
-        )}
-        {selectedFile && (
-          <button onClick={handleUploadClick} className="w-full justify-center bg-black  text-emerald-300 hover:bg-emerald-300 hover:text-emerald-700 text-md font-semibold rounded-b-3xl p-3 ">
-            쿠 폰 등 록 하 기
+          <button onClick={handleUploadClick} className="btn-primary-r w-full rounded-2xl p-3">
+            쿠폰 등록하기
           </button>
         )}
       </div>
@@ -61,3 +62,4 @@ const ImageUploader = ({ onImageUpload }) => {
 };
 
 export default ImageUploader;
+

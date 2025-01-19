@@ -151,9 +151,13 @@ function Home({ coupons, setCoupons }) {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="main body flex-grow">
-
-        <div className="hidden md:flex justify-center bg-white">
-          <div className="이미지업로더창 w-full mx-[20%] mt-40 mb-52 min-w-[400px]">
+        <div className="hidden md:flex justify-center bg-neutral-100">
+          <div className="이미지업로더창 w-full mx-[30%] my-[86px] min-w-[400px] space-y-6">
+            <div className="text-center">
+              <p className="text-3xl text-center text-gray-600 font-extrabold">쿠폰을 구하다
+                <span className="text-gray-600"> 세이버</span>
+              </p>
+            </div>
             <ImageUploader onImageUpload={handleImageUpload} />
             {selectedFile && (
               <AddCouponInfo
@@ -169,8 +173,8 @@ function Home({ coupons, setCoupons }) {
           </div>
         </div>
         <div className="content-wrapper ">
-          <div className="필터박스 sticky top-[16px] z-20 h-40 pt-2 bg-white">
-            <div className="필터탭 flex justify-start space-x-4 sm:space-x-12 mb-6">
+          <div className="필터박스 sticky top-[8px] z-20 h-40 pt-4 bg-white">
+            <div className="필터탭 flex justify-between md:justify-center sm:space-x-20 mb-4">
               {[
                 { label: "사용가능", filter: "available" },
                 { label: "기간만료", filter: "expired" },
@@ -190,7 +194,7 @@ function Home({ coupons, setCoupons }) {
                     e.target.style.transform = "scale(1)";
                   }}
                   className={`h-10 transition-all duration-300 
-                  ${selectedFilter === filter ? "text-emerald-400 font-semibold text-xl scale-100 " : "text-emerald-600 text-lg"}
+                  ${selectedFilter === filter ? "text-emerald-400 font-semibold text-xl scale-100 " : "text-emerald-600 text-lg font-medium"}
                   `}
                   style={{
                     transformOrigin: "bottom center", // 아래 중심 기준으로 크기 변경
@@ -212,14 +216,15 @@ function Home({ coupons, setCoupons }) {
                 </button>
               ))}
             </div>
-
-            <div className="text-sm">
-              <CouponCategory category={category} addCategory={addCategory} handleCategoryClick={handleCategoryClick} refreshCategories={fetchCategories} />
+            <div className="flex justify-center ">
+              <div className="text-sm font-medium">
+                <CouponCategory category={category} addCategory={addCategory} handleCategoryClick={handleCategoryClick} refreshCategories={fetchCategories} />
+              </div>
             </div>
           </div>
 
           <div className="mb-32">
-            <div className="sticky top-[160px] z-10 flex justify-between text-base text-gray-500 bg-white p-4">
+            <div className="sticky top-[160px] z-10 flex justify-between text-base text-gray-500 bg-white py-4">
               <p>유효기간순</p>
               <div>
                 <span>조회쿠폰 : </span>
@@ -229,7 +234,7 @@ function Home({ coupons, setCoupons }) {
             <div className="쿠폰카드 pb-4 space-y-4 h-screen overflow-auto no-scrollbar">
               {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
               {filteredCoupons.map((coupon) => (
-                <CouponCard key={coupon.id} coupon={coupon}  />
+                <CouponCard key={coupon.id} coupon={coupon} />
               ))}
             </div>
           </div>
