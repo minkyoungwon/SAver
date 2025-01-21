@@ -4,7 +4,19 @@ const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [selectedCoupon, setSelectedCoupon] = useState({
+    barcode: '',
+    type: '',
+    name: '',
+    deadline: '',
+    usage_location: '',
+    image: '',
+    user_id: '',
+    status: '',
+    note: '',
+    categories: [],
+    id: ''
+  });
 
   const openModal = (coupon) => {
     setSelectedCoupon(coupon);

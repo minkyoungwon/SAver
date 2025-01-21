@@ -15,7 +15,8 @@ const AddCouponInfo = ({ selectedFile }) => {
     user_id: '',
     status: '',
     note: '',
-    categories: []
+    categories: [],
+    id: ''
   });
 
   const [errorMessage, setErrorMessage] = useState(null); // 에러 메시지 상태 추가

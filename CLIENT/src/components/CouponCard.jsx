@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CouponDetail from "./coupon/CouponDetail";
 import { useModal } from '../context/ModalContext';
+import CouponEdit from "./coupon/CouponEdit";
 
 const CouponCard = ({ coupon }) => {
   const { openModal, isModalOpen, closeModal } = useModal();
@@ -48,10 +49,7 @@ const CouponCard = ({ coupon }) => {
         </div>
 
         {isModalOpen && (
-          <CouponDetail 
-            coupon={coupon} 
-            setIsModalOpen={handleModalClose}
-          />
+          <CouponEdit />
         )}
       </div>
     </>
