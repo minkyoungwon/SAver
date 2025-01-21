@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import CouponCard from "../components/CouponCard";
 import { useState, useEffect } from "react";
-import AddCoupon from "../components/coupon/AddCoupon";
+// import AddCoupon from "../components/coupon/AddCoupon";
 import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import ImageUploader from "../components/coupon/ImageUploader";
@@ -177,8 +177,8 @@ function Home({ coupons, setCoupons }) {
             <div className="필터탭 flex justify-between md:justify-center sm:space-x-20 mb-4">
               {[
                 { label: "사용가능", filter: "available" },
+                { label: "사용완료", filter: "used" },
                 { label: "기간만료", filter: "expired" },
-                { label: "공유쿠폰", filter: "shared" },
                 { label: "전체쿠폰", filter: "all" },
               ].map(({ label, filter }) => (
                 <button
@@ -239,7 +239,7 @@ function Home({ coupons, setCoupons }) {
             </div>
           </div>
         </div>
-        <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} />
+        {/* <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} /> */}
         <Footer />
       </div>
     </div>
