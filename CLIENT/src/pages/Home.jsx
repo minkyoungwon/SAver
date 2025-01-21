@@ -106,6 +106,9 @@ function Home({ coupons, setCoupons }) {
         user_id: localStorage.getItem("userId"),
         barcode: coupon.barcode
       }));
+      // deadline 기준으로 오름차순 정렬
+      coupons.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+
       console.log("coupons : ", coupons);
       setCoupons(coupons);
     } catch (error) {
