@@ -10,6 +10,13 @@ const CouponDetail = () => {
   const [couponData, setCouponData] = useState(selectedCoupon || {});
   const [isUsed, setIsUsed] = useState(selectedCoupon?.is_used || false);
 
+  // 에러 메시지 상태 추가
+  const [errorMessage, setErrorMessage] = useState(null);
+  // 에러창 닫기
+  const closeError = () => {
+    setErrorMessage(null);
+  };
+
   // selectedCoupon이 변경될 때마다 couponData 업데이트
   useEffect(() => {
     if (selectedCoupon) {
@@ -122,7 +129,7 @@ const CouponDetail = () => {
       alert("쿠폰 저장 완료");
     } catch (error) {
       console.error('쿠폰 저장 실패:', error);
-      alert('쿠폰 저장에 실패했습니다.');
+      setErrorMessage('쿠폰 저장에 실패했습니다.');
     }
   };
 
@@ -214,7 +221,15 @@ const CouponDetail = () => {
               <input
                 type="text"
                 name="deadline"
-                value={couponData.deadline}
+                value={
+                  couponData.deadline
+                    ? (() => {
+                      const date = new Date(couponData.deadline);
+                      date.setDate(date.getDate() + 1); // 날짜에 1일 추가
+                      return date.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 반환
+                    })()
+                    : ""
+                }
                 onChange={handleChange}
                 disabled={isUsed}
                 className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner"
@@ -271,6 +286,25 @@ const CouponDetail = () => {
           </div>
         </form>
       </div >
+
+      {/* errorMessage */}
+      <>
+        {errorMessage && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-4 rounded-lg shadow-lg w-80 space-y-0">
+              <p className="text-black text-sm pl-6 whitespace-pre-line">{errorMessage}</p>
+              <div className="flex justify-end">
+                <button
+                  onClick={closeError}
+                  className="font-medium bg-gray-200 hover:bg-gray-300 text-xs px-4 py-1 rounded text-gray-600 shadow-sm"
+                >
+                  확인
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
     </div >
   );
 };
