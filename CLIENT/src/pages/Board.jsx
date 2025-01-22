@@ -59,13 +59,12 @@ const Board = ({ posts, user }) => {
   return (
     <div className="min-h-screen flex flex-col overflow-auto no-scrollbar">
       {/* 상단에 검색 폼 추가 */}
-
       <div className="flex-grow content-wrapper">
-        <div className="검색부 flex justify-end space-x-2 mt-24 mb-8">
-          <form onSubmit={handleSearch} className=" w-[260px]">
-            <input type="text" placeholder="검색어를 입력하세요..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="flex w-full h-full px-4 border rounded-full " />
+        <div className="검색부 flex justify-end mt-24 mb-8">
+          <form onSubmit={handleSearch} className="flex space-x-2">
+            <input type="text" placeholder="검색어를 입력하세요..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="flex w-[356px] h-full px-4 border rounded-full" />
+            <button className="btn-primary-r w-[90px]">검색하기</button>
           </form>
-          <button className="btn-primary-r py-1.5">검색하기</button>
         </div>
 
         <div className="테이블부">
@@ -75,9 +74,9 @@ const Board = ({ posts, user }) => {
             </Link>
           </div>
 
-          <table className="w-full border-collapse border  ">
+          <table className="w-full border-collapse border">
             <thead>
-              <tr className="bg-gray-100 ">
+              <tr className="bg-gray-100">
                 <th className="border border-gray-200 p-2 w-12 text-center">번호</th>
                 <th className="border border-gray-200 p-2  text-center">제목</th>
                 <th className="border border-gray-200 p-2 w-20 text-center">이름</th>
