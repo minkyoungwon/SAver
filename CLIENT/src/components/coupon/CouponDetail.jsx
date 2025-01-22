@@ -113,6 +113,7 @@ const CouponDetail = () => {
     formData.append('barcode', couponData.barcode || '');
     formData.append('usage_location', couponData.usage_location || '');
     formData.append('name', couponData.name || '');
+    formData.append('note', couponData.note || '');
     formData.append('deadline', couponData.deadline || '');
     formData.append('categories', JSON.stringify(couponData.categories || []));
     formData.append('is_used', isUsed);
@@ -202,13 +203,26 @@ const CouponDetail = () => {
               />
             </div>
 
-            {/* desc */}
-            <div className="flex items-start">
-              <label className="flex text-sm font-medium pt-2 mr-10">상품</label>
+            {/* name */}
+            <div className="flex items-center">
+              <label className="lex text-sm font-medium mr-10 pt-2">상품</label>
               <input
                 type="text"
                 name="name"
                 value={couponData.name}
+                onChange={handleChange}
+                disabled={isUsed}
+                className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg"
+              />
+            </div>
+
+            {/* desc */}
+            <div className="flex items-start">
+              <label className="flex text-sm font-medium pt-2 mr-10">상세</label>
+              <input
+                type="text"
+                note="note"
+                value={couponData.note}
                 onChange={handleChange}
                 disabled={isUsed}
                 className="text-sm flex-1 p-2 pb-12 border bg-stone-50 rounded-lg shadow-inner h-20"
