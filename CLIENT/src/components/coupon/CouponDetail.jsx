@@ -139,7 +139,7 @@ const CouponDetail = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center ">
-      <div className="pb-6 w-[400px] h-[80vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md">
+      <div className="pb-6 px-2 w-[420px] h-[80vh] overflow-y-auto no-scrollbar bg-stone-50 rounded-xl shadow-md">
         {/* 공유하기 + 사용체크박스 */}
         <div className=" sticky top-0 z-50 pt-4 px-4 bg-stone-50 flex justify-between text-xs font-semibold  text-emerald-500 ">
           <button
@@ -162,18 +162,18 @@ const CouponDetail = () => {
         <form onSubmit={handleSubmit}>
           {/* 바코드  */}
           <div className="h-[90px] m-4 border-white rounded-lg shadow-md bg-white flex justify-center items-center mb-4 ">
-            <input type="text" name="barcode" value={couponData.barcode} onChange={handleChange} disabled={isUsed} className="text-lg flex-1 p-2 border bg-stone-50 rounded-lg" />
+            <input type="text" name="barcode" value={couponData.barcode} onChange={handleChange} disabled={isUsed} className="text-lg flex-1 h-full m-1 rounded-lg" />
           </div>
 
           {/* 쿠폰이미지 */}
-          <div className={`h-[500px] m-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4 ${isUsed ? "grayscale" : ""
+          <div className={`m-4 p-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4 ${isUsed ? "grayscale" : ""
             }`}
           >
             {couponData.image ? (
               <img
                 src={`http://localhost:5000${couponData.image}`}
                 alt="쿠폰 이미지"
-                className="object-contain w-full h-full"
+                className="object-contain w-full"
               />
             ) : (
               <div>이미지 없음</div>
@@ -181,10 +181,10 @@ const CouponDetail = () => {
           </div>
 
           {/* 브랜드+상세+유효기간 */}
-          <div className=" m-4 p-2  shadow-md bg-white pr-4 pl-4 rounded-lg">
+          <div className=" m-4 p-4 space-y-4 shadow-md bg-white pr-4 pl-4 rounded-lg">
             {/* brand */}
             <div className="flex items-center">
-              <label className="flex text-sm font-medium mr-7 pt-1">교환처</label>
+              <label className="flex text-sm font-medium mr-7 pt-2">교환처</label>
               <input
                 type="text"
                 name="usage_location"
@@ -197,7 +197,7 @@ const CouponDetail = () => {
 
             {/* desc */}
             <div className="flex items-start">
-              <label className="flex text-sm font-medium pt-4 mr-10">상세</label>
+              <label className="flex text-sm font-medium pt-2 mr-10">상세</label>
               <input
                 type="text"
                 name="note"
@@ -210,7 +210,7 @@ const CouponDetail = () => {
 
             {/* 유효기간 */}
             <div className="flex">
-              <label className="flex text-sm font-medium pt-4 mr-4">유효기간</label>
+              <label className="flex text-sm font-medium pt-2 mr-4">유효기간</label>
               <input
                 type="text"
                 name="deadline"
@@ -220,39 +220,40 @@ const CouponDetail = () => {
                 className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner"
               />
             </div>
-          </div>
 
-          {/* 카테고리 입력 UI 부분 */}
-          <div className="m-4">
-            <label className="text-sm pl-3 mb-2 block">카테고리</label>
-            <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-white min-h-[45px]">
-              {Array.isArray(couponData.categories) && couponData.categories.map((category, index) => (
-                <span
-                  key={index}
-                  className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm flex items-center"
-                >
-                  {category}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveCategory(index)}
-                    className="ml-2 text-emerald-500 hover:text-emerald-700"
+            {/* 카테고리 입력 UI 부분 */}
+            <div className="flex">
+              <label className="flex text-sm font-medium pt-2 mr-4">카테고리</label>
+              <div className="flex-1 w-full">
+                {Array.isArray(couponData.categories) && couponData.categories.map((category, index) => (
+                  <span
+                    key={index}
+                    className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm flex items-center"
                   >
-                    ×
-                  </button>
-                </span>
-              ))}
-              <input
-                type="text"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                onKeyDown={handleAddCategory}
-                placeholder="카테고리 입력 후 Enter"
-                className="flex-1 outline-none min-w-[150px] text-sm p-1"
-              />
+                    {category}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCategory(index)}
+                      className="ml-2 text-emerald-500 hover:text-emerald-700"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+                <input
+                  type="text"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  onKeyDown={handleAddCategory}
+                  placeholder="카테고리 입력 후 Enter"
+                  className="flex-1 w-full text-sm p-2 border bg-stone-50 rounded-lg shadow-inner"
+                />
+              </div>
             </div>
-            <div className="flex my-4">
-              <button className="flex w-full justify-center border text-sm py-2 rounded-lg" onClick={handleDeleteCoupon}>쿠폰삭제하기</button>
-            </div>
+
+          </div>
+          <div className="flex m-4">
+            <button className="flex w-full justify-center border text-sm py-2 rounded-lg hover:font-semibold" onClick={handleDeleteCoupon}>쿠폰삭제하기</button>
           </div>
 
           {/* 저장 + 닫기 */}
@@ -269,8 +270,8 @@ const CouponDetail = () => {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 
