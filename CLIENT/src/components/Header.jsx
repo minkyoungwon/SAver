@@ -7,7 +7,7 @@ const Header = ({ user, handleLogout }) => {
   return (
     <div className="sticky top-0 z-10 ">
       <header>
-        <div className="py-4 px-[16px] md:px-[15%] text-lg w-full flex justify-between items-center text-emerald-600 bg-white">
+        <div className="py-4 px-[16px] md:px-[15%] text-lg w-full flex justify-between items-center text-gray-600 bg-white">
           <nav className="flex justify-center items-center">
             <Link to="/">
               <img src={logo3} alt="logo" className=" mr-6 w-30 h-8 pb-1 rounded-md" />

@@ -82,7 +82,7 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
   }
   return (
     <>
-      <div className="relative justify-stretch items-center py-2 ">
+      <div className="relative justify-stretch items-center pt-2 ">
         <button
           onClick={() => openModal()}
           className="rounded-full border hover:bg-gray-200  mr-4 w-16 h-7 text-gray-500 font-bold inline-block"

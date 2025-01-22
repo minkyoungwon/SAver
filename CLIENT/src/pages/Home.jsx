@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import CouponCard from "../components/CouponCard";
 import { useState, useEffect } from "react";
-// import AddCoupon from "../components/coupon/AddCoupon";
+import CouponAdd from "../components/coupon/CouponAdd";
 import CouponCategory from "../components/CouponCategory";
 import axios from "axios";
 import ImageUploader from "../components/coupon/ImageUploader";
@@ -155,7 +155,7 @@ function Home({ coupons, setCoupons }) {
     <div className="min-h-screen flex flex-col">
       <div className="main body flex-grow">
         <div className="hidden md:flex justify-center bg-neutral-100">
-          <div className="이미지업로더창 w-full mx-[30%] my-[86px] min-w-[400px] space-y-6">
+          <div className="이미지업로더창 w-full mx-[30%] mt-[26px] my-[24px] min-w-[400px] space-y-6">
             <div className="text-center">
               <p className="text-3xl text-center text-gray-600 font-extrabold">쿠폰을 구하다
                 <span className="text-gray-600"> 세이버</span>
@@ -175,9 +175,9 @@ function Home({ coupons, setCoupons }) {
             )}
           </div>
         </div>
-        <div className="content-wrapper ">
-          <div className="필터박스 sticky top-[8px] z-20 h-40 pt-4 bg-white">
-            <div className="필터탭 flex justify-between md:justify-center sm:space-x-20 mb-4">
+        <div className="content-wrapper">
+          <div className="필터박스 sticky top-[8px] z-20 pb-2 bg-white">
+            <div className="필터탭 flex justify-between md:justify-center sm:space-x-20 my-1">
               {[
                 { label: "사용가능", filter: "available" },
                 { label: "사용완료", filter: "used" },
@@ -219,15 +219,15 @@ function Home({ coupons, setCoupons }) {
                 </button>
               ))}
             </div>
-            <div className="flex justify-center ">
+            <div className="flex justify-center">
               <div className="text-sm font-medium">
                 <CouponCategory category={category} addCategory={addCategory} handleCategoryClick={handleCategoryClick} refreshCategories={fetchCategories} />
               </div>
             </div>
           </div>
 
-          <div className="mb-32">
-            <div className="sticky top-[160px] z-10 flex justify-between text-base text-gray-500 bg-white py-4">
+          <div className="mb-4">
+            <div className="sticky top-[120px] md:top-[100px] z-10 flex justify-between text-base text-gray-500 bg-white py-4">
               <p>유효기간순</p>
               <div>
                 <span>조회쿠폰 : </span>
@@ -242,7 +242,7 @@ function Home({ coupons, setCoupons }) {
             </div>
           </div>
         </div>
-        {/* <AddCoupon setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} /> */}
+        <CouponAdd setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} />
         <Footer />
       </div>
     </div>
