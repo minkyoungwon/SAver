@@ -5,11 +5,11 @@ import { useModal } from '../../context/ModalContext';
 
 const CouponDetail = () => {
   const { isModalOpen, selectedCoupon, closeModal } = useModal();
-  
+
   // 쿠폰 데이터 상태 추가
   const [couponData, setCouponData] = useState(selectedCoupon || {});
   const [isUsed, setIsUsed] = useState(selectedCoupon?.is_used || false);
-  
+
   // selectedCoupon이 변경될 때마다 couponData 업데이트
   useEffect(() => {
     if (selectedCoupon) {
@@ -28,7 +28,7 @@ const CouponDetail = () => {
       e.preventDefault();
       setCouponData(prevData => ({
         ...prevData,
-        categories: Array.isArray(prevData.categories) 
+        categories: Array.isArray(prevData.categories)
           ? [...prevData.categories, newCategory.trim()]
           : [newCategory.trim()]
       }));
@@ -58,6 +58,10 @@ const CouponDetail = () => {
   const handleCheckboxChange = (e) => {
     const checked = e.target.checked;
     setIsUsed(checked);
+    setCouponData((prevData) => ({
+      ...prevData,
+      is_used: checked,
+    }));
     console.log(`쿠폰 상태: ${checked}`);
 
     if (checked) {
@@ -78,9 +82,9 @@ const CouponDetail = () => {
   // 쿠폰 저장하기
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
-    
+
     // 이미지 데이터 처리 개선
     if (selectedCoupon.image) {
       // Buffer 데이터인 경우
@@ -89,7 +93,7 @@ const CouponDetail = () => {
         const base64Response = await fetch(`data:image/jpeg;base64,${base64String}`);
         const imageBlob = await base64Response.blob();
         formData.append('image', imageBlob, 'coupon_image.jpg');
-      } 
+      }
       // 이미 문자열 형태의 이미지 URL인 경우
       else if (typeof selectedCoupon.image === 'string') {
         const imageResponse = await fetch(selectedCoupon.image);
@@ -97,7 +101,7 @@ const CouponDetail = () => {
         formData.append('image', imageBlob, 'coupon_image.jpg');
       }
     }
-    
+
     // 필수 데이터 추가
     formData.append('barcode', couponData.barcode || '');
     formData.append('usage_location', couponData.usage_location || '');
@@ -113,7 +117,7 @@ const CouponDetail = () => {
           'Content-Type': 'multipart/form-data',
         }
       });
-      
+
       closeModal();
       alert("쿠폰 저장 완료");
     } catch (error) {
@@ -149,9 +153,7 @@ const CouponDetail = () => {
               <CustomCheckbox onChange={handleCheckboxChange} checked={isUsed} />
               <span>사용완료</span>
             </div>
-            <div>
-              <button className="text-sm" onClick={handleDeleteCoupon}>삭제</button>
-            </div>
+
             <button className="flex items-center mr-2 ">
               <Share />
             </button>
@@ -160,16 +162,18 @@ const CouponDetail = () => {
         <form onSubmit={handleSubmit}>
           {/* 바코드  */}
           <div className="h-[90px] m-4 border-white rounded-lg shadow-md bg-white flex justify-center items-center mb-4 ">
-            <input type="text" name="barcode" value={couponData.barcode} onChange={handleChange} className="text-lg flex-1 p-2 border bg-stone-50 rounded-lg" />
+            <input type="text" name="barcode" value={couponData.barcode} onChange={handleChange} disabled={isUsed} className="text-lg flex-1 p-2 border bg-stone-50 rounded-lg" />
           </div>
 
           {/* 쿠폰이미지 */}
-          <div className="h-[500px] m-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4">
+          <div className={`h-[500px] m-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4 ${isUsed ? "grayscale" : ""
+            }`}
+          >
             {couponData.image ? (
-              <img 
-                src={`http://localhost:5000${couponData.image}`} 
-                alt="쿠폰 이미지" 
-                className="object-contain w-full h-full" 
+              <img
+                src={`http://localhost:5000${couponData.image}`}
+                alt="쿠폰 이미지"
+                className="object-contain w-full h-full"
               />
             ) : (
               <div>이미지 없음</div>
@@ -182,35 +186,38 @@ const CouponDetail = () => {
             <div className="flex items-center">
               <label className="flex text-sm font-medium mr-7 pt-1">교환처</label>
               <input
-                type="text" 
-                name="usage_location" 
-                value={couponData.usage_location} 
-                onChange={handleChange} 
-                className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg" 
+                type="text"
+                name="usage_location"
+                value={couponData.usage_location}
+                onChange={handleChange}
+                disabled={isUsed}
+                className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg"
               />
             </div>
 
             {/* desc */}
             <div className="flex items-start">
               <label className="flex text-sm font-medium pt-4 mr-10">상세</label>
-              <input 
-                type="text" 
-                name="note" 
-                value={couponData.note} 
-                onChange={handleChange} 
-                className="text-sm flex-1 p-2 pb-12 border bg-stone-50 rounded-lg shadow-inner h-20" 
+              <input
+                type="text"
+                name="note"
+                value={couponData.note}
+                onChange={handleChange}
+                disabled={isUsed}
+                className="text-sm flex-1 p-2 pb-12 border bg-stone-50 rounded-lg shadow-inner h-20"
               />
             </div>
 
             {/* 유효기간 */}
             <div className="flex">
               <label className="flex text-sm font-medium pt-4 mr-4">유효기간</label>
-              <input 
-                type="text" 
-                name="deadline" 
-                value={couponData.deadline} 
-                onChange={handleChange} 
-                className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner" 
+              <input
+                type="text"
+                name="deadline"
+                value={couponData.deadline}
+                onChange={handleChange}
+                disabled={isUsed}
+                className="text-sm flex-1 p-2 border bg-stone-50 rounded-lg shadow-inner"
               />
             </div>
           </div>
@@ -220,8 +227,8 @@ const CouponDetail = () => {
             <label className="text-sm pl-3 mb-2 block">카테고리</label>
             <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-white min-h-[45px]">
               {Array.isArray(couponData.categories) && couponData.categories.map((category, index) => (
-                <span 
-                  key={index} 
+                <span
+                  key={index}
                   className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm flex items-center"
                 >
                   {category}
@@ -242,6 +249,9 @@ const CouponDetail = () => {
                 placeholder="카테고리 입력 후 Enter"
                 className="flex-1 outline-none min-w-[150px] text-sm p-1"
               />
+            </div>
+            <div className="flex my-4">
+              <button className="flex w-full justify-center border text-sm py-2 rounded-lg" onClick={handleDeleteCoupon}>쿠폰삭제하기</button>
             </div>
           </div>
 
