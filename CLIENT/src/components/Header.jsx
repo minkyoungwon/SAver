@@ -7,22 +7,22 @@ const Header = ({ user, handleLogout }) => {
   return (
     <div className="sticky top-0 z-10 ">
       <header>
-        <div className="py-4 px-[16px] md:px-[15%] text-lg w-full flex justify-between items-center text-gray-600 bg-white">
+        <div className="py-4 px-[16px] md:px-[15%] text-base md:text-lg w-full flex justify-between items-center text-gray-600 bg-white">
           <nav className="flex justify-center items-center">
             <Link to="/">
-              <img src={logo3} alt="logo" className=" mr-6 w-30 h-8 pb-1 rounded-md" />
+              <img src={logo3} alt="logo" className=" mr-2 md:mr-6 w-30 h-8 pb-1 rounded-md" />
             </Link>
             <Link to="/">
-              <div className=" pr-6 hover: ">쿠폰</div>
+              <div className=" pr-3 md:pr-6 hover: ">쿠폰</div>
             </Link>
             <Link to="/board">
-              <div className=" pr-6 hover: ">게시판</div>
+              <div className=" sm:pr-6 hover: ">게시판</div>
             </Link>
           </nav>
-          <nav className="flex justify-end space-x-4">
+          <nav className="flex justify-end space-x-2 sm:space-x-4">
             {user ? (
               <>
-                <Link to="/dm" className="text-sm">
+                <Link to="/dm" className=" text-sm">
                   DM
                 </Link>
                 <Link to="/my-profile" className="text-sm">

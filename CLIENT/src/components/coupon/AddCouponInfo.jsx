@@ -20,6 +20,7 @@ const AddCouponInfo = ({ selectedFile }) => {
   });
 
   const [errorMessage, setErrorMessage] = useState(null); // 에러 메시지 상태 추가
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   const closeModal = () => {
     //에러창 닫기
@@ -29,6 +30,7 @@ const AddCouponInfo = ({ selectedFile }) => {
   const fetchCouponInfo = async () => {
     if (!selectedFile) return;
 
+    setIsLoading(true); // 로딩 시작
     try {
       const formData = new FormData();
       formData.append("image", selectedFile);
@@ -48,6 +50,8 @@ const AddCouponInfo = ({ selectedFile }) => {
     } catch (error) {
       console.error("쿠폰 정보 추출 실패:", error.response?.data || error.message);
       setErrorMessage("쿠폰 정보를 추출하지 못했습니다.\n다시 시도해주세요.");
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
 
@@ -57,6 +61,11 @@ const AddCouponInfo = ({ selectedFile }) => {
 
   return (
     <>
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      )}
       {errorMessage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-4 rounded-lg shadow-lg w-80 space-y-0">
@@ -73,7 +82,7 @@ const AddCouponInfo = ({ selectedFile }) => {
         </div>
       )}
     </>
-  );;
+  );
 };
 
 export default AddCouponInfo;

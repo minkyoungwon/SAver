@@ -154,7 +154,7 @@ function Home({ coupons, setCoupons }) {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="main body flex-grow">
-        <div className="hidden md:flex justify-center bg-neutral-100">
+        <div className="hidden md:flex justify-center bg-neutral-100 shadow-md">
           <div className="이미지업로더창 w-full mx-[30%] mt-[30px] mb-[22px] min-w-[400px] space-y-4">
             <div className="text-center">
               <p className="text-3xl text-center text-gray-600 font-extrabold">쿠폰을 구하다
