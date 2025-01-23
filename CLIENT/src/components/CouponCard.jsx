@@ -38,7 +38,7 @@ const CouponCard = ({ coupon }) => {
 
   return (
     <>
-      <div className="grid grid-cols-[150px_auto]  md:grid-cols-[150px_auto_80px] gap-6 p-6 border rounded-md  bg-white cursor-pointer relative hover:shadow-md " onClick={floatDetailModal}>
+      <div className="grid grid-cols-[120px_auto] md:grid-cols-[150px_auto_80px] gap-4 md:gap-6 p-4 md:p-6 border rounded-md  bg-white cursor-pointer relative hover:shadow-md " onClick={floatDetailModal}>
         {/* 이미지 컬럼 */}
         <div className="h-[150px] flex items-center justify-center border bg-neutral-100 rounded-3xl overflow-hidden">
           {coupon.image ?
@@ -48,7 +48,7 @@ const CouponCard = ({ coupon }) => {
         {/* 텍스트 정보 컬럼 (왼쪽 정렬) */}
         <div className="flex items-top pt-1 justify-start bg-white">
           <div>
-            <div className="flex space-x-3 pb-3">
+            <div className="flex space-x-1 md:space-x-3 pb-3">
               {/* 남은 일수가 양수일 때만 뱃지를 렌더링(0일 포함, -1부터 뱃지 없음)*/}
               {getRemainingDays(coupon.deadline) >= 0 && (
                 <span className="badge">{getRemainingDays(coupon.deadline)}일 남음</span>
@@ -60,17 +60,18 @@ const CouponCard = ({ coupon }) => {
             </div>
             <div className="flex flex-col space-y-2">
               <div>
-                <p className="pb-2 text-base font-semibold">{coupon.name}</p>
-                <p className="text-sm text-gray-600">{coupon.usage_location}</p>
+                <p className="md:pb-1 text-sm md:text-base text-gray-900 font-semibold">{coupon.name}</p>
+                <p className="text-sm  text-gray-900">{coupon.note}</p>
+                <p className="text-sm  text-gray-400">{coupon.usage_location}</p>
               </div>
             </div>
-            <p className="absolute bottom-6 text-sm text-gray-500 md:hidden"> {formatDate(coupon.deadline)} 까지 </p>
+            <p className="absolute bottom-6 text-sm text-gray-900 font-semibold md:hidden"> {formatDate(coupon.deadline)} 까지 </p>
           </div>
         </div>
 
         {/* 세 번째 (오른쪽 정렬) */}
         <div className="hidden md:flex items-center justify-end bg-white">
-          <p className="text-sm text-gray-500"> {formatDate(coupon.deadline)} 까지</p>
+          <p className="text-sm text-gray-900 font-semibold"> {formatDate(coupon.deadline)} 까지</p>
         </div>
 
         {isModalOpen && (
