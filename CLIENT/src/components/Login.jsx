@@ -37,7 +37,7 @@ const Login = ({ setUser }) => {
       navigate("/");
       setTimeout(() => {
         window.location.reload();
-      }, 10);
+      }, 1500);
     } catch (error) {
       console.error("로그인 중 오류:", error);
       Swal.fire({

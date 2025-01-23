@@ -16,7 +16,7 @@ import MyProfile from "./pages/MyProfile";
 import MyCoupons from "./pages/MyCoupons";
 import Intro from "./pages/Intro";
 import DM from "./components/dm";
-
+import Swal from 'sweetalert2';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ModalProvider } from './context/ModalContext';
 import CouponDetail from "./components/coupon/CouponDetail";
@@ -70,7 +70,12 @@ const App = () => {
           localStorage.removeItem("token");
           localStorage.removeItem("userEmail");
           setUser(null);
-          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+          Swal.fire({
+            title: '세션 만료',
+            text: '세션이 만료되었습니다. 다시 로그인해주세요.',
+            icon: 'error',
+            timer: 1500,
+          });
           navigate("/login");
         }
 
@@ -78,7 +83,12 @@ const App = () => {
         if (decodedToken.exp < currentTime) {
           localStorage.removeItem("token");
           setUser(null);
-          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+          Swal.fire({
+            title: '세션 만료',
+            text: '세션이 만료되었습니다. 다시 로그인해주세요.',
+            icon: 'error',
+            timer: 1500,
+          });
           navigate("/login");
           clearInterval(checkSession);
         }
@@ -98,7 +108,12 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    alert("로그아웃 되었습니다");
+    Swal.fire({
+      title: '로그아웃',
+      text: '로그아웃 되었습니다',
+      icon: 'success',
+      timer: 1500,
+    });
     navigate("/");
   };
 
