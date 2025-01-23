@@ -78,7 +78,6 @@ const App = () => {
           });
           navigate("/login");
         }
-
         // 만료 시간 확인
         if (decodedToken.exp < currentTime) {
           localStorage.removeItem("token");
@@ -112,7 +111,7 @@ const App = () => {
       title: '로그아웃',
       text: '로그아웃 되었습니다',
       icon: 'success',
-      timer: 2000,
+      timer: 3000,
     });
     navigate("/");
   };

@@ -131,7 +131,6 @@ const CouponDetail = () => {
       Swal.fire({
         title: '쿠폰 저장 완료',
         icon: 'success',
-        timer: 1500,
       });
     } catch (error) {
       console.error('쿠폰 저장 실패:', error);

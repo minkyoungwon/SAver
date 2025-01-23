@@ -32,19 +32,18 @@ const Login = ({ setUser }) => {
       Swal.fire({
         title: '로그인 성공!',
         icon: 'success',
-        timer: 2500,
       });
       navigate("/");
       setTimeout(() => {
         window.location.reload();
-      }, 2500);
+      }, 3000);
     } catch (error) {
       console.error("로그인 중 오류:", error);
       Swal.fire({
         title: '로그인 실패',
         text: '아이디 혹은 비밀번호를 확인해주세요.',
         icon: 'error',
-        timer: 2500,
+        timer: 3000,
       });
     }
   };
@@ -65,14 +64,14 @@ const Login = ({ setUser }) => {
         Swal.fire({
           title: '구글 로그인 성공!',
           icon: 'success',
-          timer: 2500,
+          timer: 5000,
         });
         navigate("/");
       } else {
         Swal.fire({
           title: '새 소셜 사용자입니다. 회원가입이 필요합니다.',
           icon: 'warning',
-          timer: 2500,
+          timer: 3000,
         });
         navigate("/signup", {
           state: {

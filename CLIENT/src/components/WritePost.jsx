@@ -16,7 +16,7 @@ const WritePost = ({ user, setPosts }) => {
         title: '로그인 필요',
         text: '로그인이 필요합니다.',
         icon: 'warning',
-        timer: 2500,
+        timer: 3000,
       });
       navigate("/login");
     }
@@ -36,7 +36,7 @@ const WritePost = ({ user, setPosts }) => {
             title: '게시글 불러오기 실패',
             text: '게시글을 불러오는 데 실패했습니다.',
             icon: 'error',
-            timer: 2500,
+            timer: 3000,
           });
         }
       }
@@ -75,7 +75,7 @@ const WritePost = ({ user, setPosts }) => {
         Swal.fire({
           title: '글 수정 완료',
           icon: 'success',
-          timer: 2500,
+          timer: 3000,
         });
         navigate(`/post/${id}`); // 수정된 글 상세 페이지로 이동
       }
@@ -86,7 +86,7 @@ const WritePost = ({ user, setPosts }) => {
         Swal.fire({
           title: '글 작성 완료',
           icon: 'success',
-          timer: 2500,
+          timer: 3000,
         });
         navigate(`/post/${response.data.id}`); // 작성된 글 상세 페이지로 이동
         console.log('작성된 글 데이터:', response.data);
@@ -99,7 +99,7 @@ const WritePost = ({ user, setPosts }) => {
         title: '글 저장 실패',
         text: '글 저장에 실패했습니다.',
         icon: 'error',
-        timer: 2500,
+        timer: 3000,
       });
     }
   };

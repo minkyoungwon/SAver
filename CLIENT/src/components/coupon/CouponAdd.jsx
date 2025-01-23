@@ -34,7 +34,6 @@ const CouponAdd = () => {
       Swal.fire({
         title: '쿠폰 추가 완료',
         icon: 'success',
-        timer: 2500,
       }); 
     } catch (error) {
       console.error('쿠폰 추가 실패:', error);
@@ -42,7 +41,7 @@ const CouponAdd = () => {
         title: '쿠폰 추가 실패',
         text: '쿠폰 추가에 실패했습니다.',
         icon: 'error',
-        timer: 2500,
+        timer: 3000,
       });
     }
   };

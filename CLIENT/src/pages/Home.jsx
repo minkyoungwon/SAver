@@ -88,7 +88,6 @@ function Home({ coupons, setCoupons }) {
         Swal.fire({
           title: '카테고리 추가 완료',
           icon: 'success',
-          timer: 2500,
         });
         fetchCategories();
       } else {
