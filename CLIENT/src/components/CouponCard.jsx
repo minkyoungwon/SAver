@@ -5,6 +5,7 @@ import CouponEdit from "./coupon/CouponEdit";
 const CouponCard = ({ coupon }) => {
   const [isUsed, setIsUsed] = useState(false);
   const { openModal, isModalOpen, closeModal } = useModal();
+  const [isExpired, setIsExpired] = useState(false);
   // console.log("coupon: ", coupon);
   const floatDetailModal = () => {
     openModal({
@@ -12,6 +13,21 @@ const CouponCard = ({ coupon }) => {
       isEditMode: true
     });
   };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 1); // 날짜를 1일 증가시킴 (coupon.deadline이 실제 날자보다 1일 적어서 임의로 +1시킴)
+    return date.toISOString().split('T')[0]; // 'YYYY-MM-DD' 포맷 반환
+  };
+
+  const getRemainingDays = (deadline) => {
+    const today = new Date();
+    const targetDate = new Date(deadline);
+    const diffTime = targetDate - today; // 차이 (밀리초)
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 밀리초 → 일수
+    return diffDays;
+  };
+
 
   useEffect(() => {
     setIsUsed(coupon.status === 'used');
