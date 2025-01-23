@@ -31,6 +31,7 @@ const CouponCard = ({ coupon }) => {
 
   useEffect(() => {
     setIsUsed(coupon.status === 'used');
+    setIsExpired(coupon.status === 'expired');
   }, [coupon.status]);
 
 
