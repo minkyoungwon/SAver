@@ -42,7 +42,10 @@ const CouponCard = ({ coupon }) => {
     <>
       <div className="grid grid-cols-[120px_auto] md:grid-cols-[150px_auto_80px] gap-4 md:gap-6 p-4 md:p-6 border rounded-md  bg-white cursor-pointer relative hover:shadow-md " onClick={floatDetailModal}>
         {/* 이미지 컬럼 */}
-        <div className="h-[150px] flex items-center justify-center bg-emerald-300 rounded-3xl overflow-hidden">{coupon.image ? <img src={`http://34.228.198.11:5000${coupon.image}`} alt={coupon.title} className="object-contain w-full h-full" /> : <span className="text-gray-500 text-sm">이미지</span>}</div>
+        <div className="h-[150px] flex items-center justify-center border bg-neutral-100 rounded-3xl overflow-hidden">
+          {coupon.image ?
+            <img
+              src={`http://34.228.198.11:5000${coupon.image}`} alt={coupon.title} className="object-contain w-[150px] h-auto" /> : <span className="text-gray-500 text-sm">이미지</span>}</div>
 
         {/* 텍스트 정보 컬럼 (왼쪽 정렬) */}
         <div className="flex items-top pt-1 justify-start bg-white">
