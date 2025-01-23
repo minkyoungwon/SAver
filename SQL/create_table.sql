@@ -5,10 +5,13 @@ CREATE TABLE IF NOT EXISTS users
   email         VARCHAR(255) NOT NULL COMMENT '이메일',
   password      TEXT  NOT NULL COMMENT '비밀번호',
   join_date     DATETIME NULL     COMMENT '가입일자',
-  profile_image VARCHAR(255)  NULL     COMMENT '프로필 이미지',
-  adminFlag     BOOLEAN NOT NULL DEFAULT false COMMENT '관리자여부',
-  PRIMARY KEY (id)
-) COMMENT '사용자(관리자 여부 추가)';
+  profile_image VARCHAR(255)  NULL     COMMENT '프로필 이미지 URL',
+  adminFlag     TINYINT(1) NOT NULL DEFAULT '0' COMMENT '관리자 여부 (0:일반, 1:관리자)',
+  is_verified   TINYINT(1) NOT NULL DEFAULT '0' COMMENT '이메일 인증 여부 (0:미인증, 1:인증됨)',
+  role          ENUM('NORMAL', 'SOCIAL', 'ADMIN') DEFAULT NULL COMMENT '사용자 역할',
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_email ('email')
+) COMMENT '사용자(관리자 여부 포함)';
 
 -- 2. users 테이블에만 의존성이 있는 테이블들
 CREATE TABLE IF NOT EXISTS posts
@@ -20,6 +23,7 @@ CREATE TABLE IF NOT EXISTS posts
   view_count INT      NULL     COMMENT '조회수',
   is_hidden  BOOLEAN  NOT NULL DEFAULT false COMMENT '숨김표시',
   posted_at  DATETIME NULL     COMMENT '작성날짜',
+  author     VARCHAR(100) DEFAULT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 ) COMMENT '게시판';
@@ -50,6 +54,22 @@ CREATE TABLE IF NOT EXISTS coupons
   CONSTRAINT CHK_coupons_charge_amount_positive CHECK (charge_amount >= 0),
   CONSTRAINT CHK_coupons_balance_positive CHECK (balance >= 0)
 ) COMMENT '쿠폰';
+
+CREATE TABLE `dm_direct_messages` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '메시지의 고유 ID',
+  `sender_id` VARCHAR(255) NOT NULL COMMENT '메시지를 보낸 사용자의 이메일',
+  `receiver_id` VARCHAR(255) NOT NULL COMMENT '메시지를 받은 사용자의 이메일',
+  `content` TEXT NOT NULL COMMENT '메시지 내용',
+  `is_read` TINYINT(1) DEFAULT '0' COMMENT '메시지 읽음 여부 (0: 안 읽음, 1: 읽음)',
+  `sent_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '메시지 보낸 시간',
+  PRIMARY KEY (`id`),
+  KEY `idx_sender_id` (`sender_id`),
+  KEY `idx_receiver_id` (`receiver_id`),
+  CONSTRAINT `fk_dm_sender` FOREIGN KEY (`sender_id`) 
+    REFERENCES `users` (`email`) ON DELETE CASCADE,
+  CONSTRAINT `fk_dm_receiver` FOREIGN KEY (`receiver_id`) 
+    REFERENCES `users` (`email`) ON DELETE CASCADE
+) COMMENT '다이렉트 메시지';
 
 -- 3. posts 테이블에 의존성이 있는 테이블들
 CREATE TABLE IF NOT EXISTS post_images
