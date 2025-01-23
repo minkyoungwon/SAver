@@ -41,13 +41,21 @@ const CouponCard = ({ coupon }) => {
                 <p className="text-sm text-gray-600">{coupon.usage_location}</p>
               </div>
             </div>
-            <p className="absolute bottom-6 text-sm text-gray-500 md:hidden"> {coupon.deadline} 까지 </p>
+            <p className="absolute bottom-6 text-sm text-gray-500 md:hidden">
+              {coupon.deadline === null || coupon.deadline === undefined 
+                ? "마감" 
+                : `${coupon.deadline.split('T')[0]} 까지`
+              } 
+            </p>
           </div>
         </div>
 
         {/* 세 번째 (오른쪽 정렬) */}
         <div className="hidden md:flex items-center justify-end bg-white">
-          <p className="text-sm text-gray-500"> {coupon.deadline} 까지</p>
+          <p className="text-sm text-gray-500"> {coupon.deadline === null || coupon.deadline === undefined 
+                ? "마감" 
+                : `${coupon.deadline.split('T')[0]} 까지`
+              } </p>
         </div>
 
         {isModalOpen && (
