@@ -1,7 +1,7 @@
 import { useModal } from '../../context/ModalContext';
 import CouponForm from './CouponForm';
 import axios from 'axios';
-
+import Swal from 'sweetalert2';
 const CouponAdd = () => {
   const { isModalOpen, closeModal } = useModal();
 
@@ -31,10 +31,19 @@ const CouponAdd = () => {
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
       closeModal();
-      alert("쿠폰이 추가되었습니다.");
+      Swal.fire({
+        title: '쿠폰 추가 완료',
+        icon: 'success',
+        timer: 1500,
+      }); 
     } catch (error) {
       console.error('쿠폰 추가 실패:', error);
-      alert('쿠폰 추가에 실패했습니다.');
+      Swal.fire({
+        title: '쿠폰 추가 실패',
+        text: '쿠폰 추가에 실패했습니다.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 

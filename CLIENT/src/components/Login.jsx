@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-
+import Swal from 'sweetalert2'
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const Login = ({ setUser }) => {
@@ -29,14 +29,23 @@ const Login = ({ setUser }) => {
       localStorage.setItem("userEmail", userEmail);
       setUser({ email: userEmail, id: decodedToken.id });
 
-      alert("로그인 성공!");
+      Swal.fire({
+        title: '로그인 성공!',
+        icon: 'success',
+        timer: 1500,
+      });
       navigate("/");
       setTimeout(() => {
         window.location.reload();
       }, 10);
     } catch (error) {
       console.error("로그인 중 오류:", error);
-      alert("로그인에 실패하였습니다. 아이디 혹은 비밀번호를 확인해주세요.");
+      Swal.fire({
+        title: '로그인 실패',
+        text: '아이디 혹은 비밀번호를 확인해주세요.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
@@ -53,10 +62,18 @@ const Login = ({ setUser }) => {
         const { token, user } = response.data;
         localStorage.setItem("token", token);
         setUser(user);
-        alert("구글 로그인 성공!");
+        Swal.fire({
+          title: '구글 로그인 성공!',
+          icon: 'success',
+          timer: 1500,
+        });
         navigate("/");
       } else {
-        alert("새 소셜 사용자입니다. 회원가입이 필요합니다.");
+        Swal.fire({
+          title: '새 소셜 사용자입니다. 회원가입이 필요합니다.',
+          icon: 'warning',
+          timer: 1500,
+        });
         navigate("/signup", {
           state: {
             googleUser: {
@@ -70,14 +87,24 @@ const Login = ({ setUser }) => {
       }
     } catch (error) {
       console.error("구글 로그인 처리 중 오류:", error);
-      alert("구글 로그인에 실패했습니다.");
+      Swal.fire({
+        title: '구글 로그인 실패',
+        text: '구글 로그인에 실패했습니다. 다시 시도해주세요.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
   // 구글 로그인 실패 처리
   const handleGoogleFailure = (error) => {
     console.error("구글 로그인 실패:", error);
-    alert("구글 로그인에 실패했습니다. 다시 시도해주세요.");
+    Swal.fire({
+      title: '구글 로그인 실패',
+      text: '구글 로그인에 실패했습니다. 다시 시도해주세요.',
+      icon: 'error',
+      timer: 1500,
+    });
   };
 
   return (

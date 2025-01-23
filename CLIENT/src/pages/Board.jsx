@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
-
+import Swal from 'sweetalert2';
 const Board = ({ posts, user }) => {
   // 페이지네이션 관련 상태
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,7 +40,12 @@ const Board = ({ posts, user }) => {
       setCurrentPage(1); // 페이지 초기화
     } catch (error) {
       console.error("검색 오류:", error);
-      alert("검색 중 오류가 발생했습니다. 다시 시도해주세요.");
+      Swal.fire({
+        title: '검색 오류',
+        text: '검색 중 오류가 발생했습니다. 다시 시도해주세요.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 

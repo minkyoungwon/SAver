@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Share, CustomCheckbox } from "../../icon";
 import axios from "axios";
 import { useModal } from '../../context/ModalContext';
+import Swal from 'sweetalert2'
 
 const CouponDetail = () => {
   const { isModalOpen, selectedCoupon, closeModal } = useModal();
@@ -127,7 +128,11 @@ const CouponDetail = () => {
       });
 
       closeModal();
-      alert("쿠폰 저장 완료");
+      Swal.fire({
+        title: '쿠폰 저장 완료',
+        icon: 'success',
+        timer: 1500,
+      });
     } catch (error) {
       console.error('쿠폰 저장 실패:', error);
       setErrorMessage('쿠폰 저장에 실패했습니다.');

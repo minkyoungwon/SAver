@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 const PostDetail = ({ posts, setPosts }) => {
   const { id } = useParams();
@@ -47,7 +48,12 @@ const PostDetail = ({ posts, setPosts }) => {
         setPost(response.data); // 서버에서 받은 데이터를 post 상태에 저장
       } catch (error) {
         console.error('게시글 불러오기 실패:', error);
-        alert('게시글을 불러오는 데 실패했습니다.');
+        Swal.fire({
+          title: '게시글 불러오기 실패',
+          text: '게시글을 불러오는 데 실패했습니다.',
+          icon: 'error',
+          timer: 1500,
+        });
       }
     };
 
@@ -80,11 +86,21 @@ const PostDetail = ({ posts, setPosts }) => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/posts/${id}`);
       setPosts((prev) => prev.filter((p) => p.id !== Number(id)));
-      alert('글이 삭제되었습니다!');
+      Swal.fire({
+        title: '글 삭제 완료',
+        text: '글이 삭제되었습니다!',
+        icon: 'success',
+        timer: 1500,
+      });
       navigate('/');
     } catch (error) {
       console.error('글 삭제 중 오류 발생:', error);
-      alert('글 삭제에 실패했습니다.');
+      Swal.fire({
+        title: '글 삭제 실패',
+        text: '글 삭제에 실패했습니다.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
@@ -107,7 +123,12 @@ const PostDetail = ({ posts, setPosts }) => {
         }, 10);
       } catch (error) {
         console.error('댓글 작성 중 오류 발생:', error);
-        alert(error.response?.data?.message || '댓글 작성 중 오류가 발생했습니다.');
+        Swal.fire({
+          title: '댓글 작성 실패',
+          text: '댓글 작성 중 오류가 발생했습니다.',
+          icon: 'error',
+          timer: 1500,
+        });
       }
     }
   };
@@ -137,7 +158,12 @@ const PostDetail = ({ posts, setPosts }) => {
       setEditContent('');
     } catch (error) {
       console.error('댓글 수정 중 오류:', error);
-      alert(error.response?.data?.message || '댓글 수정 중 오류 발생');
+      Swal.fire({
+        title: '댓글 수정 실패',
+        text: '댓글 수정 중 오류가 발생했습니다.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
@@ -154,7 +180,12 @@ const PostDetail = ({ posts, setPosts }) => {
       setComments((prev) => prev.filter((c) => c.id !== commentId));
     } catch (error) {
       console.error('댓글 삭제 중 오류:', error);
-      alert(error.response?.data?.message || '댓글 삭제 중 오류 발생');
+      Swal.fire({
+        title: '댓글 삭제 실패',
+        text: '댓글 삭제 중 오류가 발생했습니다.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
@@ -192,7 +223,12 @@ const PostDetail = ({ posts, setPosts }) => {
 
       } catch (error) {
         console.error('대댓글 작성 중 오류 발생:', error);
-        alert(error.response?.data?.message || '대댓글 작성 중 오류가 발생했습니다.');
+        Swal.fire({
+          title: '대댓글 작성 실패',
+          text: '대댓글 작성 중 오류가 발생했습니다.',
+          icon: 'error',
+          timer: 1500,
+        });
       }
     }
   };

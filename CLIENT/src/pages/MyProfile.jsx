@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-
+import Swal from 'sweetalert2';
 const MyProfile = ({ user }) => {
   // MyProfile.jsx 예시
 console.log("현재 user 객체: ", user);
@@ -11,13 +11,23 @@ console.log("현재 user 객체: ", user);
     try {
       const currentPassword = prompt("현재 비밀번호를 입력하세요:");
       if (!currentPassword) {
-        alert("현재 비밀번호를 입력하지 않았습니다.");
+        Swal.fire({
+          title: '비밀번호 입력 실패',
+          text: '현재 비밀번호를 입력하지 않았습니다.',
+          icon: 'error',
+          timer: 1500,
+        });
         return;
       }
 
       const newPassword = prompt("새로운 비밀번호를 입력하세요:");
       if (!newPassword) {
-        alert("새로운 비밀번호를 입력하지 않았습니다.");
+        Swal.fire({
+          title: '비밀번호 입력 실패',
+          text: '새로운 비밀번호를 입력하지 않았습니다.',
+          icon: 'error',
+          timer: 1500,
+        });
         return;
       }
 

@@ -21,7 +21,12 @@ const GoogleLoginFlow = () => {
         // 이미 가입된 사용자
         const { token, user } = response.data;
         localStorage.setItem("token", token);
-        alert("이미 가입된 소셜 계정입니다. 로그인 완료!");
+        Swal.fire({
+          title: '로그인 완료',
+          text: '이미 가입된 소셜 계정입니다.',
+          icon: 'success',
+          timer: 1500,
+        });
         navigate("/");
       } else {
         // 새 소셜 사용자 => 회원가입 진행
@@ -30,7 +35,12 @@ const GoogleLoginFlow = () => {
       }
     } catch (error) {
       console.error("구글 토큰 검증 실패:", error);
-      alert("구글 로그인에 실패했습니다.");
+      Swal.fire({
+        title: '로그인 실패',
+        text: '구글 로그인에 실패했습니다.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
@@ -49,17 +59,32 @@ const GoogleLoginFlow = () => {
       // 회원가입 성공 시 토큰 저장 후 메인 페이지 이동
       const { token } = response.data;
       localStorage.setItem("token", token);
-      alert("구글 회원가입이 완료되었습니다!");
+      Swal.fire({
+        title: '회원가입 완료',
+        text: '구글 회원가입이 완료되었습니다!',
+        icon: 'success',
+        timer: 1500,
+      });
       navigate("/");
     } catch (error) {
       console.error("구글 회원가입 실패:", error);
-      alert("구글 회원가입에 실패했습니다.");
+      Swal.fire({
+        title: '회원가입 실패',
+        text: '구글 회원가입에 실패했습니다.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
   // 3) 구글 로그인 버튼 오류
   const handleGoogleError = () => {
-    alert("구글 로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
+    Swal.fire({
+      title: '로그인 실패',
+      text: '구글 로그인 중 오류가 발생했습니다. 다시 시도해주세요.',
+      icon: 'error',
+      timer: 1500,
+    });
   };
 
   return (

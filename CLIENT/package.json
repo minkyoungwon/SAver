@@ -25,6 +25,7 @@
     "react-oauth": "^0.0.1",
     "react-router-dom": "^7.0.2",
     "sharp": "^0.33.5",
+    "sweetalert2": "^11.15.10",
     "tesseract.js": "^5.1.1"
   },
   "devDependencies": {

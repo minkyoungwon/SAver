@@ -7,6 +7,8 @@ import axios from "axios";
 import ImageUploader from "../components/coupon/ImageUploader";
 import AddCouponInfo from "../components/coupon/AddCouponInfo";
 import Footer from "../components/Footer";
+import Swal from 'sweetalert2';
+
 function Home({ coupons, setCoupons }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
@@ -50,13 +52,23 @@ function Home({ coupons, setCoupons }) {
     addCategory = async (input) => {
       console.log("addCategory : ", input);
       if (input === "") {
-        alert("카테고리를 입력해주세요.");
+        Swal.fire({
+          title: '카테고리 입력 실패',
+          text: '카테고리를 입력해주세요.',
+          icon: 'error',
+          timer: 1500,
+        });
         return;
       }
 
       const isCategoryExist = category.includes(input);
       if (isCategoryExist) {
-        alert("이미 존재하는 카테고리입니다.");
+        Swal.fire({
+          title: '카테고리 중복',
+          text: '이미 존재하는 카테고리입니다.',
+          icon: 'error',
+          timer: 1500,
+        });
         return;
       }
       const response = await axios.post(
@@ -72,10 +84,19 @@ function Home({ coupons, setCoupons }) {
         }
       );
       if (response.status === 200) {
-        alert("카테고리 추가 완료");
+        Swal.fire({
+          title: '카테고리 추가 완료',
+          icon: 'success',
+          timer: 1500,
+        });
         fetchCategories();
       } else {
-        alert("카테고리 추가 실패");
+        Swal.fire({
+          title: '카테고리 추가 실패',
+          text: '카테고리 추가에 실패했습니다.',
+          icon: 'error',
+          timer: 1500,
+        });
       }
     };
 

@@ -1,7 +1,7 @@
 import { useModal } from '../../context/ModalContext';
 import CouponForm from './CouponForm';
 import axios from 'axios';
-
+import Swal from 'sweetalert2';
 const CouponEdit = () => {
   const { isModalOpen, selectedCoupon, closeModal } = useModal();
 
@@ -35,10 +35,19 @@ const CouponEdit = () => {
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
       closeModal();
-      alert("쿠폰이 수정되었습니다.");
+      Swal.fire({
+        title: '쿠폰 수정 완료',
+        icon: 'success',
+        timer: 1500,
+      });
     } catch (error) {
       console.error('쿠폰 수정 실패:', error);
-      alert('쿠폰 수정에 실패했습니다.');
+      Swal.fire({
+        title: '쿠폰 수정 실패',
+        text: '쿠폰 수정에 실패했습니다.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
@@ -48,10 +57,19 @@ const CouponEdit = () => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/coupons/${selectedCoupon.id}`);
       closeModal();
-      alert("쿠폰이 삭제되었습니다.");
+      Swal.fire({
+        title: '쿠폰 삭제 완료',
+        icon: 'success',
+        timer: 1500,
+      });
     } catch (error) {
       console.error('쿠폰 삭제 실패:', error);
-      alert('쿠폰 삭제에 실패했습니다.');
+      Swal.fire({
+        title: '쿠폰 삭제 실패',
+        text: '쿠폰 삭제에 실패했습니다.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 

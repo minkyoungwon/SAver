@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-
+import Swal from 'sweetalert2';
 const Signup = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -18,7 +18,12 @@ const Signup = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      Swal.fire({
+        title: '비밀번호 불일치',
+        text: '비밀번호가 일치하지 않습니다. 다시 확인해주세요.',
+        icon: 'error',
+        timer: 1500,
+      });
       return;
     }
 
@@ -27,12 +32,22 @@ const Signup = () => {
         email,
         password,
       });
-      alert(response.data.message);
+      Swal.fire({
+        title: '회원가입 완료',
+        text: response.data.message,
+        icon: 'success',
+        timer: 1500,
+      });
       navigate("/email-verification", { state: { email } });
     } catch (error) {
       console.error("회원가입 중 오류:", error);
       const errorMessage = error.response?.data?.message || "회원가입에 실패했습니다.";
-      alert(errorMessage);
+      Swal.fire({
+        title: '회원가입 실패',
+        text: errorMessage,
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
@@ -40,7 +55,12 @@ const Signup = () => {
   const handleGoogleSignup = async () => {
     try {
       if (!googleUser) {
-        alert("구글 사용자 정보가 없습니다. 다시 시도해주세요.");
+        Swal.fire({
+          title: '구글 사용자 정보 없음',
+          text: '구글 사용자 정보가 없습니다. 다시 시도해주세요.',
+          icon: 'error',
+          timer: 1500,
+        });
         return;
       }
 
@@ -51,11 +71,20 @@ const Signup = () => {
         picture: googleUser.picture,
       });
 
-      alert("구글 소셜 회원가입 성공!");
+      Swal.fire({
+        title: '구글 소셜 회원가입 성공!',
+        icon: 'success',
+        timer: 1500,
+      });
       navigate("/login");
     } catch (error) {
       console.error("구글 소셜 회원가입 중 오류 발생:", error);
-      alert("구글 회원가입에 실패했습니다.");
+      Swal.fire({
+        title: '구글 회원가입 실패',
+        text: '구글 회원가입에 실패했습니다.',
+        icon: 'error',
+        timer: 1500,
+      });
     }
   };
 
