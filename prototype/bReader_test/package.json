@@ -1,0 +1,17 @@
+{
+  "name": "test1",
+  "version": "1.0.0",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@zxing/library": "^0.21.3",
+    "quagga": "^0.12.1",
+    "sharp": "^0.33.5",
+    "zxing": "^0.1.2"
+  }
+}
