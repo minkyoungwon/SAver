@@ -57,7 +57,7 @@ function Home({ coupons, setCoupons }) {
           title: '카테고리 입력 실패',
           text: '카테고리를 입력해주세요.',
           icon: 'error',
-          timer: 1500,
+          timer: 2500,
         });
         return;
       }
@@ -68,7 +68,7 @@ function Home({ coupons, setCoupons }) {
           title: '카테고리 중복',
           text: '이미 존재하는 카테고리입니다.',
           icon: 'error',
-          timer: 1500,
+          timer: 2500,
         });
         return;
       }
@@ -88,7 +88,7 @@ function Home({ coupons, setCoupons }) {
         Swal.fire({
           title: '카테고리 추가 완료',
           icon: 'success',
-          timer: 1500,
+          timer: 2500,
         });
         fetchCategories();
       } else {
@@ -96,7 +96,7 @@ function Home({ coupons, setCoupons }) {
           title: '카테고리 추가 실패',
           text: '카테고리 추가에 실패했습니다.',
           icon: 'error',
-          timer: 1500,
+          timer: 2500,
         });
       }
     };

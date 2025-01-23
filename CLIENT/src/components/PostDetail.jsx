@@ -52,7 +52,7 @@ const PostDetail = ({ posts, setPosts }) => {
           title: '게시글 불러오기 실패',
           text: '게시글을 불러오는 데 실패했습니다.',
           icon: 'error',
-          timer: 1500,
+          timer: 2500,
         });
       }
     };
@@ -90,7 +90,7 @@ const PostDetail = ({ posts, setPosts }) => {
         title: '글 삭제 완료',
         text: '글이 삭제되었습니다!',
         icon: 'success',
-        timer: 1500,
+        timer: 2500,
       });
       navigate('/');
     } catch (error) {
@@ -99,7 +99,7 @@ const PostDetail = ({ posts, setPosts }) => {
         title: '글 삭제 실패',
         text: '글 삭제에 실패했습니다.',
         icon: 'error',
-        timer: 1500,
+        timer: 2500,
       });
     }
   };
@@ -127,7 +127,7 @@ const PostDetail = ({ posts, setPosts }) => {
           title: '댓글 작성 실패',
           text: '댓글 작성 중 오류가 발생했습니다.',
           icon: 'error',
-          timer: 1500,
+          timer: 2500,
         });
       }
     }
@@ -162,7 +162,7 @@ const PostDetail = ({ posts, setPosts }) => {
         title: '댓글 수정 실패',
         text: '댓글 수정 중 오류가 발생했습니다.',
         icon: 'error',
-        timer: 1500,
+        timer: 2500,
       });
     }
   };
@@ -184,7 +184,7 @@ const PostDetail = ({ posts, setPosts }) => {
         title: '댓글 삭제 실패',
         text: '댓글 삭제 중 오류가 발생했습니다.',
         icon: 'error',
-        timer: 1500,
+        timer: 2500,
       });
     }
   };
@@ -227,7 +227,7 @@ const PostDetail = ({ posts, setPosts }) => {
           title: '대댓글 작성 실패',
           text: '대댓글 작성 중 오류가 발생했습니다.',
           icon: 'error',
-          timer: 1500,
+          timer: 2500,
         });
       }
     }

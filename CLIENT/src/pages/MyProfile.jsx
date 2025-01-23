@@ -15,7 +15,7 @@ console.log("현재 user 객체: ", user);
           title: '비밀번호 입력 실패',
           text: '현재 비밀번호를 입력하지 않았습니다.',
           icon: 'error',
-          timer: 1500,
+          timer: 2500,
         });
         return;
       }
@@ -26,7 +26,7 @@ console.log("현재 user 객체: ", user);
           title: '비밀번호 입력 실패',
           text: '새로운 비밀번호를 입력하지 않았습니다.',
           icon: 'error',
-          timer: 1500,
+          timer: 2500,
         });
         return;
       }

@@ -25,7 +25,7 @@ const GoogleLoginFlow = () => {
           title: '로그인 완료',
           text: '이미 가입된 소셜 계정입니다.',
           icon: 'success',
-          timer: 1500,
+          timer: 2000,
         });
         navigate("/");
       } else {
@@ -39,7 +39,7 @@ const GoogleLoginFlow = () => {
         title: '로그인 실패',
         text: '구글 로그인에 실패했습니다.',
         icon: 'error',
-        timer: 1500,
+        timer: 2500,
       });
     }
   };
@@ -63,7 +63,7 @@ const GoogleLoginFlow = () => {
         title: '회원가입 완료',
         text: '구글 회원가입이 완료되었습니다!',
         icon: 'success',
-        timer: 1500,
+        timer: 2500,
       });
       navigate("/");
     } catch (error) {
@@ -72,7 +72,7 @@ const GoogleLoginFlow = () => {
         title: '회원가입 실패',
         text: '구글 회원가입에 실패했습니다.',
         icon: 'error',
-        timer: 1500,
+        timer: 2500,
       });
     }
   };
@@ -83,7 +83,7 @@ const GoogleLoginFlow = () => {
       title: '로그인 실패',
       text: '구글 로그인 중 오류가 발생했습니다. 다시 시도해주세요.',
       icon: 'error',
-      timer: 1500,
+      timer: 2500,
     });
   };
 

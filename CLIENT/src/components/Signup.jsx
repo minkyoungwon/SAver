@@ -22,7 +22,7 @@ const Signup = () => {
         title: '비밀번호 불일치',
         text: '비밀번호가 일치하지 않습니다. 다시 확인해주세요.',
         icon: 'error',
-        timer: 1500,
+        timer: 2500,
       });
       return;
     }
@@ -36,7 +36,7 @@ const Signup = () => {
         title: '회원가입 완료',
         text: response.data.message,
         icon: 'success',
-        timer: 1500,
+        timer: 2500,
       });
       navigate("/email-verification", { state: { email } });
     } catch (error) {
@@ -46,7 +46,7 @@ const Signup = () => {
         title: '회원가입 실패',
         text: errorMessage,
         icon: 'error',
-        timer: 1500,
+        timer: 2500,
       });
     }
   };
@@ -59,7 +59,7 @@ const Signup = () => {
           title: '구글 사용자 정보 없음',
           text: '구글 사용자 정보가 없습니다. 다시 시도해주세요.',
           icon: 'error',
-          timer: 1500,
+          timer: 2500,
         });
         return;
       }
@@ -74,7 +74,7 @@ const Signup = () => {
       Swal.fire({
         title: '구글 소셜 회원가입 성공!',
         icon: 'success',
-        timer: 1500,
+        timer: 2500,
       });
       navigate("/login");
     } catch (error) {
@@ -83,7 +83,7 @@ const Signup = () => {
         title: '구글 회원가입 실패',
         text: '구글 회원가입에 실패했습니다.',
         icon: 'error',
-        timer: 1500,
+        timer: 2500,
       });
     }
   };

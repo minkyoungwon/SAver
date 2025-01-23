@@ -74,7 +74,7 @@ const App = () => {
             title: '세션 만료',
             text: '세션이 만료되었습니다. 다시 로그인해주세요.',
             icon: 'error',
-            timer: 1500,
+            timer: 2500,
           });
           navigate("/login");
         }
@@ -87,7 +87,7 @@ const App = () => {
             title: '세션 만료',
             text: '세션이 만료되었습니다. 다시 로그인해주세요.',
             icon: 'error',
-            timer: 1500,
+            timer: 2500,
           });
           navigate("/login");
           clearInterval(checkSession);
@@ -112,7 +112,7 @@ const App = () => {
       title: '로그아웃',
       text: '로그아웃 되었습니다',
       icon: 'success',
-      timer: 1500,
+      timer: 2000,
     });
     navigate("/");
   };
