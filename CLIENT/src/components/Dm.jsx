@@ -146,10 +146,11 @@ const DM = () => {
   // 6) 화면 렌더링
   return (
     <div>
-      <div>
-        <h2>Direct Message</h2>
-        {/* 유저 검색 섹션 */}
-        <div>
+      {! selectedUser && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center gap-4">
+          <h2 className="text-2xl font-bold mb-4">메시지 보내기</h2>
+          {/* 유저 검색 섹션 */}
+          <div className="flex flex-col space-y-2">
           <input
             type="text"
             placeholder="유저 이메일 혹은 아이디 앞부분 검색"
@@ -157,7 +158,7 @@ const DM = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <button
-            className="bg-blue-500 font-semibold text-white py-2 px-3"
+            className="bg-emerald-500 font-semibold text-white py-2 px-3"
             onClick={searchUser}
           >
             검색
@@ -168,12 +169,12 @@ const DM = () => {
             Array.isArray(searchResults) && searchResults.length > 0 ? (
               searchResults.map((user) => (
                 <div key={user.id}>
-                  <li className="text-blue-700 font-medium">
+                  <li className="text-emerald-700 font-medium">
                     {user.email}님이 확인 되었습니다.
                   </li>
                   <button
                     onClick={() => selectUser(user)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-200"
+                    className="bg-emerald-400 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-200"
                   >
                     {user.email} 님과 대화하기
                   </button>
@@ -186,7 +187,8 @@ const DM = () => {
             )
           ) : null}
         </ul>
-      </div>
+        </div>
+      )}
 
       {/* 선택된 유저와의 대화 섹션 */}
       {selectedUser && (

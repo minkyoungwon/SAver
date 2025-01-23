@@ -99,22 +99,32 @@ async function extractText(imageBuffer) {
         // 매장명
         let regex = /\s*교\s*환\s*처\s*/;
         let lineText = ocrText.split('\n').find((str) => regex.test(str));
-        const storName = removeAllSpaces(lineText.replace(/\s*교\s*환\s*처\s*/g, ''));
+        const storeName = removeAllSpaces(lineText.replace(/\s*교\s*환\s*처\s*/g, ''));
         // 유효기간
         regex = /\s*유\s*효\s*기\s*간\s*/;
         lineText = ocrText.split('\n').find((str) => regex.test(str));
         const expirationDate = formateDateToISO(lineText.replace(/\s*유\s*효\s*기\s*간\s*/g, ''));
 
-        const couponInfo = {
+        const couponTextInfo = {
             type: couponType,
-            productName: productName,
-            expirationDate: expirationDate,
-            storName: storName,
+            name: productName,
+            deadline: expirationDate,
+            usage_location: storeName,
         };
-        return couponInfo;
+        return couponTextInfo;
     } catch (error) {
         console.error('오류 발생', error.message);
     }
+}
+
+// 바코드 ocr 함수와 텍스트 ocr 함수 합치기
+async function combineCouponData(imageBuffer) {
+    const couponInfo = {
+        barcode: await extractBarcode(imageBuffer),
+        image: imageBuffer,
+        ...(await extractText(imageBuffer)),
+    };
+    return couponInfo;
 }
 
 // 마스크가 적용된 이미지에서 OCR한 결과를 반환하는 함수
@@ -175,15 +185,15 @@ function formateDateToISO(date) {
     throw new Error('유효하지 않은 날짜 형식입니다');
 }
 
-const fs = require('fs');
-const imagePath = './images/kakao/img5.jpg';
-const imageBufferSample = fs.readFileSync(imagePath);
-extractText(imageBufferSample)
-    .then((result) => {
-        console.log(result);
-    })
-    .catch((error) => {
-        console.error('출력 에러');
-    });
+// const fs = require('fs');
+// const imagePath = './images/kakao/img5.jpg';
+// const imageBufferSample = fs.readFileSync(imagePath);
+// extractText(imageBufferSample)
+//     .then((result) => {
+//         console.log(result);
+//     })
+//     .catch((error) => {
+//         console.error('출력 에러');
+//     });
 
-module.exports = { extractBarcode, extractText };
+module.exports = { combineCouponData };

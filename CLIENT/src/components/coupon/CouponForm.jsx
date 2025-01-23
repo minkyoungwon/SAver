@@ -89,7 +89,7 @@ const CouponForm = ({
           <div className="h-[500px] m-4 border-white rounded-lg drop-shadow-md bg-white flex justify-center items-center mb-4">
             {couponData.image ? (
               <img 
-                src={`http://localhost:5000${couponData.image}`} 
+                src={`http://34.228.198.11:5000${couponData.image}`} 
                 alt="쿠폰 이미지" 
                 className="object-contain w-full h-full" 
               />
