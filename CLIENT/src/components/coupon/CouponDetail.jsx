@@ -183,7 +183,7 @@ const CouponDetail = () => {
           >
             {couponData.image ? (
               <img
-                src={`${import.meta.env.VITE_API_URL}${couponData.image}`}
+                src={`http://18.212.90.82:5000/uploads/coupons/${couponData.image}`}
                 alt="쿠폰 이미지"
                 className="object-contain w-full"
               />
