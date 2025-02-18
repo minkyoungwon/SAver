@@ -1,9 +1,8 @@
 # GDT - project saver
 
 프로젝트
-> AWS 주소 : http://18.212.90.82
-> <BR>
-> 기획 노션 페이지 : https://lovehyun.notion.site/1-1516ebae57e180faa9cec3f138f17efc
+
+> 기획 노션 페이지 : https://determined-primula-ac4.notion.site/16deae425a69804ea60ef0199d705cfd?p=16deae425a698175b3fce9b55561fd98&pm=s
 >
 > ## 초기 프로젝트 세팅 하는 법.
 >
@@ -78,10 +77,6 @@
     </tbody>
   </table>
 
-# 회의록
-
-### 12월 17일(화)
-
 #### Git
 
 -   내 작업은 내 이름 브랜치에 커밋한다
@@ -94,13 +89,3 @@
 
 `fix` : 코드 고침  
 `add` : 코드 추가
-
-#### 기술조사 : 이번주 task
-
--   이미지 가져오는 방식 조사 → 갤러리에서? 사이트 링크에서? 기타 등등
--   ocr은 자바스크립트로 된다를 확인함 → 각자 테스트해보기
--   바코드 사용 인식 방식 어떤 api들이 있는가
-
-#### 기타
-
-중간중간 commit 까지는 많이 하기. 기록이 많이 남을 수록 좋으니까
