@@ -2,7 +2,7 @@
 
 프로젝트
 
-> 기획 노션 페이지 : https://determined-primula-ac4.notion.site/16deae425a69804ea60ef0199d705cfd?p=16deae425a698175b3fce9b55561fd98&pm=s
+> 기획 노션 페이지 : https://determined-primula-ac4.notion.site/1a0eae425a6980c5a60adf3b9b13cf22?pvs=4
 >
 > ## 초기 프로젝트 세팅 하는 법.
 >
