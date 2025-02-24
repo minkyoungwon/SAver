@@ -9,7 +9,8 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocal = require("passport-local").Strategy;
 const port = process.env.PORT;
-const db = require("./db");
+//const db = require("./db");
+const pool = require("./db");
 const flash = require("connect-flash");
 const path = require("path");
 
@@ -101,21 +102,21 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 라우트 설정
 // 인증 관련 라우트
-app.use("/api/auth", authRoutes(db));
+app.use("/api/auth", authRoutes(pool));
 // 게시글 관련 라우트
-app.use("/api/posts", postRoutes(db));
+app.use("/api/posts", postRoutes(pool));
 // 쿠폰 관련 라우트
-app.use("/api/coupons", couponRoutes(db));
+app.use("/api/coupons", couponRoutes(pool));
 // 비밀번호 변경 관련 라우트
 app.use("/api/password", passwordRoutes); // 추가 0103 mkw
 // 검색 관련 라우트
 app.use("/api/search", searchRoutes); // add 0105 mkw
 // 카테고리 관련 라우트
-app.use("/api/category", categoryRoutes(db));
+app.use("/api/category", categoryRoutes(pool));
 // DM 관련 라우트
 app.use("/api/dm", dmRoutes);
 // 소셜 로그인 라우트
-app.use("/api/socialAuth", socialAuth(db));
+app.use("/api/socialAuth", socialAuth(pool));
 
 
 
