@@ -284,8 +284,15 @@ const PostDetail = ({ posts, setPosts }) => {
                 작성자: {comment.user_email || '익명'}
               </small>
               <small className="text-gray-500 block">
-                {/* 이 부분 뭔가 쎼한 */}
-                {new Date(comment.created_at).toLocaleString()}
+          
+                작성시간: {new Date(post.posted_at).toLocaleString('ko-KR', {
+          year: "numeric",
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        })}
               </small>
             </>
           )}
@@ -295,13 +302,13 @@ const PostDetail = ({ posts, setPosts }) => {
             <div className="mt-2">
               <button
                 onClick={() => handleEditClick(comment.id, comment.content)}
-                className="bg-gradient-to-l from-blue-500 to-gray-300 text-white px-1.5 py-0.5 rounded ml-2"
+                className="bg-blue-500 from-blue-500 to-gray-300 text-white px-1.5 py-0.5 rounded ml-2"
               >
                 수정
               </button>
               <button
                 onClick={() => handleDeleteComment(comment.id)}
-                className="bg-gradient-to-r from-blue-300 via-green-600 to-green-300 text-white px-1.5 py-1 rounded ml-2"
+                className="bg-red-500 from-blue-300 via-green-600 to-green-300 text-white px-1.5 py-1 rounded ml-2"
               >
                 삭제
               </button>
@@ -312,7 +319,7 @@ const PostDetail = ({ posts, setPosts }) => {
           {!isEditing && (
             <button
               onClick={() => handleReplyClick(comment.id, comment.depth)}
-              className="bg-gradient-to-r from-blue-300 to-green-600 text-white px-1.5 py-1 rounded ml-2"
+              className="bg-green-500 from-blue-300 to-green-600 text-white px-1.5 py-1 rounded ml-2"
             >
               대댓글 달기
             </button>
