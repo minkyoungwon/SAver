@@ -1,27 +1,18 @@
+import { createClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
+dotenv.config();
 
+// ✅ Supabase 클라이언트 설정
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-const { Pool } = require("pg");
-require("dotenv").config();
+// ✅ 연결 확인
+(async () => {
+  const { data, error } = await supabase.from("users").select("*").limit(1);
+  if (error) {
+    console.error("❌ Supabase 연결 실패:", error);
+  } else {
+    console.log("✅ Supabase 연결 성공! 사용자 데이터:", data);
+  }
+})();
 
-
-const pool = new Pool({
-  connectionString: process.env.SUPABASE_CONNECTION_STRING,
-    // 또는 host/user/password/database 설정을 별도 기입할 수도 있음
-  // host: process.env.SUPABASE_HOST,
-  // port: process.env.SUPABASE_PORT,
-  // user: process.env.SUPABASE_USER,
-  // password: process.env.SUPABASE_PASSWORD,
-  // database: process.env.SUPABASE_DATABASE,
-  ssl: {
-    rejectUnauthorized: false, // Render의 PostgreSQL 연결 시 필요
-  },
-});
-
-// DB 연결 테스트
-pool
-  .connect()
-  .then(() => console.log("✅ PostgreSQL 연결 성공!"))
-  .catch((err) => console.error("❌ PostgreSQL 연결 실패:", err));
-
-//console.log("🔍 연결 문자열:", process.env.SUPABASE_CONNECTION_STRING);
-module.exports = pool;
+export default supabase;

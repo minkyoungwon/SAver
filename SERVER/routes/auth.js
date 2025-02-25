@@ -1,182 +1,154 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-const db = require('../db');
-const crypto = require('crypto');
-const { OAuth2Client } = require('google-auth-library');
+import express from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import { OAuth2Client } from "google-auth-library";
+import supabase from "../db.js"; // ✅ Supabase 클라이언트 가져오기
 
+const router = express.Router();
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // 📧 Nodemailer 설정
 const transporter = nodemailer.createTransport({
-    host: "smtp.naver.com",
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-});
-
-// 🔑 JWT 인증 미들웨어
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    console.log("인증 요청 헤더:", authHeader);
-
-    if (!authHeader) {
-        return res.status(401).json({ message: "로그인이 필요합니다 (인증 토큰이 필요합니다)" });
-    }
-
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ message: "토큰 검증 실패" });
-        }
-        req.user = user;
-        next();
-    });
-};
-
-// 🟢 로그인 API
-router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const query = "SELECT * FROM users WHERE email = $1";
-        const result = await db.query(query, [email]);
-
-        if (result.rows.length === 0) {
-            return res.status(400).json({ message: "이메일 또는 비밀번호를 확인하세요." });
-        }
-
-        const user = result.rows[0];
-        const hashedPassword = user.password;
-
-        const isMatch = await bcrypt.compare(password, hashedPassword);
-        if (!isMatch) {
-            return res.status(400).json({ message: "이메일 또는 비밀번호를 확인하세요." });
-        }
-
-        const token = jwt.sign(
-            { id: user.id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-
-        res.json({
-            token,
-            user: { id: user.id, email: user.email },
-        });
-    } catch (error) {
-        console.error("로그인 처리 중 오류:", error);
-        res.status(500).json({ message: "로그인에 실패했습니다." });
-    }
+  host: "smtp.naver.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
 // 🟢 회원가입 API
-router.post("/signup", async (req, res) => {
-    const { email, password } = req.body;
-    console.log("회원가입 요청:", email);
+router.post("/register", async (req, res) => {
+  const { email, password } = req.body;
 
-    try {
-        // 이메일 중복 검사
-        const checkQuery = "SELECT * FROM users WHERE email = $1";
-        const checkResult = await db.query(checkQuery, [email]);
+  if (!email || !password) {
+    return res.status(400).json({ message: "이메일과 비밀번호를 입력하세요." });
+  }
 
-        if (checkResult.rows.length > 0) {
-            return res.status(400).json({ message: "이미 존재하는 이메일입니다." });
-        }
+  try {
+    // ✅ 이메일 중복 확인
+    const { data: existingUser, error: checkError } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle(); // 🔍 기존의 single()에서 maybeSingle()로 변경하여 에러 방지
 
-        // 비밀번호 해싱
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // 사용자 등록
-        const insertQuery = `
-            INSERT INTO users (email, password, profile_image, join_date, is_verified)
-            VALUES ($1, $2, NULL, NOW(), false) RETURNING id
-        `;
-        const result = await db.query(insertQuery, [email, hashedPassword]);
-
-        res.status(201).json({
-            message: "회원가입이 완료되었습니다. 이메일을 확인해 주세요.",
-            userId: result.rows[0].id
-        });
-
-    } catch (error) {
-        console.error("회원가입 중 오류:", error);
-        res.status(500).json({ message: "회원가입 중 오류가 발생했습니다." });
+    if (checkError) {
+      console.error("❌ 이메일 확인 오류:", checkError);
+      return res.status(500).json({ message: "이메일 확인 중 오류가 발생했습니다." });
     }
+
+    if (existingUser) {
+      return res.status(400).json({ message: "이미 가입된 이메일입니다." });
+    }
+
+    // ✅ 비밀번호 해싱
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // ✅ 기본값 설정하여 사용자 추가
+    const { data: newUser, error: insertError } = await supabase
+      .from("users")
+      .insert([
+        {
+          email,
+          password: hashedPassword,
+          is_verified: false, // 🔍 기본값 설정
+          role: "NORMAL", // 🔍 기본값 설정
+          join_date: new Date(),
+        },
+      ])
+      .select("id, email")
+      .maybeSingle(); // 🔍 single() 대신 maybeSingle() 사용
+
+    if (insertError) {
+      console.error("❌ 회원가입 오류:", insertError);
+      return res.status(500).json({ message: "회원가입 중 오류가 발생했습니다." });
+    }
+
+    if (!newUser) {
+      return res.status(500).json({ message: "회원가입이 정상적으로 처리되지 않았습니다." });
+    }
+
+    // ✅ JWT 토큰 생성
+    const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    return res.status(201).json({
+      message: "회원가입이 완료되었습니다.",
+      token,
+      user: { id: newUser.id, email: newUser.email },
+    });
+  } catch (error) {
+    console.error("❌ 회원가입 처리 중 오류 발생:", error);
+    return res.status(500).json({ message: "회원가입 실패", error: error.message });
+  }
 });
 
-// 🟢 이메일 인증 API
-router.get("/verify-email", async (req, res) => {
-    const { token } = req.query;
+// 🔑 JWT 인증 미들웨어
+export const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ message: "로그인이 필요합니다 (인증 토큰이 필요합니다)" });
+  }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const email = decoded.email;
-
-        const updateQuery = "UPDATE users SET is_verified = true WHERE email = $1";
-        const result = await db.query(updateQuery, [email]);
-
-        if (result.rowCount === 0) {
-            return res.status(400).json({ message: "유효하지 않은 이메일입니다." });
-        }
-
-        res.json({ message: "이메일 인증이 완료되었습니다. 이제 로그인할 수 있습니다." });
-
-    } catch (error) {
-        res.status(400).json({ message: "유효하지 않은 토큰입니다." });
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "토큰 검증 실패" });
     }
+    req.user = user;
+    next();
+  });
+};
+
+// 🟢 로그인 API
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    console.log("🔍 로그인 요청 email:", email);
+
+    // ✅ Supabase의 from() 메서드 사용
+    const { data: users, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    if (error) {
+      console.error("❌ Supabase 쿼리 오류:", error);
+      return res.status(500).json({ message: "데이터베이스 오류 발생" });
+    }
+
+    if (!users) {
+      return res.status(400).json({ message: "이메일 또는 비밀번호를 확인하세요." });
+    }
+
+    console.log("🔍 조회된 사용자:", users);
+
+    const isMatch = await bcrypt.compare(password, users.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "이메일 또는 비밀번호를 확인하세요." });
+    }
+
+    // ✅ JWT 생성
+    const token = jwt.sign({ id: users.id, email: users.email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    console.log("✅ 로그인 성공, 토큰 발급 완료");
+
+    res.json({
+      token,
+      user: { id: users.id, email: users.email },
+    });
+  } catch (error) {
+    console.error("❌ 로그인 처리 중 오류 발생:", error);
+    res.status(500).json({ message: "로그인에 실패했습니다.", error: error.message });
+  }
 });
 
-// 🟢 인증 코드 전송 API
-router.post("/send-verification-code", async (req, res) => {
-    const { email } = req.body;
-    console.log("인증코드 요청 도착", email);
-
-    try {
-        const verificationCode = crypto.randomInt(100000, 999999).toString();
-        console.log(`생성된 인증 코드: ${verificationCode}`);
-
-        // 인증 코드 저장
-        if (!global.verificationCodes) {
-            global.verificationCodes = {};
-        }
-        global.verificationCodes[email] = verificationCode;
-
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "이메일 인증 코드",
-            text: `인증 코드: ${verificationCode}`,
-        };
-
-        transporter.sendMail(mailOptions, (error) => {
-            if (error) {
-                return res.status(500).json({ message: "이메일 전송 중 오류 발생", error });
-            }
-            res.json({ message: "인증 코드가 전송되었습니다." });
-        });
-    } catch (error) {
-        console.error("이메일 전송 오류:", error);
-        res.status(500).json({ message: "인증 코드 전송 중 오류가 발생했습니다." });
-    }
-});
-
-// 🟢 인증 코드 확인 API
-router.post("/verify-code", (req, res) => {
-    const { email, code } = req.body;
-    console.log("인증 코드 확인 요청", req.body);
-
-    if (global.verificationCodes && global.verificationCodes[email] === code) {
-        delete global.verificationCodes[email];
-        res.json({ message: "이메일 인증이 완료되었습니다." });
-    } else {
-        res.status(400).json({ message: "인증 코드가 올바르지 않습니다." });
-    }
-});
-
-module.exports = router; 
+export default router;

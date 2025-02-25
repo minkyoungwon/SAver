@@ -1,178 +1,113 @@
-const express = require('express');
+import express from "express";
+import { authenticateToken } from "./auth.js"; // ✅ import 유지
+import supabase from "../db.js"; // ✅ Supabase 적용
+
 const router = express.Router();
-const { extractBarcodeAndText } = require('../util');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs').promises;
-const db = require('../db');
 
-// 🟢 파일 업로드 설정
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/coupons/'),
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
+// 🟢 사용자의 쿠폰 목록 조회 API
+router.get("/", authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const { data, error } = await supabase
+      .from("coupons")
+      .select("*")
+      .eq("user_id", userId)
+      .order("deadline", { ascending: true });
+
+    if (error) {
+      console.error("❌ 쿠폰 조회 오류:", error);
+      return res.status(500).json({ message: "쿠폰 조회 중 오류가 발생했습니다." });
     }
-});
-const upload = multer({ storage });
 
-// 🟢 쿠폰 목록 조회
-router.get('/', async (req, res) => {
-    const { user_id } = req.query;
-
-    const query = `
-        SELECT 
-            c.id,
-            c.user_id,
-            c.name,
-            c.note,
-            c.deadline,
-            c.status,
-            c.coupon_image AS image,
-            c.usage_location,
-            STRING_AGG(DISTINCT cc.name, ',') AS categories
-        FROM coupons c
-        LEFT JOIN coupon_category_realations ccr ON c.id = ccr.coupon_id
-        LEFT JOIN coupon_categories cc ON cc.id = ccr.category_id
-        WHERE c.user_id = $1
-        GROUP BY c.id;
-    `;
-
-    try {
-        const result = await db.query(query, [user_id]);
-        const formattedResult = result.rows.map(coupon => ({
-            ...coupon,
-            categories: coupon.categories ? coupon.categories.split(',') : [],
-        }));
-        res.send(formattedResult);
-    } catch (err) {
-        res.status(500).send(err);
-    }
+    res.json(data);
+  } catch (err) {
+    console.error("❌ 서버 내부 오류:", err);
+    res.status(500).send({ message: "서버 오류가 발생했습니다.", error: err.message });
+  }
 });
 
-// 🟢 쿠폰 등록 (트랜잭션 적용)
-router.post('/', upload.single('image'), async (req, res) => {
-    const { user_id, barcode, name, deadline, usage_location, note, status, newCategories } = req.body;
-    const imagePath = req.file ? `/uploads/coupons/${req.file.filename}` : null;
+// 🟢 새 쿠폰 추가 API
+router.post("/", authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+  const { name, usageLocation, note, deadline } = req.body;
 
-    try {
-        await db.query('BEGIN'); // 트랜잭션 시작
+  try {
+    const { data, error } = await supabase
+      .from("coupons")
+      .insert([{ name, usage_location: usageLocation, note, deadline, user_id: userId }])
+      .select("id")
+      .single();
 
-        // 1️⃣ 쿠폰 추가
-        const couponResult = await db.query(
-            `INSERT INTO coupons (user_id, barcode, name, deadline, usage_location, note, status, coupon_image) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
-            [user_id, barcode, name, deadline, usage_location, note, status, imagePath]
-        );
-        const couponId = couponResult.rows[0].id;
-
-        // 2️⃣ 새로운 카테고리 저장 및 연결
-        if (newCategories && newCategories.length > 0) {
-            const categories = typeof newCategories === 'string' ? JSON.parse(newCategories) : newCategories;
-
-            // 새 카테고리 추가
-            const categoryResult = await db.query(
-                `INSERT INTO coupon_categories (name, user_id) 
-                 VALUES ${categories.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(',')} 
-                 RETURNING id`,
-                categories.flatMap(category => [category, user_id])
-            );
-
-            // 쿠폰과 카테고리 연결
-            const relationValues = categoryResult.rows.map(row => [couponId, row.id]);
-            await db.query(
-                `INSERT INTO coupon_category_realations (coupon_id, category_id) 
-                 VALUES ${relationValues.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(',')}`,
-                relationValues.flat()
-            );
-        }
-
-        await db.query('COMMIT'); // 트랜잭션 커밋
-        res.status(200).json({ message: '쿠폰과 카테고리가 성공적으로 저장되었습니다.', couponId });
-    } catch (error) {
-        await db.query('ROLLBACK'); // 롤백
-        if (req.file) await fs.unlink(req.file.path).catch(console.error);
-        console.error('에러:', error);
-        res.status(500).json({ error: '저장 중 오류가 발생했습니다.' });
+    if (error) {
+      console.error("❌ 쿠폰 추가 오류:", error);
+      return res.status(500).json({ message: "쿠폰 추가 중 오류가 발생했습니다." });
     }
+
+    res.status(201).send({ message: "쿠폰이 추가되었습니다.", id: data.id });
+  } catch (err) {
+    console.error("❌ 서버 내부 오류:", err);
+    res.status(500).send({ message: "서버 오류가 발생했습니다.", error: err.message });
+  }
 });
 
-// 🟢 쿠폰 삭제
-router.delete('/:coupon_id', async (req, res) => {
-    const { coupon_id } = req.params;
+// 🟢 쿠폰 수정 API
+router.put("/:id", authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+  const { id } = req.params;
+  const { name, usageLocation, note, deadline } = req.body;
 
-    try {
-        const result = await db.query('DELETE FROM coupons WHERE id = $1', [coupon_id]);
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: '해당 쿠폰을 찾을 수 없습니다.' });
-        }
-        res.json({ message: '쿠폰이 성공적으로 삭제되었습니다.' });
-    } catch (err) {
-        res.status(500).json({ error: '쿠폰 삭제 중 오류가 발생했습니다.' });
+  try {
+    const { data, error } = await supabase
+      .from("coupons")
+      .update({ name, usage_location: usageLocation, note, deadline })
+      .eq("id", id)
+      .eq("user_id", userId)
+      .select("*");
+
+    if (error) {
+      console.error("❌ 쿠폰 수정 오류:", error);
+      return res.status(500).json({ message: "쿠폰 수정 중 오류가 발생했습니다." });
     }
+
+    if (!data || data.length === 0) {
+      return res.status(404).send({ message: "수정할 쿠폰이 없습니다." });
+    }
+
+    res.status(200).send({ message: "쿠폰이 수정되었습니다." });
+  } catch (err) {
+    console.error("❌ 서버 내부 오류:", err);
+    res.status(500).send({ message: "서버 오류가 발생했습니다.", error: err.message });
+  }
 });
 
-// 🟢 쿠폰 수정
-router.put('/:coupon_id', async (req, res) => {
-    const { coupon_id } = req.params;
-    const { name, note, deadline, status, categories } = req.body;
+// 🟢 쿠폰 삭제 API
+router.delete("/:id", authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+  const { id } = req.params;
 
-    try {
-        await db.query('BEGIN'); // 트랜잭션 시작
+  try {
+    const { data, error } = await supabase
+      .from("coupons")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", userId)
+      .select("*");
 
-        // 1️⃣ 쿠폰 정보 업데이트
-        const updateResult = await db.query(
-            `UPDATE coupons 
-             SET name = $1, note = $2, deadline = $3, status = $4
-             WHERE id = $5`,
-            [name, note, deadline, status, coupon_id]
-        );
-
-        if (updateResult.rowCount === 0) {
-            await db.query('ROLLBACK');
-            return res.status(404).json({ error: '해당 쿠폰을 찾을 수 없습니다.' });
-        }
-
-        // 2️⃣ 기존 카테고리 관계 삭제
-        await db.query('DELETE FROM coupon_category_realations WHERE coupon_id = $1', [coupon_id]);
-
-        // 3️⃣ 새로운 카테고리 연결
-        if (categories && categories.length > 0) {
-            const relationValues = categories.map(categoryId => [coupon_id, categoryId]);
-            await db.query(
-                `INSERT INTO coupon_category_realations (coupon_id, category_id) 
-                 VALUES ${relationValues.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(',')}`,
-                relationValues.flat()
-            );
-        }
-
-        await db.query('COMMIT'); // 트랜잭션 커밋
-        res.json({ message: '쿠폰이 성공적으로 수정되었습니다.' });
-    } catch (err) {
-        await db.query('ROLLBACK'); // 롤백
-        res.status(500).json({ error: '쿠폰 수정 중 오류가 발생했습니다.' });
+    if (error) {
+      console.error("❌ 쿠폰 삭제 오류:", error);
+      return res.status(500).json({ message: "쿠폰 삭제 중 오류가 발생했습니다." });
     }
+
+    if (!data || data.length === 0) {
+      return res.status(404).send({ message: "삭제할 쿠폰이 없습니다." });
+    }
+
+    res.status(200).send({ message: "쿠폰이 삭제되었습니다." });
+  } catch (err) {
+    console.error("❌ 서버 내부 오류:", err);
+    res.status(500).send({ message: "서버 오류가 발생했습니다.", error: err.message });
+  }
 });
 
-// 🟢 바코드 및 텍스트 추출
-router.post('/extract', upload.single('image'), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ error: '이미지 파일이 없습니다.' });
-        }
-
-        const imageBuffer = await fs.readFile(req.file.path);
-        const couponInfo = await extractBarcodeAndText(imageBuffer);
-        await fs.unlink(req.file.path);
-
-        if (!couponInfo) {
-            return res.status(404).json({ error: '쿠폰 정보를 추출할 수 없습니다.' });
-        }
-        res.json(couponInfo);
-    } catch (error) {
-        if (req.file) await fs.unlink(req.file.path).catch(console.error);
-        res.status(500).json({ error: '쿠폰 정보 처리 중 오류가 발생했습니다.' });
-    }
-});
-
-module.exports = router;
+export default router;
