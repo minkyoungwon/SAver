@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "main": "app.js",
     "scripts": {
-      "start": "node app.js", // 서버 시작 명령어
-      "dev": "nodemon app.js" // 개발 환경에서 사용 (optional)
+      "start": "node app.js",
+      "dev": "nodemon app.js"
     },
     "dependencies": {
       "@zxing/library": "^0.21.3",
