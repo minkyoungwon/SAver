@@ -29,6 +29,9 @@
       "vite": "^6.0.7",
       "ws": "^8.18.0"
     },
+    "engines": {
+      "node": "20.x"
+    },
     "type": "module"
   }
   
