@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+
 const Signup = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -10,60 +10,45 @@ const Signup = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 구글 소셜 로그인 정보 가져오기
   const googleUser = location.state?.googleUser;
 
   // 일반 회원가입
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      Swal.fire({
-        title: '비밀번호 불일치',
-        text: '비밀번호가 일치하지 않습니다. 다시 확인해주세요.',
-        icon: 'error',
-        timer: 3000,
-      });
+    if (password.trim() !== confirmPassword.trim()) {
+      Swal.fire({ title: '비밀번호 불일치', text: '비밀번호가 일치하지 않습니다.', icon: 'error' });
+      return;
+    }
+
+    if (password.trim().length < 8) {
+      Swal.fire({ title: '비밀번호 길이 부족', text: '비밀번호는 최소 8자 이상이어야 합니다.', icon: 'error' });
       return;
     }
 
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signup`, {
-        email,
-        password,
+        email: email.trim(),
+        password: password.trim(),
       });
-      Swal.fire({
-        title: '회원가입 완료',
-        text: response.data.message,
-        icon: 'success',
-        timer: 3000,
-      });
-      navigate("/email-verification", { state: { email } });
+
+      Swal.fire({ title: '회원가입 완료', text: response.data.message, icon: 'success' });
+
+      navigate('/email-verification', { state: { email } });
     } catch (error) {
-      console.error("회원가입 중 오류:", error);
-      const errorMessage = error.response?.data?.message || "회원가입에 실패했습니다.";
-      Swal.fire({
-        title: '회원가입 실패',
-        text: errorMessage,
-        icon: 'error',
-        timer: 3000,
-      });
+      console.error('회원가입 오류:', error.response?.data?.error || error.message);
+      Swal.fire({ title: '회원가입 실패', text: '이미 존재하는 이메일입니다.', icon: 'error' });
     }
   };
 
   // 구글 회원가입
   const handleGoogleSignup = async () => {
-    try {
-      if (!googleUser) {
-        Swal.fire({
-          title: '구글 사용자 정보 없음',
-          text: '구글 사용자 정보가 없습니다. 다시 시도해주세요.',
-          icon: 'error',
-          timer: 3000,
-        });
-        return;
-      }
+    if (!googleUser) {
+      Swal.fire({ title: '구글 사용자 정보 없음', text: '구글 사용자 정보가 없습니다.', icon: 'error' });
+      return;
+    }
 
+    try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/socialAuth/google-signup-confirm`, {
         email: googleUser.email,
         googleId: googleUser.googleId,
@@ -71,20 +56,16 @@ const Signup = () => {
         picture: googleUser.picture,
       });
 
-      Swal.fire({
-        title: '구글 소셜 회원가입 성공!',
-        icon: 'success',
-        timer: 3000,
-      });
-      navigate("/login");
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('userId', user.id);
+      localStorage.setItem('userEmail', user.email);
+
+      Swal.fire({ title: '구글 회원가입 성공!', icon: 'success' });
+      navigate('/');
     } catch (error) {
-      console.error("구글 소셜 회원가입 중 오류 발생:", error);
-      Swal.fire({
-        title: '구글 회원가입 실패',
-        text: '구글 회원가입에 실패했습니다.',
-        icon: 'error',
-        timer: 3000,
-      });
+      console.error('구글 회원가입 오류:', error.response?.data?.error || error.message);
+      Swal.fire({ title: '구글 회원가입 실패', text: '회원가입에 실패했습니다.', icon: 'error' });
     }
   };
 
@@ -93,7 +74,6 @@ const Signup = () => {
       <div className="w-full max-w-md p-8 rounded-2xl backdrop-blur-lg bg-white/30 shadow-xl border border-white/20">
         <h2 className="text-3xl font-bold mb-6 text-white text-center">회원가입</h2>
 
-        {/* 일반 회원가입 폼 */}
         {!googleUser && (
           <form onSubmit={handleSignup} className="space-y-6">
             <div className="space-y-2">
@@ -102,9 +82,9 @@ const Signup = () => {
                 type="email"
                 placeholder="이메일을 입력하세요"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.trim())}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/50 border border-white/30 focus:border-white/60 focus:outline-none placeholder-gray-500 text-gray-800"
+                className="w-full px-4 py-3 rounded-lg bg-white/50 border border-white/30 placeholder-gray-500 text-gray-800"
               />
             </div>
 
@@ -112,11 +92,11 @@ const Signup = () => {
               <label className="text-white text-sm ml-1">비밀번호</label>
               <input
                 type="password"
-                placeholder="비밀번호를 입력하세요"
+                placeholder="비밀번호 (8자 이상)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/50 border border-white/30 focus:border-white/60 focus:outline-none placeholder-gray-500 text-gray-800"
+                className="w-full px-4 py-3 rounded-lg bg-white/50 border border-white/30 placeholder-gray-500 text-gray-800"
               />
             </div>
 
@@ -128,26 +108,25 @@ const Signup = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/50 border border-white/30 focus:border-white/60 focus:outline-none placeholder-gray-500 text-gray-800"
+                className="w-full px-4 py-3 rounded-lg bg-white/50 border border-white/30 placeholder-gray-500 text-gray-800"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors duration-200"
+              className="w-full py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold"
             >
               가입하기
             </button>
           </form>
         )}
 
-        {/* 구글 소셜 회원가입 버튼 */}
         {googleUser && (
           <div className="text-center">
             <p className="text-white mb-4">구글 계정으로 회원가입</p>
             <button
               onClick={handleGoogleSignup}
-              className="w-full py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors duration-200"
+              className="w-full py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold"
             >
               구글 계정으로 회원가입 완료
             </button>
@@ -157,9 +136,7 @@ const Signup = () => {
         <div className="mt-6 text-center">
           <p className="text-white">이미 계정이 있으신가요?</p>
           <Link to="/login">
-            <button
-              className="mt-4 w-full py-3 rounded-lg bg-white/20 hover:bg-white/30 text-white font-semibold border border-white/30 transition-colors duration-200"
-            >
+            <button className="mt-4 w-full py-3 rounded-lg bg-white/20 hover:bg-white/30 text-white font-semibold border border-white/30">
               로그인하기
             </button>
           </Link>

@@ -1,69 +1,57 @@
 import { useState } from "react";
 import axios from "axios";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
+
 const MyProfile = ({ user }) => {
-  // MyProfile.jsx 예시
-console.log("현재 user 객체: ", user);
+  console.log("현재 user 객체: ", user);
 
   const [message, setMessage] = useState("");
 
   const handleChangePassword = async () => {
     try {
-      const currentPassword = prompt("현재 비밀번호를 입력하세요:");
-      if (!currentPassword) {
-        Swal.fire({
-          title: '비밀번호 입력 실패',
-          text: '현재 비밀번호를 입력하지 않았습니다.',
-          icon: 'error',
-          timer: 2500,
-        });
+      const { value: currentPassword } = await Swal.fire({
+        title: "현재 비밀번호 입력",
+        input: "password",
+        inputPlaceholder: "현재 비밀번호를 입력하세요",
+        inputAttributes: { autocapitalize: "off" },
+        showCancelButton: true,
+        confirmButtonText: "다음",
+      });
+
+      if (!currentPassword) return;
+
+      const { value: newPassword } = await Swal.fire({
+        title: "새로운 비밀번호 입력",
+        input: "password",
+        inputPlaceholder: "새로운 비밀번호를 입력하세요 (8자 이상)",
+        inputAttributes: { autocapitalize: "off" },
+        showCancelButton: true,
+        confirmButtonText: "변경하기",
+      });
+
+      if (!newPassword) return;
+      if (newPassword.length < 8) {
+        Swal.fire({ title: "비밀번호 길이 부족", text: "비밀번호는 최소 8자 이상이어야 합니다.", icon: "warning" });
         return;
       }
-
-      const newPassword = prompt("새로운 비밀번호를 입력하세요:");
-      if (!newPassword) {
-        Swal.fire({
-          title: '비밀번호 입력 실패',
-          text: '새로운 비밀번호를 입력하지 않았습니다.',
-          icon: 'error',
-          timer: 2500,
-        });
-        return;
-      }
-
-      console.log("입력된 현재 비밀번호:", currentPassword); // 디버깅 추가
-      console.log("입력된 새 비밀번호:", newPassword); // 디버깅 추가
-
-
-
 
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/password/change`,
-        {
-          userId: user.id,
-          currentPassword,
-          newPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+        { userId: user.id, currentPassword, newPassword },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
 
-      console.log("서버 응답:", response.data); // 디버깅 추가
-      setMessage(response.data.message);
+      Swal.fire({ title: "비밀번호 변경 완료", text: response.data.message, icon: "success" });
+      setMessage("");
     } catch (error) {
       console.error("비밀번호 변경 중 오류:", error);
-      if (error.response && error.response.data.message) {
-        setMessage(error.response.data.message);
-      } else {
-        setMessage("비밀번호 변경에 실패했습니다.");
-      }
+      Swal.fire({
+        title: "비밀번호 변경 실패",
+        text: error.response?.data?.message || "비밀번호 변경에 실패했습니다.",
+        icon: "error",
+      });
     }
   };
-
-
 
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -80,7 +68,7 @@ console.log("현재 user 객체: ", user);
           <div className="w-full space-y-4">
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-lg text-gray-700">
-                <span className="font-semibold">이메일:</span> {user?.email}
+                <span className="font-semibold">이메일:</span> {user?.email || "알 수 없음"}
               </p>
             </div>
             <button
@@ -90,9 +78,7 @@ console.log("현재 user 객체: ", user);
               비밀번호 변경
             </button>
             {message && (
-              <p className="text-center py-2 px-4 rounded-lg bg-red-50 text-red-500">
-                {message}
-              </p>
+              <p className="text-center py-2 px-4 rounded-lg bg-red-50 text-red-500">{message}</p>
             )}
           </div>
         </div>

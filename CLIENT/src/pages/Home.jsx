@@ -7,98 +7,53 @@ import axios from "axios";
 import ImageUploader from "../components/coupon/ImageUploader";
 import AddCouponInfo from "../components/coupon/AddCouponInfo";
 import Footer from "../components/Footer";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import ImageUploaderModal from "../components/coupon/ImageUploaderModal";
 
 function Home({ coupons, setCoupons }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
   const [category, setCategory] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedFile, setSelectedFile] = useState(null);
   const [isImageInfoModalOpen, setIsImageInfoModalOpen] = useState(false);
-  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
 
   const handleImageUpload = (file) => {
-    console.log("Home: ImageUploader에서 전달된 파일:", file);
     setSelectedFile(file);
   };
 
   // 선택한 카테고리 필터링
   const handleCategoryClick = (item) => {
-    const filteredCoupons = coupons.filter((coupon) => {
-      console.log("coupon.category : ", coupon.category, item);
-      if (coupon.category.includes(item.name)) {
-        return true;
-      }
-      return false;
-    });
-    setFilteredCoupons(filteredCoupons);
+    setFilteredCoupons(coupons.filter((coupon) => coupon.category.includes(item.name)));
   };
 
   const showFilteredCoupons = (filter) => {
     setSelectedFilter(filter);
-    if (filter === "all") {
-      setFilteredCoupons(coupons);
+    setFilteredCoupons(filter === "all" ? coupons : coupons.filter((coupon) => coupon.status === filter));
+  };
+
+  const addCategory = async (input) => {
+    if (!input.trim()) {
+      Swal.fire({ title: "카테고리 입력 실패", text: "카테고리를 입력해주세요.", icon: "error" });
       return;
     }
 
-    const filteredCoupons = coupons.filter((coupon) => {
-      return coupon.status === filter;
-    });
-    setFilteredCoupons(filteredCoupons);
-  };
+    if (category.some((cat) => cat.name === input.trim())) {
+      Swal.fire({ title: "카테고리 중복", text: "이미 존재하는 카테고리입니다.", icon: "error" });
+      return;
+    }
 
-  const
-    addCategory = async (input) => {
-      console.log("addCategory : ", input);
-      if (input === "") {
-        Swal.fire({
-          title: '카테고리 입력 실패',
-          text: '카테고리를 입력해주세요.',
-          icon: 'error',
-          timer: 2500,
-        });
-        return;
-      }
-
-      const isCategoryExist = category.includes(input);
-      if (isCategoryExist) {
-        Swal.fire({
-          title: '카테고리 중복',
-          text: '이미 존재하는 카테고리입니다.',
-          icon: 'error',
-          timer: 2500,
-        });
-        return;
-      }
-      const response = await axios.post(
+    try {
+      await axios.post(
         `${import.meta.env.VITE_API_URL}/api/category`,
-        {
-          name: input,
-          user_id: localStorage.getItem("userId"),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+        { name: input, user_id: localStorage.getItem("userId") },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
-      if (response.status === 200) {
-        Swal.fire({
-          title: '카테고리 추가 완료',
-          icon: 'success',
-        });
-        fetchCategories();
-      } else {
-        Swal.fire({
-          title: '카테고리 추가 실패',
-          text: '카테고리 추가에 실패했습니다.',
-          icon: 'error',
-          timer: 2500,
-        });
-      }
-    };
+      Swal.fire({ title: "카테고리 추가 완료", icon: "success" });
+      fetchCategories();
+    } catch (error) {
+      Swal.fire({ title: "카테고리 추가 실패", text: "카테고리 추가에 실패했습니다.", icon: "error" });
+    }
+  };
 
   useEffect(() => {
     fetchCoupons();
@@ -108,30 +63,19 @@ function Home({ coupons, setCoupons }) {
   const fetchCoupons = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/coupons`, {
-        params: {
-          user_id: localStorage.getItem("userId"),
-        },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        params: { user_id: localStorage.getItem("userId") },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      const coupons = response.data.map((coupon) => ({
-        name: coupon.name,
-        note: coupon.note,
-        deadline: coupon.deadline,
-        category: coupon.categories,
-        status: coupon.status,
-        image: coupon.image,
-        id: coupon.id,
-        usage_location: coupon.usage_location,
-        user_id: localStorage.getItem("userId"),
-        barcode: coupon.barcode
-      }));
-      // deadline 기준으로 오름차순 정렬
-      coupons.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
 
-      console.log("coupons : ", coupons);
-      setCoupons(coupons);
+      const sortedCoupons = response.data
+        .map((coupon) => ({
+          ...coupon,
+          user_id: localStorage.getItem("userId"),
+        }))
+        .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+
+      setCoupons(sortedCoupons);
+      setFilteredCoupons(sortedCoupons);
     } catch (error) {
       console.error("쿠폰 조회 오류:", error);
     }
@@ -140,158 +84,83 @@ function Home({ coupons, setCoupons }) {
   const fetchCategories = async () => {
     try {
       const userId = localStorage.getItem("userId");
-      console.log("fetchCategories userId:", userId);
-
-      if (!userId) {
-        console.error("userId가 없습니다!");
-        return;
-      }
+      if (!userId) return;
 
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`, {
-        params: {
-          user_id: userId,
-        },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        params: { user_id: userId },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      console.log("response.data : ", response.data);
       setCategory(response.data);
     } catch (error) {
       console.error("카테고리 조회 실패:", error);
     }
   };
 
-  // coupons가 변경될 때 filteredCoupons도 업데이트
   useEffect(() => {
-    if (selectedFilter === "all") {
-      setFilteredCoupons(coupons);
-    } else {
-      const filtered = coupons.filter((coupon) => coupon.status === selectedFilter);
-      setFilteredCoupons(filtered);
-    }
+    setFilteredCoupons(selectedFilter === "all" ? coupons : coupons.filter((coupon) => coupon.status === selectedFilter));
   }, [coupons, selectedFilter]);
 
   return (
     <div className="min-h-screen flex flex-col">
       <div className="main body flex-grow">
+        {/* 이미지 업로더 */}
         <div className="hidden md:flex justify-center bg-neutral-100 shadow-md">
-          <div className="이미지업로더창 w-full mx-[30%] mt-[30px] mb-[22px] min-w-[400px] space-y-4">
-            <div className="text-center">
-              <p className="text-3xl text-center text-gray-600 font-extrabold">쿠폰을 구하다
-                <span className="text-gray-600"> 세이버</span>
-              </p>
-            </div>
+          <div className="w-full mx-[30%] mt-[30px] mb-[22px] min-w-[400px] space-y-4">
+            <p className="text-3xl text-center text-gray-600 font-extrabold">
+              쿠폰을 구하다 <span className="text-gray-600">세이버</span>
+            </p>
             <ImageUploader onImageUpload={handleImageUpload} />
-            {selectedFile && (
-              <AddCouponInfo
-                selectedFile={selectedFile}
-                onModalClose={() => {
-                  console.log("Home: Modal 닫기");
-                  setSelectedFile(null);
-                }}
-                setIsModalOpen={setIsModalOpen}
-                isModalOpen={isModalOpen}
-              />
+            {selectedFile && <AddCouponInfo selectedFile={selectedFile} />}
+          </div>
+        </div>
+
+        {/* 필터 및 카테고리 선택 */}
+        <div className="sticky top-[8px] z-20 pb-2 bg-white">
+          <div className="flex justify-center space-x-10 my-2">
+            {["available", "used", "expired", "all"].map((filter) => (
+              <button
+                key={filter}
+                onClick={() => showFilteredCoupons(filter)}
+                className={`h-10 transition ${
+                  selectedFilter === filter ? "text-emerald-400 font-semibold text-xl" : "text-emerald-600 text-lg"
+                }`}
+              >
+                {filter === "available" ? "사용가능" : filter === "used" ? "사용완료" : filter === "expired" ? "기간만료" : "전체쿠폰"}
+              </button>
+            ))}
+          </div>
+          <CouponCategory category={category} addCategory={addCategory} handleCategoryClick={handleCategoryClick} refreshCategories={fetchCategories} />
+        </div>
+
+        {/* 쿠폰 목록 */}
+        <div className="mb-4">
+          <div className="sticky top-[120px] md:top-[100px] z-10 flex justify-between text-base text-gray-500 bg-white py-4">
+            <p>유효기간순</p>
+            <div>
+              <span>조회쿠폰 : </span>
+              <span className="font-semibold text-black">{filteredCoupons.length}개</span>
+            </div>
+          </div>
+          <div className="pb-4 space-y-4 h-screen overflow-auto no-scrollbar">
+            {filteredCoupons.length === 0 ? (
+              <div className="text-center text-gray-500">쿠폰이 없습니다.</div>
+            ) : (
+              filteredCoupons.map((coupon) => <CouponCard key={coupon.id} coupon={coupon} />)
             )}
           </div>
         </div>
-        <div className="content-wrapper">
-          <div className="필터박스 sticky top-[8px] z-20 pb-2 bg-white">
-            <div className="필터탭 flex justify-between md:justify-center sm:space-x-20 my-1">
-              {[
-                { label: "사용가능", filter: "available" },
-                { label: "사용완료", filter: "used" },
-                { label: "기간만료", filter: "expired" },
-                { label: "전체쿠폰", filter: "all" },
-              ].map(({ label, filter }) => (
-                <button
-                  key={filter}
-                  onClick={(e) => {
-                    // 모든 버튼의 크기를 초기화
-                    document.querySelectorAll(".필터탭 button").forEach((btn) => {
-                      btn.style.transform = "scale(1)";
-                    });
-
-                    // 현재 클릭된 버튼의 필터 설정 및 스타일 적용
-                    showFilteredCoupons(filter);
-                    e.target.style.transform = "scale(1)";
-                  }}
-                  className={`h-10 transition-all duration-300 
-                  ${selectedFilter === filter ? "text-emerald-400 font-semibold text-xl scale-100 " : "text-emerald-600 text-lg font-medium"}
-                  `}
-                  style={{
-                    transformOrigin: "bottom center", // 아래 중심 기준으로 크기 변경
-                  }}
-                  onMouseEnter={(e) => {
-                    // 호버 시 텍스트 크기와 스타일 변경
-                    if (selectedFilter !== filter) {
-                      e.target.style.transform = "scale(1)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    // 호버 해제 시 원래 상태로 복구 (클릭된 상태는 유지)
-                    if (selectedFilter !== filter) {
-                      e.target.style.transform = "scale(1)";
-                    }
-                  }}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            <div className="flex justify-center">
-              <div className="text-sm font-medium">
-                <CouponCategory category={category} addCategory={addCategory} handleCategoryClick={handleCategoryClick} refreshCategories={fetchCategories} />
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <div className="sticky top-[120px] md:top-[100px] z-10 flex justify-between text-base text-gray-500 bg-white py-4">
-              <p>유효기간순</p>
-              <div>
-                <span>조회쿠폰 : </span>
-                <span className="font-semibold text-black">{filteredCoupons.length}개</span>
-              </div>
-            </div>
-            <div className="쿠폰카드 pb-4 space-y-4 h-screen overflow-auto no-scrollbar">
-              {filteredCoupons.length === 0 && <div>쿠폰이 없습니다.</div>}
-              {filteredCoupons.map((coupon) => (
-                <CouponCard key={coupon.id} coupon={coupon} />
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="md:hidden">
-          <button
-            onClick={() => setIsImageInfoModalOpen(true)}
-            className="fixed bottom-20 right-4 w-14 h-14 bg-emerald-500 rounded-full shadow-lg flex items-center justify-center"
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              strokeWidth={2} 
-              stroke="white" 
-              className="w-8 h-8"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                d="M12 4.5v15m7.5-7.5h-15" 
-              />
-            </svg>
-          </button>
-          {isImageInfoModalOpen && (
-            <ImageUploaderModal 
-              onClose={() => setIsImageInfoModalOpen(false)}
-              onImageUpload={handleImageUpload}
-            />
-          )}
-        </div>
-        <Footer />
       </div>
+
+      {/* 모바일 쿠폰 추가 버튼 */}
+      <div className="md:hidden">
+        <button onClick={() => setIsImageInfoModalOpen(true)} className="fixed bottom-20 right-4 w-14 h-14 bg-emerald-500 rounded-full shadow-lg flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="white" className="w-8 h-8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+        </button>
+        {isImageInfoModalOpen && <ImageUploaderModal onClose={() => setIsImageInfoModalOpen(false)} onImageUpload={handleImageUpload} />}
+      </div>
+      <Footer />
     </div>
   );
 }

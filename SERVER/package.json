@@ -22,10 +22,8 @@
         "vite": "^6.0.7",
         "ws": "^8.18.0"
     },
-    "opencv4nodejs": {
-        "disableAutoBuild": 1,
-        "opencvIncludeDir": "C:\\tools\\opencv\\build\\include",
-        "opencvLibDir": "C:\\tools\\opencv\\build\\x64\\vc15\\lib",
-        "opencvBinDir": "C:\\tools\\opencv\\build\\x64\\vc15\\bin"
+    "scripts": {
+        "start": "node app.js",
+        "dev": "nodemon app.js"
     }
 }

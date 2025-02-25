@@ -19,39 +19,44 @@ const AddCouponInfo = ({ selectedFile }) => {
     id: ''
   });
 
-  const [errorMessage, setErrorMessage] = useState(null); // 에러 메시지 상태 추가
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const closeModal = () => {
-    //에러창 닫기
-    setErrorMessage(null);
-  };
+  const closeModal = () => setErrorMessage(null);
 
   const fetchCouponInfo = async () => {
     if (!selectedFile) return;
 
-    setIsLoading(true); // 로딩 시작
+    setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append("image", selectedFile);
+
+      console.log("API 요청 URL:", import.meta.env.VITE_API_URL); // 환경 변수 확인
 
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/coupons/extract`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (response.data) {
-        const newCouponInfo = { ...response.data, user_id: localStorage.getItem('userId'), status: '사용가능' };
-        setCouponInfo(newCouponInfo);
-        openModal(newCouponInfo);
-      } else {
+      if (!response.data || Object.keys(response.data).length === 0) {
         console.error("서버 응답에 데이터가 없습니다.");
-        setErrorMessage("쿠폰 정보를 추출하지 못했습니다.\n다시 시도해주세요.(데이터못받음)");
+        setErrorMessage("쿠폰 정보를 추출하지 못했습니다.\n다시 시도해주세요.");
+        return;
       }
+
+      const newCouponInfo = { 
+        ...response.data, 
+        user_id: Number(localStorage.getItem('userId')), 
+        status: '사용가능' 
+      };
+
+      setCouponInfo(newCouponInfo);
+      openModal(newCouponInfo);
     } catch (error) {
-      console.error("쿠폰 정보 추출 실패:", error.response?.data || error.message);
-      setErrorMessage("쿠폰 정보를 추출하지 못했습니다.\n다시 시도해주세요.");
+      console.error("쿠폰 정보 추출 실패:", error.response?.data?.error || error.message);
+      setErrorMessage(error.response?.data?.error || "쿠폰 정보를 추출하지 못했습니다.\n다시 시도해주세요.");
     } finally {
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false);
     }
   };
 

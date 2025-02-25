@@ -5,7 +5,6 @@ import WritePost from "./components/WritePost";
 import PostDetail from "./components/PostDetail";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-// import Footer from "./components/Footer";
 import Profile from "./components/Profile";
 import VerifyEmail from "./components/VerifyEmail";
 import EmailVerification from "./components/EmailVerification";
@@ -16,14 +15,15 @@ import MyProfile from "./pages/MyProfile";
 import MyCoupons from "./pages/MyCoupons";
 import Intro from "./pages/Intro";
 import DM from "./components/dm";
-import Swal from 'sweetalert2';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { ModalProvider } from './context/ModalContext';
+import Swal from "sweetalert2";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ModalProvider } from "./context/ModalContext";
 import CouponDetail from "./components/coupon/CouponDetail";
 
 const App = () => {
-
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const getUserFromToken = () => {
     const token = localStorage.getItem("token");
@@ -40,11 +40,8 @@ const App = () => {
 
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(getUserFromToken());
+  const [coupons, setCoupons] = useState([]);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // 글 목록 가져오기
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -58,11 +55,13 @@ const App = () => {
     fetchPosts();
   }, []);
 
-  // CLIENT 세션 만료 처리 여부 확인인
+  // 세션 만료 확인 및 자동 로그아웃
   useEffect(() => {
-    const checkSession = setInterval(() => {
+    const checkSession = () => {
       const token = localStorage.getItem("token");
-      if (token) {
+      if (!token) return;
+
+      try {
         const decodedToken = JSON.parse(atob(token.split(".")[1]));
         const currentTime = Math.floor(Date.now() / 1000);
 
@@ -70,59 +69,32 @@ const App = () => {
           localStorage.removeItem("token");
           localStorage.removeItem("userEmail");
           setUser(null);
-          Swal.fire({
-            title: '세션 만료',
-            text: '세션이 만료되었습니다. 다시 로그인해주세요.',
-            icon: 'error',
-            timer: 2500,
-          });
+          Swal.fire({ title: "세션 만료", text: "세션이 만료되었습니다. 다시 로그인해주세요.", icon: "error" });
           navigate("/login");
+        } else {
+          setTimeout(checkSession, (decodedToken.exp - currentTime) * 1000);
         }
-        // 만료 시간 확인
-        if (decodedToken.exp < currentTime) {
-          localStorage.removeItem("token");
-          setUser(null);
-          Swal.fire({
-            title: '세션 만료',
-            text: '세션이 만료되었습니다. 다시 로그인해주세요.',
-            icon: 'error',
-            timer: 2500,
-          });
-          navigate("/login");
-          clearInterval(checkSession);
-        }
-      } else {
-        clearInterval(checkSession);
+      } catch (error) {
+        console.error("세션 확인 중 오류 발생:", error);
       }
-    }, 10000); // 10초마다 세션 확인
-    return () => clearInterval(checkSession); // 컴포넌트 언마운트 시 인터벌 제거
+    };
+
+    checkSession();
   }, [navigate]);
 
-
-  //잠시 주석석
-  // const dm = () => {
-  //   navigate("/dm");
-  // };
-  
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    Swal.fire({
-      title: '로그아웃',
-      text: '로그아웃 되었습니다',
-      icon: 'success',
-      timer: 3000,
-    });
+    Swal.fire({ title: "로그아웃", text: "로그아웃 되었습니다", icon: "success" });
     navigate("/");
   };
 
-  const [coupons, setCoupons] = useState([]);
-
   return (
     <ModalProvider>
-      <GoogleOAuthProvider clientId={clientId}> 
-      <>
-        {location.pathname !== "/intro" && location.pathname !== "/login" && location.pathname !== "/signup" && <Header user={user} handleLogout={handleLogout} />}
+      <GoogleOAuthProvider clientId={clientId}>
+        {location.pathname !== "/intro" &&
+          location.pathname !== "/login" &&
+          location.pathname !== "/signup" && <Header user={user} handleLogout={handleLogout} />}
         <Routes>
           <Route path="/" element={<Home coupons={coupons} setCoupons={setCoupons} />} />
           <Route path="/board" element={<Board posts={posts} user={user} />} />
@@ -131,20 +103,15 @@ const App = () => {
           <Route path="/post/:id" element={<PostDetail posts={posts} setPosts={setPosts} />} />
           <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/signup" element={<Signup />} />
-          {/* <Route path="/coupon" element={<Coupon />} /> */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/email-verification" element={<EmailVerification />} />
-
           <Route path="/my-profile" element={<MyProfile user={user} />} />
           <Route path="/my-coupons" element={<MyCoupons coupons={coupons} />} />
           <Route path="/intro" element={<Intro />} />
-          {/* <Route path="/dm" element={<DM user={user}/>} /> */}
           <Route path="/dm" element={<DM />} />
         </Routes>
-        <CouponDetail />
-      </>
-
+        {location.pathname === "/my-coupons" && <CouponDetail />}
       </GoogleOAuthProvider>
     </ModalProvider>
   );

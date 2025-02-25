@@ -8,29 +8,32 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
   const [editingCategory, setEditingCategory] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  const openModal = () => setIsModalOpen(true);
 
   const closeModal = () => {
     setIsModalOpen(false);
     setInput("");
   };
 
-  const addCategoryFunction = () => {
-    addCategory(input);
-    closeModal();
-    setInput("");
+  const addCategoryFunction = async () => {
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/category`, {
+        name: input,
+      });
+      closeModal();
+      window.location.reload(); // 카테고리 추가 후 새로고침
+    } catch (error) {
+      alert("카테고리 추가 실패");
+      console.error(error);
+    }
   };
 
   const handleCategoryButtonClick = (item) => {
     if (selectedCategory === item) {
-      // 이미 선택된 카테고리를 다시 클릭하면 수정 모달 열기
       setEditingCategory(item);
       setInput(item.name);
       setIsEditModalOpen(true);
     } else {
-      // 새로운 카테고리 선택 시 필터링
       setSelectedCategory(item);
       handleCategoryClick(item);
     }
@@ -40,52 +43,43 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
     setIsEditModalOpen(false);
     setInput("");
     setEditingCategory(null);
-    setSelectedCategory(null); // 선택 해제
-    handleCategoryClick(null); // 필터 초기화 (Home 컴포넌트에서 처리 필요)
+    setSelectedCategory(null);
+    handleCategoryClick(null);
   };
 
   const editCategoryFunction = async () => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `${import.meta.env.VITE_API_URL}/api/category/${editingCategory.id}`,
-        { name: input },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+        { name: input }
       );
-      if (response.status === 200) {
-        alert("카테고리가 수정되었습니다.");
-        closeEditModal();
-      }
+      alert("카테고리가 수정되었습니다.");
+      closeEditModal();
+      window.location.reload(); // 수정 후 새로고침
     } catch (error) {
-      alert("카테고리 수정에 실패했습니다.");
+      alert("카테고리 수정 실패");
       console.error(error);
     }
   };
+
   const deleteCategoryFunction = async () => {
     try {
-      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/category/${editingCategory.id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (response.status === 200) {
-        alert("카테고리 삭제 완료");
-        closeEditModal();
-      }
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/category/${editingCategory.id}`);
+      alert("카테고리 삭제 완료");
+      closeEditModal();
+      window.location.reload(); // 삭제 후 새로고침
     } catch (error) {
       alert("카테고리 삭제 실패");
       console.error(error);
     }
-  }
+  };
+
   return (
     <>
-      <div className="relative justify-stretch items-center pt-2 ">
+      <div className="relative justify-stretch items-center pt-2">
         <button
-          onClick={() => openModal()}
-          className="rounded-full border hover:bg-gray-200  mr-4 w-16 h-7 text-gray-500 font-bold inline-block"
+          onClick={openModal}
+          className="rounded-full border hover:bg-gray-200 mr-4 w-16 h-7 text-gray-500 font-bold inline-block"
         >
           +
         </button>
@@ -107,7 +101,7 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
       {/* 추가 모달 */}
       {isModalOpen && (
         <div className="absolute left-0 mt-2 flex">
-          <div className="CategoryAddModal">
+          <div className="CategoryAddModal bg-white p-4 rounded-lg shadow-md">
             <input
               type="text"
               placeholder="카테고리 추가"
@@ -116,10 +110,10 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
               className="w-full border p-2 rounded-md"
             />
             <div className="flex justify-end gap-2 mt-3">
-              <button onClick={addCategoryFunction} className="modal-btn-add">
+              <button onClick={addCategoryFunction} className="modal-btn-add bg-green-500 text-white p-2 rounded-md">
                 추가
               </button>
-              <button onClick={closeModal} className="modal-btn-close">
+              <button onClick={closeModal} className="modal-btn-close bg-gray-400 text-white p-2 rounded-md">
                 닫기
               </button>
             </div>
@@ -130,7 +124,7 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
       {/* 수정 모달 */}
       {isEditModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
             <h3 className="text-lg font-medium mb-4">카테고리 수정</h3>
             <input
               type="text"
@@ -139,16 +133,18 @@ const CouponCategory = ({ category, addCategory, handleCategoryClick }) => {
               onChange={(e) => setInput(e.target.value)}
               className="border p-2 rounded w-full mb-4"
             />
-            <button onClick={deleteCategoryFunction} className="bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600">
-              삭제
-            </button>
-            <div className="flex justify-end gap-4">
-              <button onClick={editCategoryFunction} className="bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600">
-                수정
+            <div className="flex justify-between">
+              <button onClick={deleteCategoryFunction} className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md">
+                삭제
               </button>
-              <button onClick={closeEditModal} className="bg-gray-100 hover:bg-gray-200 w-20 h-7 text-gray-600">
-                닫기
-              </button>
+              <div className="flex gap-4">
+                <button onClick={editCategoryFunction} className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md">
+                  수정
+                </button>
+                <button onClick={closeEditModal} className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded-md">
+                  닫기
+                </button>
+              </div>
             </div>
           </div>
         </div>
