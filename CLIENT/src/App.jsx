@@ -14,7 +14,7 @@ import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
 import MyCoupons from "./pages/MyCoupons";
 import Intro from "./pages/Intro";
-import DM from "./components/dm";
+import Dm from "./components/dm";
 import Swal from "sweetalert2";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ModalProvider } from "./context/ModalContext";
@@ -109,7 +109,7 @@ const App = () => {
           <Route path="/my-profile" element={<MyProfile user={user} />} />
           <Route path="/my-coupons" element={<MyCoupons coupons={coupons} />} />
           <Route path="/intro" element={<Intro />} />
-          <Route path="/dm" element={<DM />} />
+          <Route path="/dm" element={<Dm />} />
         </Routes>
         {location.pathname === "/my-coupons" && <CouponDetail />}
       </GoogleOAuthProvider>
