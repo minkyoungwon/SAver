@@ -24,20 +24,36 @@ const DM = () => {
   useEffect(() => {
     const ws = new WebSocket(import.meta.env.VITE_WS_URL || "ws://localhost:8080");
     setSocket(ws);
-
+  
     ws.onmessage = (event) => {
       const parsedData = JSON.parse(event.data);
-      setMessages((prevMessages) => [...prevMessages, parsedData]);
+      // 메시지 중복 확인 후 추가
+      setMessages((prevMessages) => {
+        // 중복 메시지 확인
+        const isDuplicate = prevMessages.some(
+          (msg) =>
+            msg.sender_id === parsedData.senderId &&
+            msg.receiver_id === parsedData.receiverId &&
+            msg.content === parsedData.content
+        );
+  
+        // 중복이 없다면 추가
+        if (isDuplicate) {
+          return prevMessages;
+        }
+        return [...prevMessages, parsedData];
+      });
     };
-
+  
     ws.onclose = () => {
       console.log("WebSocket 연결이 종료되었습니다.");
     };
-
+  
     return () => {
       ws.close();
     };
   }, []);
+  
 
   const searchUser = async () => {
     try {
@@ -76,22 +92,18 @@ const DM = () => {
       console.error("대화 기록 조회 중 오류 발생:", error);
     }
   };
-
   const sendMessage = async () => {
     if (!selectedUser?.email) return console.error("수신자의 이메일 정보가 없습니다.");
     if (!message.trim()) return console.error("메시지 내용이 비어 있습니다.");
-
+  
     try {
       const token = localStorage.getItem("token");
       const messageData = {
         receiverId: selectedUser.email,
         content: message,
       };
-
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/dm/send`, messageData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+  
+      // 소켓으로 메시지를 전송
       if (socket && socket.readyState === WebSocket.OPEN) {
         const wsMessage = {
           senderId: currentUser.email,
@@ -100,21 +112,37 @@ const DM = () => {
         };
         socket.send(JSON.stringify(wsMessage));
       }
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          sender_id: currentUser.email,
-          receiver_id: selectedUser.email,
-          content: message,
-          sent_at: "방금",
-        },
-      ]);
-      setMessage("");
+  
+      // 화면에 바로 반영, 중복 메시지 방지
+      setMessages((prevMessages) => {
+        // 중복 메시지 확인
+        const isDuplicate = prevMessages.some(
+          (msg) =>
+            msg.sender_id === currentUser.email &&
+            msg.receiver_id === selectedUser.email &&
+            msg.content === message
+        );
+  
+        // 중복된 메시지라면 업데이트하지 않음
+        if (isDuplicate) {
+          return prevMessages;
+        }
+        return [
+          ...prevMessages,
+          {
+            sender_id: currentUser.email,
+            receiver_id: selectedUser.email,
+            content: message,
+            sent_at: "방금",
+          },
+        ];
+      });
     } catch (error) {
       console.error("메시지 전송 중 오류 발생:", error);
     }
   };
+  
+
 
   return (
     <div>
@@ -164,7 +192,11 @@ const DM = () => {
               return (
                 <div key={idx} className={`${isCurrentUser ? "text-right" : "text-left"} mb-2`}>
                   <p className="p-2 rounded-lg inline-block bg-gray-200">{msg.content}</p>
-                  <span className="text-sm text-gray-500 block">{msg.sent_at || "방금"}</span>
+                  <span className="text-sm text-gray-500 block">
+                    {msg.sent_at && msg.sent_at !== "방금"
+                      ? new Date(msg.sent_at).toLocaleString()
+                      : "방금"}
+                  </span>
                 </div>
               );
             })}

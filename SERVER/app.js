@@ -17,6 +17,58 @@ import socialAuth from "./routes/socialAuth.js";
 
 const app = express();
 
+import { WebSocketServer, WebSocket } from "ws";
+
+// WebSocketServer 생성
+const wss = new WebSocketServer({ port: 8080 });
+wss.on("connection", (socket) => {
+  console.log("WebSocket 연결됨");
+
+  socket.on("message", async (message) => {
+    const parsedMessage = JSON.parse(message);
+    const { senderId, receiverId, content } = parsedMessage;
+
+    // 현재 연결된 클라이언트 중에서 중복 메시지가 있는지 체크
+    let isDuplicate = false;
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        // 중복 메시지 검사
+        if (
+          client.senderId === senderId &&
+          client.receiverId === receiverId &&
+          client.content === content
+        ) {
+          isDuplicate = true;
+        }
+      }
+    });
+
+    if (isDuplicate) {
+      console.log("중복 메시지, 전송하지 않음");
+      return; // 중복된 메시지는 보내지 않음
+    }
+
+    // 연결된 모든 클라이언트에게 메시지 전송
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(
+          JSON.stringify({
+            senderId,
+            receiverId,
+            content,
+            sent_at: new Date(),
+          })
+        );
+      }
+    });
+  });
+
+  socket.on("close", () => {
+    console.log("WebSocket 연결 종료");
+  });
+});
+
+
 // ✅ 미들웨어 설정
 app.use(cors());
 app.use(cookieParser());

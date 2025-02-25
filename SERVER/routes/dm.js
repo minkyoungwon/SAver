@@ -1,14 +1,12 @@
 import express from "express";
-import { authenticateToken } from "./auth.js"; // ✅ import 방식 유지
-import supabase from "../db.js"; // ✅ Supabase 적용
+import { authenticateToken } from "./auth.js";
+import supabase from "../db.js";
 
 const router = express.Router();
 
-// 🟢 유저 검색 API (ILIKE 적용)
+// 유저 검색 (동일)
 router.get("/search", authenticateToken, async (req, res) => {
   const { query } = req.query;
-  console.log("검색 요청 결과값 => :", query);
-
   if (!query) {
     return res.status(400).send({ message: "검색어를 입력하세요." });
   }
@@ -31,7 +29,7 @@ router.get("/search", authenticateToken, async (req, res) => {
   }
 });
 
-// 🟢 메시지 보내기 및 저장 (RETURNING id 적용)
+// 메시지 보내기 (동일)
 router.post("/send", authenticateToken, async (req, res) => {
   const { receiverId, content } = req.body;
   const senderEmail = req.user.email;
@@ -67,17 +65,20 @@ router.post("/send", authenticateToken, async (req, res) => {
   }
 });
 
-// 🟢 대화 기록 조회 API
+// 대화 기록 조회 API
 router.get("/:receiverEmail", authenticateToken, async (req, res) => {
   const senderEmail = req.user.email;
   const { receiverEmail } = req.params;
 
   try {
+    // 여러 번 .or()를 사용하는 대신 and()로 묶음
+    // (sender=나 & receiver=상대) OR (sender=상대 & receiver=나)
     const { data, error } = await supabase
       .from("dm_direct_messages")
       .select("sender_id, receiver_id, content, sent_at")
-      .or(`sender_id.eq.${senderEmail},receiver_id.eq.${receiverEmail}`)
-      .or(`sender_id.eq.${receiverEmail},receiver_id.eq.${senderEmail}`)
+      .or(
+        `and(sender_id.eq.${senderEmail},receiver_id.eq.${receiverEmail}),and(sender_id.eq.${receiverEmail},receiver_id.eq.${senderEmail})`
+      )
       .order("sent_at", { ascending: true });
 
     if (error) {
@@ -92,7 +93,7 @@ router.get("/:receiverEmail", authenticateToken, async (req, res) => {
   }
 });
 
-// 🟢 읽음 상태 업데이트 (`count` 활용)
+// 읽음 상태 업데이트 (동일)
 router.put("/read/:receiverId", authenticateToken, async (req, res) => {
   const senderId = req.user.id;
   const { receiverId } = req.params;

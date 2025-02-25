@@ -143,3 +143,37 @@ CREATE TABLE social_accounts (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+
+
+
+-- 추가 수정정
+-- 1) users
+DROP TABLE IF EXISTS users CASCADE;
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,      -- UNIQUE로 선언
+  password VARCHAR(255) NOT NULL,
+  join_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  profile_image VARCHAR(255),
+  adminFlag BOOLEAN NOT NULL DEFAULT false, -- tinyint(1) → BOOLEAN
+  is_verified BOOLEAN DEFAULT false,        -- tinyint(1) → BOOLEAN
+  role VARCHAR(10) DEFAULT 'NORMAL' CHECK (role IN ('NORMAL','SOCIAL','ADMIN')), 
+  -- MySQL의 enum('NORMAL','SOCIAL','ADMIN') 대체
+
+  -- ▼▼ [신규] 이메일 인증용 칼럼 2개 추가 ▼▼
+  verification_code VARCHAR(6),     -- 인증 코드 저장용
+  verification_expires TIMESTAMP    -- 인증 코드 만료 시간
+);
+
+-- 2) posts
+DROP TABLE IF EXISTS posts CASCADE;
+CREATE TABLE posts (
+);
+
+-- 3) comments
+DROP TABLE IF EXISTS comments CASCADE;
+CREATE TABLE comments (
+);
+
+-- 이하 coupon, dm_direct_messages, social_accounts 등 기존과 동일
