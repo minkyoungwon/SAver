@@ -1,16 +1,36 @@
-https://ssavert1-hyzqw4d8n-mkws-projects-da83bca3.vercel.app/post/14
-접속시 회원 가입 가능
-홈페이지 테스트용 아이디
-ID : kwkw0647@naver.com 
-PW : 123456789
-ID : kw0647@naver.com
-PW : 123456789
+# Saver 프로젝트
 
+## 🔗 [Saver 홈페이지](https://ssavert1.vercel.app/)
+- 회원 가입 가능
 
-프론트 React 
-백엔드 NodeJS Express
-DB = (기존 MYSQL에서 마이그레이션 진행) PostgreSQL
-빌드 Vite
-배포 - 프론트  = Vercel
-     - 백엔드  = Render
-     - DB     = Supabase
+### 📝 **테스트용 계정**
+| 이메일 | 비밀번호 |
+|--------|-----------|
+| kwkw0647@naver.com | 123456789 |
+| kw0647@naver.com | 123456789 |
+
+---
+
+## 🛠 **기술 스택**
+- **프론트엔드:** React (Vite)
+- **백엔드:** Node.js (Express)
+- **데이터베이스:** PostgreSQL (MySQL에서 마이그레이션)
+- **빌드 도구:** Vite
+
+---
+
+## 🚀 **배포 환경**
+| 서비스 | 플랫폼 |
+|--------|------------|
+| **프론트엔드** | [Vercel](https://vercel.com/) |
+| **백엔드** | [Render](https://render.com/) |
+| **데이터베이스** | [Supabase](https://supabase.com/) |
+
+---
+
+## 📌 **API 연결**
+- 백엔드 API: [`https://saverback.onrender.com`](https://saverback.onrender.com)
+- 프론트엔드에서 `.env` 파일에 추가할 환경 변수:
+  ```plaintext
+  VITE_API_URL=https://saverback.onrender.com
+  VITE_WS_URL=wss://saverback.onrender.com
