@@ -14,7 +14,7 @@ import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
 import MyCoupons from "./pages/MyCoupons";
 import Intro from "./pages/Intro";
-import Dm from "./components/dm";
+import Dm from "./components/Dm";
 import Swal from "sweetalert2";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ModalProvider } from "./context/ModalContext";
