@@ -2,10 +2,10 @@
 ~~⚠️ 현재 정지 상태입니다. (무료티어의 경우 7일동안 사용이 없으면 정지 상태로 인하여 임시적 정지 상태)~~
 
 # 📑 Notion 프로젝트 정리
-## https://determined-primula-ac4.notion.site/Saver-1a0eae425a698102a33adfe690075fe0?pvs=4 👈 클릭시 정리된 노션으로 이동 ()
+## https://determined-primula-ac4.notion.site/Saver-1a0eae425a698102a33adfe690075fe0?pvs=4 👈 클릭시 정리된 노션으로 이동
 
 # 🌐 배포된 홈페이지 
-## [Saver 홈페이지](https://ssavert1.vercel.app/) 👈 클릭시 배포 사이트 이동 ()
+## [Saver 홈페이지](https://ssavert1.vercel.app/) 👈 클릭시 배포 사이트 이동
 ### (프리티어 서버여서 처음 접속시 404 에러 혹은 에러 발생시가능 로그인하시고 게시판 사용 요망 혹은 새로고침 후에 기다리셨다가 사용해주세요)
 
 
